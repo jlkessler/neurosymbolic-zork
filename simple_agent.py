@@ -77,7 +77,8 @@ class SimpleAgent:
         observation,
         current_location,
         valid_actions,
-        known_locations=None
+        known_locations=None,
+        known_routes=None
     ):
         """
         Select the next action using the LLM.
@@ -87,7 +88,7 @@ class SimpleAgent:
             current_location: Current location name.
             valid_actions: Actions available in the environment.
             known_locations: Locations already present in the map.
-
+            known_routes: Routes already discovered in the map.
         Returns:
             A valid action string.
         """
@@ -128,9 +129,33 @@ You should:
 - Remember that some actions may require objects or puzzle solutions.
 - Select exactly one action from the available action list.
 
+You have access to a symbolic map of known routes.
+
+- Use known routes when they help you reach a location.
+- Prefer established routes over guessing directions when revisiting locations.
+- Avoid unnecessary backtracking.
+- A route represents a sequence of individual game commands.
+- Execute only one action per turn.
+- Verify the resulting observation before continuing along a route.
+- When exploring, prioritize discovering unknown locations and transitions.
+
 Do not explain your reasoning.
 Return only the exact action string.
 """
+        route_lines = []
+
+        for route in (known_routes or []):
+            route_lines.append(
+                f"- {route['destination_label']} "
+                f"({route['total_cost']} actions): "
+                f"{' -> '.join(route['actions'])}"
+            )
+
+        navigation_text = (
+            "\n".join(route_lines)
+            if route_lines
+            else "No known routes are available from this room."
+        )
 
         user_prompt = f"""
 CURRENT LOCATION:
@@ -141,6 +166,9 @@ CURRENT OBSERVATION:
 
 KNOWN LOCATIONS:
 {locations_text}
+
+KNOWN ROUTES:
+{navigation_text}
 
 RECENT HISTORY:
 {history_text}
