@@ -12,6 +12,14 @@ def world_map(tmp_path):
     return WorldMap(save_path=tmp_path / "world_map.json")
 
 
+def confirm_all_edges(controller):
+    """Test helper: simulate successful use of every persistent map edge."""
+    controller.confirmed_edges.update(
+        (source, destination, key)
+        for source, destination, key in controller.world_map.graph.edges(keys=True)
+    )
+
+
 def test_controller_executes_known_route_one_action_at_a_time(world_map):
     world_map.start_episode("A", 1)
     world_map.record_step("east", "B", next_location_id=2)
@@ -20,6 +28,7 @@ def test_controller_executes_known_route_one_action_at_a_time(world_map):
     world_map.start_episode("A", 1)
 
     controller = NavigationController(world_map)
+    confirm_all_edges(controller)
     controller.plan_to("C", destination_id=3)
 
     assert controller.next_action(["east", "west"]) == "east"
@@ -37,6 +46,7 @@ def test_controller_cancels_when_route_action_is_unavailable(world_map):
     world_map.start_episode("A", 1)
 
     controller = NavigationController(world_map)
+    confirm_all_edges(controller)
     controller.plan_to("B", destination_id=2)
     assert controller.next_action(["north", "south"]) is None
     assert controller.last_status == "planned_action_unavailable"
@@ -48,6 +58,7 @@ def test_controller_blocks_failed_edge_for_episode(world_map):
     world_map.start_episode("A", 1)
 
     controller = NavigationController(world_map)
+    confirm_all_edges(controller)
     route = controller.plan_to("B", destination_id=2)
     assert route["actions"] == ["east"]
     assert controller.next_action(["east"]) == "east"
@@ -66,6 +77,7 @@ def test_controller_keeps_alternative_parallel_edge_after_failure(world_map):
     world_map.start_episode("A", 1)
 
     controller = NavigationController(world_map)
+    confirm_all_edges(controller)
     route = controller.plan_to("B", destination_id=2)
     assert route["actions"] == ["east"]
     controller.next_action(["east", "north"])
@@ -82,6 +94,7 @@ def test_controller_records_unexpected_transition_and_cancels_plan(world_map):
     world_map.start_episode("A", 1)
 
     controller = NavigationController(world_map)
+    confirm_all_edges(controller)
     controller.plan_to("B", destination_id=2)
     controller.next_action(["east"])
     result = controller.observe_action_result("east", "C", next_location_id=3)
@@ -247,6 +260,7 @@ def test_controller_can_follow_identity_based_maze_cells(world_map):
     world_map.start_episode("Troll Room", 1)
 
     controller = NavigationController(world_map)
+    confirm_all_edges(controller)
     plan = controller.plan_to("Skeleton Room", destination_id=200)
     assert plan["actions"] == ["west", "west", "up"]
 
@@ -399,10 +413,34 @@ def test_historian_prioritizes_returning_carried_treasure(world_map, tmp_path):
         known_routes=routes,
         current_score=10,
         home_node=home,
+        home_route_status="historical_unconfirmed",
     )
     assert goal["kind"] == "navigate_to_home"
     assert goal["target_node"] == home
     assert goal["carried_treasures"] == ["jeweled egg"]
+
+
+def test_historian_returns_to_actor_when_all_known_home_paths_are_blocked(tmp_path):
+    historian = Historian(tmp_path / "historian.json")
+    historian.start_episode("Cellar", "Cellar", initial_score=5)
+    historian.record_agent_report({
+        "location": "Cellar",
+        "inventory_items": ["golden egg"],
+        "carried_treasures": ["golden egg"],
+        "puzzle_clues": ["The door is locked."],
+    })
+    goal = historian.choose_goal(
+        current_node="Cellar",
+        current_location="Cellar",
+        valid_actions=["up", "look", "inventory"],
+        known_routes=[{"destination": "Living Room", "actions": ["up"]}],
+        current_score=5,
+        home_node="Living Room",
+        home_route_status="blocked",
+    )
+    assert goal["kind"] == "solve_return_route"
+    assert goal["route_status"] == "blocked"
+    assert "prerequisites" in goal["description"]
 
 
 def test_historian_prompts_return_route_puzzle_when_home_route_unknown(tmp_path):
@@ -566,16 +604,57 @@ def test_historian_return_goal_when_home_not_discovered(tmp_path):
     assert goal["target_label"] == "Living Room"
 
 
-def test_navigation_controller_plan_to_home(world_map):
+def test_navigation_controller_plan_to_home_uses_historical_route_cautiously(world_map):
     world_map.start_episode("Underground", 1)
     world_map.record_step("up", "Living Room", next_location_id=2)
     world_map.start_episode("Underground", 1)
     home = world_map.find_nodes_by_label("Living Room")[0]
 
     controller = NavigationController(world_map)
+    controller.start_episode()
+    assert controller.route_status(home) == "historical_unconfirmed"
+
     route = controller.plan_to_home(home)
     assert route["destination"] == home
     assert route["actions"] == ["up"]
+    assert controller.active_plan["require_confirmed"] is False
+
+
+def test_navigation_controller_blocks_historical_home_edge_after_failed_probe(world_map):
+    world_map.start_episode("Cellar", 1)
+    world_map.record_step("up", "Living Room", next_location_id=2)
+    world_map.start_episode("Cellar", 1)
+    home = world_map.find_nodes_by_label("Living Room")[0]
+
+    controller = NavigationController(world_map)
+    controller.start_episode()
+    assert controller.plan_to_home(home) is not None
+
+    controller.next_action(["up", "south"])
+    result = controller.observe_action_result(
+        "up", "Cellar", next_location_id=1,
+        observation="The door is locked.",
+    )
+
+    assert result["plan_status"] == "route_edge_failed"
+    assert controller.route_status(home) == "blocked"
+    assert controller.plan_to_home(home) is None
+    # The historical graph edge remains intact for a future episode.
+    assert world_map.graph.has_edge("Cellar", home)
+
+
+def test_navigation_controller_resets_confirmation_but_preserves_map(world_map):
+    world_map.start_episode("A", 1)
+    world_map.record_step("east", "B", next_location_id=2)
+    world_map.start_episode("A", 1)
+    controller = NavigationController(world_map)
+    confirm_all_edges(controller)
+    assert controller.route_status("B") == "confirmed"
+
+    controller.start_episode()
+    assert controller.confirmed_edges == set()
+    assert controller.route_status("B") == "historical_unconfirmed"
+    assert world_map.graph.has_edge("A", "B")
 
 
 def test_world_map_find_nodes_by_label_disambiguates_rooms(world_map):

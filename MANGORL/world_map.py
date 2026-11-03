@@ -84,7 +84,7 @@ class WorldMap:
         with self.save_path.open("w", encoding="utf-8") as file:
             json.dump(data, file, indent=4)
 
-        print(f"World map saved to {self.save_path}")
+        # print(f"World map saved to {self.save_path}")
 
     # ------------------------------------------------------------------
     # ROOM IDENTITY AND NODE MANAGEMENT
