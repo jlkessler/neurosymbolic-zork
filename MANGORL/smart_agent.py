@@ -5,39 +5,18 @@ It reasons from observations, score feedback, Historian goals, and known routes.
 """
 from __future__ import annotations
 
+# Load project-local .env before reading configuration defaults.
+import config  # noqa: F401
+
 import json
 import os
 import random
 import re
 
-from config import load_project_env
-
-load_project_env()
-
 try:
     from openai import OpenAI
 except ImportError:
     OpenAI = None
-
-
-def create_openai_client(api_key=None, base_url=None):
-    """Create an OpenAI-compatible client using explicit or .env settings."""
-    load_project_env()
-    effective_base_url = base_url or os.getenv(
-        "OPENAI_BASE_URL", "http://cs-steverw.umflint.edu:8080/api"
-    )
-    effective_api_key = api_key or os.getenv("OPENAI_API_KEY")
-    # Local Ollama-compatible /v1 endpoints conventionally accept any key.
-    if not effective_api_key and effective_base_url.rstrip("/").endswith("/v1"):
-        effective_api_key = "ollama"
-    if not effective_api_key:
-        raise RuntimeError(
-            "No API key was configured. Set OPENAI_API_KEY in .env (or the "
-            "shell), or configure HISTORIAN_API_KEY for a separate Historian endpoint."
-        )
-    if OpenAI is None:
-        raise RuntimeError("Install the OpenAI Python package: pip install openai")
-    return OpenAI(api_key=effective_api_key, base_url=effective_base_url)
 
 
 class SmartAgent:
@@ -58,16 +37,20 @@ class SmartAgent:
             "OPENAI_BASE_URL", "http://cs-steverw.umflint.edu:8080/api"
         )
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not self.api_key and self.base_url.rstrip("/").endswith("/v1"):
-            self.api_key = "ollama"
         self.extra_body = extra_body
         if client is not None:
             self.client = client
         else:
-            self.client = create_openai_client(
-                api_key=self.api_key,
-                base_url=self.base_url,
-            )
+            if not self.api_key:
+                if self.base_url.rstrip("/").endswith("/v1"):
+                    self.api_key = "ollama"
+                else:
+                    raise RuntimeError(
+                        "Set OPENAI_API_KEY to your Open WebUI/API key before starting."
+                    )
+            if OpenAI is None:
+                raise RuntimeError("Install the OpenAI Python package: pip install openai")
+            self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
         self.history_length = int(history_length)
         self.temperature = float(temperature)
@@ -159,6 +142,7 @@ class SmartAgent:
         avoid_actions=None,
         preferred_actions=None,
         navigation_context="No active symbolic navigation plan.",
+        rl_guidance="",
     ):
         """Return action plus Actor's compact inventory/clue report."""
         if not valid_actions:
@@ -187,9 +171,11 @@ Discover how the game works from its observations and score feedback.
 
 You choose one game command at a time. A symbolic navigation controller may
 execute known routes. The Historian maintains strategic goals and lessons.
-The Historian may also provide exactly three positive behaviors learned from
-prior episodes and three negative behaviors to avoid. Apply those lessons when
+The Historian may also provide a configurable set of positive behaviors learned
+from prior episodes and negative behaviors to avoid. Apply those lessons when
 they fit the current state, but let fresh environment feedback take precedence.
+The list length may vary by experiment; evaluate each lesson on its relevance
+rather than assuming every item applies to every situation.
 
 STRATEGY:
 - Explore thoroughly and pursue likely score-producing opportunities. Do not
@@ -220,13 +206,17 @@ STRATEGY:
 OUTPUT:
 Return one JSON object only, with this schema:
 {{
-  "action": "<exact one command from AVAILABLE ACTIONS>",
+  "action": "<your single best command from AVAILABLE ACTIONS>",
+  "candidate_actions": ["best candidate first", "other plausible candidates"],
   "inventory_items": ["items you currently believe are carried"],
   "carried_treasures": ["items currently carried that may be valuable/score-relevant"],
   "puzzle_clues": ["new concise environmental clues learned this turn"],
   "state_note": "brief note about changed state, obstacle, or next reasoning step"
 }}
-Do not include markdown fences or prose outside the JSON.
+candidate_actions should contain up to five distinct commands from AVAILABLE
+ACTIONS, ordered from your most preferred to least preferred. Put action first.
+If only one command is reasonable, return a one-item list. Do not invent
+commands. Do not include markdown fences or prose outside the JSON.
 """
 
         goal_text = (
@@ -253,6 +243,9 @@ HISTORIAN GOAL:
 
 HISTORIAN GUIDANCE (includes lessons from completed episodes when available):
 {historian_guidance or 'No persistent lessons yet.'}
+
+ACTOR REINFORCEMENT-LEARNING GUIDANCE:
+{rl_guidance or 'No Actor experience-based guidance is currently available.'}
 
 NAVIGATION CONTROLLER:
 {navigation_context}
@@ -316,6 +309,21 @@ and any new puzzle clue in the required JSON object.
             if not action:
                 raise ValueError(f"Actor returned invalid action: {answer[:500]!r}")
 
+            candidate_actions = []
+            for candidate in self._clean_list(parsed.get("candidate_actions", []), 12):
+                matched = next(
+                    (item for item in valid_actions if item.casefold() == candidate.casefold()),
+                    None,
+                )
+                if matched and matched not in candidate_actions:
+                    candidate_actions.append(matched)
+            # Keep the Actor's selected action as the highest-ranked base-policy
+            # candidate; older responses that only return "action" remain valid.
+            candidate_actions = [action] + [
+                item for item in candidate_actions if item != action
+            ]
+            candidate_actions = candidate_actions[:5]
+
             report = {
                 "location": current_location,
                 "inventory_items": self._clean_list(parsed.get("inventory_items"), 50),
@@ -323,7 +331,12 @@ and any new puzzle clue in the required JSON object.
                 "puzzle_clues": self._clean_list(parsed.get("puzzle_clues"), 12),
                 "state_note": str(parsed.get("state_note", ""))[:500],
             }
-            return {"action": action, "report": report, "raw_response": answer}
+            return {
+                "action": action,
+                "candidate_actions": candidate_actions,
+                "report": report,
+                "raw_response": answer,
+            }
         except Exception as exc:
             self._log_event("error", {
                 "model": self.model,
@@ -342,6 +355,7 @@ and any new puzzle clue in the required JSON object.
         })
         return {
             "action": fallback,
+            "candidate_actions": [fallback],
             "report": {
                 "location": current_location,
                 "inventory_items": [],

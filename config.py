@@ -1,18 +1,19 @@
-"""Project configuration helpers.
+"""Shared project configuration loading.
 
-Loads the project-local .env file without overwriting variables already set in
- the shell. Priority is therefore: CLI arguments > shell environment > .env >
- application defaults.
+Loads the project-local .env file before modules read environment variables.
+Existing shell environment variables are preserved.
 """
+from __future__ import annotations
+
 from pathlib import Path
 
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover - optional until dependencies are installed
+    load_dotenv = None
 
-PROJECT_DIR = Path(__file__).resolve().parent
-ENV_FILE = PROJECT_DIR / ".env"
+PROJECT_ROOT = Path(__file__).resolve().parent
+ENV_FILE = PROJECT_ROOT / ".env"
 
-
-def load_project_env(env_path=None, *, override=False):
-    """Load the project's .env file (or an explicit path) into os.environ."""
-    path = Path(env_path).expanduser() if env_path else ENV_FILE
-    return load_dotenv(dotenv_path=path, override=override)
+if load_dotenv is not None:
+    load_dotenv(dotenv_path=ENV_FILE, override=False)

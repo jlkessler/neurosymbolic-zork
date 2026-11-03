@@ -99,11 +99,19 @@ logs/
 - `episode_NNNN.txt` captures the terminal output and errors for that episode, including observations, actions, score changes, and navigation status. Output is also echoed to the terminal.
 - `episode_NNNN_chat.txt` records each full Actor and Historian system/user prompt, raw model response, and request/fallback errors. It is useful for auditing what context the Actor actually received and how it responded, as well as what the Historian considered during its review.
 - `episode_NNNN_review.txt` contains the Historian's 1-2 paragraph post-episode assessment of Actor performance, including advice and critiques. The Historian uses runtime observations, score changes, recorded actions, and previous trial lessons; it is not given the Zork guide or walkthrough.
-- `episode_NNNN_lessons.txt` snapshots the three positive behaviors to repeat and three negative behaviors to avoid after that episode.
-- `lessons_learned.txt` is overwritten after each review with the latest six trial lessons. At the beginning of the next episode, these lessons are inserted into the Historian guidance included in the Actor's prompt. Current game feedback takes precedence over an old lesson when the evidence warrants it.
+- `episode_NNNN_lessons.txt` snapshots the configured number of positive behaviors to repeat and negative behaviors to avoid after that episode.
+- `lessons_learned.txt` is overwritten after each review with the latest configured set of positive and negative trial lessons. At the beginning of the next episode, these lessons are inserted into the Historian guidance included in the Actor's prompt. Current game feedback takes precedence over an old lesson when the evidence warrants it.
 - `trial_metadata.txt` records the non-secret run configuration. API keys are deliberately excluded.
 
-`--episodes` runs multiple fresh games in one trial. The WorldMap and Historian's persistent observations carry across those episodes, while the Actor's short-term history and navigation controller's episode-local route evidence are reset for each new game. The Historian also retains a separate six-item coaching set within the current trial; each completed episode reviews and refines that set before the next episode begins. The first episode starts without trial-specific lessons. Each episode receives its own console, Actor/Historian chat, review, and lesson snapshot files. Use `--trial-name` to label the folder; a timestamp and collision-safe suffix keep runs separate.
+`--episodes` runs multiple fresh games in one trial. The WorldMap and Historian's persistent observations carry across those episodes, while the Actor's short-term history and navigation controller's episode-local route evidence are reset for each new game. The Historian also retains a separate coaching set within the current trial; each completed episode reviews and refines that set before the next episode begins. Configure the number with `--historian-lessons-per-category N` (also accepted as `--historian-lessons N` or `--historian-lesson-count N`). This creates N positive lessons and N negative lessons, for 2N total. The default is 3 per category; valid values are 1 through 10. The setting can also be supplied as `ZORK_HISTORIAN_LESSONS_PER_CATEGORY` in `.env`; the default `.env` and `.env.example` set it to 3. The first episode starts without trial-specific lessons. Each episode receives its own console, Actor/Historian chat, review, and lesson snapshot files. Use `--trial-name` to label the folder; a timestamp and collision-safe suffix keep runs separate.
+
+For example, to ask for five positive and five negative lessons after every episode:
+
+```bash
+python main.py --episodes 10 --historian-review --historian-lessons-per-category 5
+```
+
+The count is part of `trial_metadata.txt`, included in each review result, and reflected in the episode and current-trial lesson files. It changes only the number of coaching items; it does not change the Historian's value-function critic, which remains independently controlled by `--historian-critic`.
 
 The Actor reads `OPENAI_API_KEY` and `OPENAI_BASE_URL` from `.env`. The Historian review uses `HISTORIAN_API_KEY` and `HISTORIAN_BASE_URL` when provided; otherwise it reuses the Actor's connection. The Historian model is read from `HISTORIAN_MODEL`. Avoid passing API keys directly with `--api-key` or `--historian-api-key` on shared machines because command-line arguments can appear in shell history or process listings.
 
@@ -129,3 +137,105 @@ Back up these files before experimenting with new schemas or reset them intentio
 - A historical map route is not proof that a door or passage is currently open. `plan_to_home()` may probe a historical candidate one transition at a time, but immediately abandons a failed/unavailable edge. Once every known candidate route is blocked, the Actor must infer prerequisites or discover an alternate route.
 - Score deltas are the strongest runtime signal. Reward and textual clues are retained as supporting evidence.
 - A score target does not imply the game has been completed. It is the experiment's stopping criterion.
+
+## Actor reinforcement-learning prototype
+
+The current experimental Actor-learning path is enabled by default. It keeps the
+LLM weights frozen and stores completed Actor decisions in a separate,
+append-only JSONL file:
+
+- `memory/actor_experiences.jsonl`: one record for each Actor-selected action,
+  including the pre-action state, action candidates, score/environment reward,
+  next state, and the episode's discounted return.
+- `episode_NNNN_experience.jsonl` in the trial output folder: a per-episode
+  snapshot of the exact Actor training samples, including calculated returns.
+- All environment transitions are used while calculating returns. This means
+  score gained after one or more symbolic-navigation commands can still be
+  attributed to the earlier Actor decision. Symbolic-navigation commands are
+  not themselves stored as Actor policy decisions.
+- The state representation includes the Jericho room ID/name, observation,
+  inventory report, puzzle clues, Historian goal, home-route status, and score.
+  Experience retrieval compares these fields to avoid relying on room name
+  alone.
+- `SmartAgent` is asked for its preferred action and up to four alternatives.
+  `ActorRLController` combines that candidate order with action advantages
+  estimated from similar historical states and discounted returns.
+
+**Important implementation distinction:** the current OpenAI-compatible API
+path does not expose native model logits to this controller. Thus the live
+remote-API implementation performs a candidate-rank adjustment, not true
+LLM-token-logit adjustment. `ActorRLController.adjust_logits()` is provided as
+a separate interface for a future local inference backend that can supply
+genuine candidate logits. The experiment logs the exact candidate ranking,
+experience estimates, and adjusted selection for later analysis.
+
+Initial settings can be changed on the command line:
+
+```bash
+python main.py \
+  --actor-rl \
+  --actor-experience-path memory/actor_experiences.jsonl \
+  --actor-rl-gamma 0.995 \
+  --actor-rl-beta 0.35 \
+  --actor-rl-exploration 0.08 \
+  --actor-rl-top-k 40
+```
+
+Use `--no-actor-rl` to disable action adaptation. Experience collection still
+runs so the same trial can collect data for a later learning condition. Use a
+separate `--actor-experience-path` for independent experimental conditions.
+The default score reward is the Jericho score delta. Jericho's separate reward
+is logged but has zero contribution by default because it may overlap with
+score. Optional environment reward weighting and a no-progress penalty are
+available, but both default to zero to keep the initial reward definition
+simple.
+
+### Optional Historian value-function critic
+
+`historian_rl_controller.py` is a first, intentionally conservative critic
+prototype. It learns a sparse linear state-value function from completed
+episode Monte-Carlo returns. Features include room identity, goal type, route
+status, inventory terms, puzzle-clue terms, and observation/goal words. When
+enabled, this value estimate can replace the experience-memory average as the
+baseline used to form Actor action advantages.
+
+The critic is **off by default**. Its weights are stored separately in
+`memory/historian_value.json`; it is not the same as the Historian's textual
+post-episode review or its configurable coaching lessons. To enable the numerical
+critic in a future experiment:
+
+```bash
+python main.py --historian-critic
+```
+
+For the initial Actor-learning / frozen-critic condition, do not pass
+`--historian-critic`. To also freeze the Historian's generated cross-episode
+prompt lessons, use `--no-historian-review`. Note that this first critic integration
+is a baseline-style approximation, not a full action-conditioned actor-critic
+algorithm: V(s) is the same state baseline for all candidate actions, and its
+influence on their relative ordering can be limited when their confidence values
+are similar. A stronger next step is to estimate action-specific TD advantages
+from stored transitions, `r + gamma * V(s') - V(s)`, and aggregate those by
+candidate action. The Historian's ordinary runtime
+bookkeeping (observed score events, repeated failures, and map-informed goals)
+continues as part of the existing neuro-symbolic baseline; disabling the
+review only disables its LLM-generated episode critiques and lesson updates.
+
+### Interpretation and limitations
+
+This is an initial, online, small-data action-value estimator—not a trained
+neural Q-network and not an unbiased off-policy estimator. It uses weighted
+similarity retrieval and empirical discounted returns. Candidate rank is only
+a proxy for the frozen LLM's actual probability distribution. In particular,
+the Actor is not yet requesting or consuming OpenAI `logprobs`, and the
+reported candidate ordering should not be described as native logits in
+research results. The next methodological improvement would be to obtain
+real candidate-selection log probabilities from a supported endpoint or run
+the model through a local inference backend, then use `adjust_logits()`.
+
+The first experiments should compare the frozen baseline, prompt/retrieval
+only, and candidate-rank-plus-advantage conditions while holding Historian
+review settings constant. Use a fresh experience file for each condition if
+you want clean ablations. Inspect `episode_NNNN_chat.txt` for the Actor's
+candidate list and `actor_rl_selection` event, and inspect
+`memory/actor_experiences.jsonl` for the completed training samples.

@@ -18,10 +18,14 @@ class Historian:
         memory_path="memory/historian.json",
         target_score=76,
         repeat_threshold=2,
+        lessons_per_category=3,
     ):
         self.memory_path = Path(memory_path)
         self.target_score = int(target_score)
         self.repeat_threshold = max(2, int(repeat_threshold))
+        self.lessons_per_category = int(lessons_per_category)
+        if not 1 <= self.lessons_per_category <= 10:
+            raise ValueError("lessons_per_category must be between 1 and 10")
         self.memory = self._empty_memory()
         self.episode = None
         self._recent_attempts = []
@@ -391,15 +395,30 @@ class Historian:
         return {}
 
     @staticmethod
-    def _exactly_three(values, fallback):
-        cleaned = Historian._clean_strings(values, limit=10)
-        result = cleaned[:3]
+    def _fit_lesson_count(values, fallback, count):
+        """Return exactly ``count`` distinct, non-empty lessons.
+
+        The deterministic fallback pool is deliberately longer than the old
+        three-item list so API failures still produce the configured number of
+        useful prompt lessons.
+        """
+        count = int(count)
+        cleaned = Historian._clean_strings(values, limit=max(count, 20))
+        result = cleaned[:count]
+        seen = {entry.casefold() for entry in result}
         for item in fallback:
-            if len(result) >= 3:
+            if len(result) >= count:
                 break
-            if item.casefold() not in {entry.casefold() for entry in result}:
-                result.append(item)
-        return result[:3]
+            normalized = " ".join(str(item).split()).strip()
+            if normalized and normalized.casefold() not in seen:
+                result.append(normalized[:180])
+                seen.add(normalized.casefold())
+        return result[:count]
+
+    @staticmethod
+    def _exactly_three(values, fallback):
+        """Backward-compatible helper retained for existing callers/tests."""
+        return Historian._fit_lesson_count(values, fallback, 3)
 
     def _fallback_episode_review(self, episode):
         """Produce evidence-based coaching if the review model is unavailable."""
@@ -460,6 +479,13 @@ class Historian:
             "Use score changes and environment responses as concrete feedback for choosing subsequent actions.",
             "Inspect unfamiliar rooms and objects before committing to a long sequence of movement commands.",
             "Record successful transitions and useful environmental clues so later decisions can reuse them.",
+            "Verify that a proposed route works one transition at a time before relying on it.",
+            "Compare the current observation with earlier responses before repeating an interaction.",
+            "Reassess the active goal when new score events or puzzle clues change the situation.",
+            "Preserve potentially useful inventory items until their purpose is better understood.",
+            "Use the available action list to keep commands grounded in actions the game accepts.",
+            "Prefer focused exploration of a room's objects and exits over unstructured movement.",
+            "Carry forward only puzzle conclusions that are supported by explicit environment feedback.",
         ]
 
         negatives = []
@@ -473,10 +499,21 @@ class Historian:
             "Avoid repeating an unsuccessful command without a new clue, item, or change in circumstances.",
             "Do not treat remembered routes, inventory guesses, or puzzle hypotheses as confirmed facts.",
             "Avoid exploring without a concrete short-term objective when a score opportunity or unresolved obstacle is already evident.",
+            "Do not continue a route after the environment has shown that its next transition is blocked.",
+            "Do not assume that a movement command returns to the room from which the player came.",
+            "Avoid abandoning a potentially useful object without first examining its description or behavior.",
+            "Do not confuse an Actor-reported inventory guess with an environment-verified inventory state.",
+            "Avoid pursuing the same puzzle hypothesis after repeated contradictory feedback.",
+            "Do not spend many consecutive steps on an action that produces no new information.",
+            "Avoid treating another episode's successful puzzle state as proof that the current episode has the same state.",
         ]
 
-        positives = self._exactly_three(positives, positive_fallback)
-        negatives = self._exactly_three(negatives, negative_fallback)
+        positives = self._fit_lesson_count(
+            positives, positive_fallback, self.lessons_per_category
+        )
+        negatives = self._fit_lesson_count(
+            negatives, negative_fallback, self.lessons_per_category
+        )
         return {
             "report": first + "\n\n" + second,
             "positives": positives,
@@ -538,7 +575,7 @@ class Historian:
         extra_body=None,
         trial_episode_number=None,
     ):
-        """Review a completed episode and refresh this trial's six coaching lessons.
+        """Review a completed episode and refresh this trial's configurable coaching lessons.
 
         The model sees only runtime episode evidence and prior lessons. It does
         not receive the walkthrough, guide, or a treasure point-value table.
@@ -575,16 +612,17 @@ class Historian:
                     "Actor separately from symbolic-navigation actions where the evidence "
                     "allows. Do not claim an action caused a score increase unless the "
                     "recorded score event supports that conclusion.\n\n"
-                    "Then update the cross-episode lessons. Return exactly THREE concise, "
-                    "actionable positives to repeat and exactly THREE negatives to avoid. "
-                    "Treat previous lessons as candidates: retain useful ones, revise or "
-                    "replace them when this episode provides better evidence. The lessons "
-                    "will be included in the next episode's Actor prompt. Avoid generic "
-                    "platitudes and do not disclose puzzle solutions.\n\n"
-                    "Required JSON schema:\n"
-                    '{"report":"one or two paragraphs",'
-                    '"positives":["...","...","..."],'
-                    '"negatives":["...","...","..."]}\n\n'
+                    f"Then update the cross-episode lessons. Return exactly {self.lessons_per_category} "
+                    "concise, actionable positives to repeat and exactly "
+                    f"{self.lessons_per_category} negatives to avoid. Treat previous lessons "
+                    "as candidates: retain useful ones, revise or replace them when this "
+                    "episode provides better evidence. The lessons will be included in "
+                    "the next episode's Actor prompt. Avoid generic platitudes and do not "
+                    "disclose puzzle solutions.\n\n"
+                    "Required JSON fields: report (a string containing one or two "
+                    "paragraphs), positives (an array of strings), and negatives "
+                    "(an array of strings). Each array must contain exactly "
+                    f"{self.lessons_per_category} distinct items. Return valid JSON only.\n\n"
                     f"PREVIOUS LESSONS:\n{json.dumps(previous, ensure_ascii=False)}\n\n"
                     f"COMPLETED EPISODE EVIDENCE:\n"
                     f"{json.dumps(review_context, ensure_ascii=False, default=str)}"
@@ -622,14 +660,22 @@ class Historian:
                 for part in str(parsed.get("report", "")).split("\n\n")
                 if part.strip()
             )
-            positives = self._clean_strings(parsed.get("positives", []), limit=10)
-            negatives = self._clean_strings(parsed.get("negatives", []), limit=10)
-            if not report or len(positives) < 3 or len(negatives) < 3:
-                raise ValueError("Historian response did not contain a report and three lessons in each category.")
+            requested_count = self.lessons_per_category
+            positives = self._clean_strings(
+                parsed.get("positives", []), limit=max(20, requested_count)
+            )
+            negatives = self._clean_strings(
+                parsed.get("negatives", []), limit=max(20, requested_count)
+            )
+            if not report or len(positives) < requested_count or len(negatives) < requested_count:
+                raise ValueError(
+                    "Historian response did not contain a report and "
+                    f"{requested_count} lessons in each category."
+                )
             result = {
                 "report": report,
-                "positives": positives[:3],
-                "negatives": negatives[:3],
+                "positives": positives[:requested_count],
+                "negatives": negatives[:requested_count],
                 "review_source": "llm",
             }
         except Exception as exc:
@@ -642,25 +688,44 @@ class Historian:
             result = self._fallback_episode_review(episode)
             result["review_error"] = f"{type(exc).__name__}: {exc}"
 
+        # Normalize both LLM and deterministic-fallback results to the exact
+        # requested count, so prompt size and per-episode artifacts are stable.
         self.trial_lessons = {
-            "positives": self._exactly_three(
+            "positives": self._fit_lesson_count(
                 result.get("positives", []),
                 [
                     "Use score changes and environment responses as concrete feedback.",
-                    "Explore unfamiliar rooms and inspect potentially useful objects.",
+                    "Inspect unfamiliar rooms and potentially useful objects.",
                     "Record successful transitions and environmental clues.",
+                    "Verify routes one transition at a time.",
+                    "Reassess goals when new evidence appears.",
+                    "Preserve potentially useful inventory items.",
+                    "Use valid actions and explicit observations to ground decisions.",
+                    "Compare outcomes before repeating an interaction.",
+                    "Focus exploration on relevant objects and exits.",
+                    "Retain only puzzle conclusions supported by feedback.",
                 ],
+                self.lessons_per_category,
             ),
-            "negatives": self._exactly_three(
+            "negatives": self._fit_lesson_count(
                 result.get("negatives", []),
                 [
                     "Avoid repeating unsuccessful commands without new evidence.",
-                    "Do not assume historical routes or unverified items are confirmed.",
+                    "Do not assume historical routes are currently open.",
                     "Change approach when an investigation repeatedly makes no progress.",
+                    "Do not assume reverse movement returns to the previous room.",
+                    "Do not treat guessed inventory as verified inventory.",
+                    "Do not pursue hypotheses contradicted by environment feedback.",
+                    "Avoid long sequences that produce no new information.",
+                    "Do not assume puzzle state carries across episodes.",
+                    "Do not abandon useful objects without inspection.",
+                    "Do not treat a blocked route as temporarily open without evidence.",
                 ],
+                self.lessons_per_category,
             ),
         }
         result["episode_number"] = episode_number
+        result["lessons_per_category"] = self.lessons_per_category
         result["lessons"] = {
             "positives": list(self.trial_lessons["positives"]),
             "negatives": list(self.trial_lessons["negatives"]),

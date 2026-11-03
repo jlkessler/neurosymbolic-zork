@@ -3,7 +3,7 @@ import json
 import pytest
 
 from historian import Historian
-from main import create_historian_connection, parse_args
+from main import parse_args
 from smart_agent import SmartAgent
 from trial_logger import TrialLogger
 
@@ -204,6 +204,100 @@ def test_historian_uses_three_by_three_fallback_without_review_client(tmp_path):
     assert len(review["report"].split("\n\n")) == 2
 
 
+
+def test_cli_configures_historian_lessons_per_category():
+    args = parse_args(["--episodes", "4", "--historian-lessons-per-category", "5"])
+    assert args.historian_lessons_per_category == 5
+
+    alias_args = parse_args(["--historian-lessons", "7"])
+    assert alias_args.historian_lessons_per_category == 7
+
+    with pytest.raises(SystemExit):
+        parse_args(["--historian-lessons-per-category", "0"])
+    with pytest.raises(SystemExit):
+        parse_args(["--historian-lessons-per-category", "11"])
+
+
+def test_historian_generates_configured_number_of_lessons_and_updates_prompt(tmp_path):
+    lesson_count = 5
+    answer = json.dumps({
+        "report": (
+            "The Actor made useful progress by inspecting objects and following score feedback. "
+            "It should continue grounding actions in observed responses.\n\n"
+            "It also repeated an ineffective action and should change strategy sooner when "
+            "the environment does not change."
+        ),
+        "positives": [f"Positive lesson {index}" for index in range(1, lesson_count + 1)],
+        "negatives": [f"Negative lesson {index}" for index in range(1, lesson_count + 1)],
+    })
+
+    class FakeMessage:
+        content = answer
+
+    class FakeChoice:
+        message = FakeMessage()
+        finish_reason = "stop"
+
+    class FakeResponse:
+        choices = [FakeChoice()]
+
+    class FakeCompletions:
+        request = None
+
+        def create(self, **kwargs):
+            self.request = kwargs
+            return FakeResponse()
+
+    class FakeChat:
+        completions = FakeCompletions()
+
+    class FakeClient:
+        chat = FakeChat()
+
+    historian = Historian(
+        tmp_path / "historian.json",
+        lessons_per_category=lesson_count,
+    )
+    historian.start_episode("A", "Living Room", initial_score=0)
+    finished = historian.finish_episode(
+        final_score=0, moves=0, termination_reason="step_limit"
+    )
+    review = historian.review_episode(
+        finished, client=FakeClient(), model="review-model"
+    )
+
+    assert review["review_source"] == "llm"
+    assert review["lessons_per_category"] == lesson_count
+    assert len(review["lessons"]["positives"]) == lesson_count
+    assert len(review["lessons"]["negatives"]) == lesson_count
+    assert "exactly 5" in FakeChat.completions.request["messages"][1]["content"]
+
+    next_prompt_guidance = historian.build_guidance("A", "Living Room", current_score=0)
+    for lesson in review["lessons"]["positives"] + review["lessons"]["negatives"]:
+        assert lesson in next_prompt_guidance
+
+
+def test_historian_fallback_respects_configured_lesson_count(tmp_path):
+    lesson_count = 7
+    historian = Historian(
+        tmp_path / "historian.json",
+        lessons_per_category=lesson_count,
+    )
+    historian.start_episode("A", "Room A", initial_score=0)
+    finished = historian.finish_episode(
+        final_score=0, moves=1, termination_reason="step_limit"
+    )
+
+    review = historian.review_episode(
+        finished, client=None, model="unused-model"
+    )
+
+    assert review["review_source"] == "deterministic_fallback"
+    assert len(review["lessons"]["positives"]) == lesson_count
+    assert len(review["lessons"]["negatives"]) == lesson_count
+    assert len(set(review["lessons"]["positives"])) == lesson_count
+    assert len(set(review["lessons"]["negatives"])) == lesson_count
+
 def test_smart_agent_logs_full_request_and_response_and_resets_history():
     events = []
 
@@ -261,87 +355,19 @@ def test_smart_agent_logs_full_request_and_response_and_resets_history():
     assert agent.history == []
 
 
-def test_historian_connection_reuses_actor_client_by_default():
-    from types import SimpleNamespace
-
-    actor_client = object()
-    agent = SimpleNamespace(
-        base_url="http://example.test/api",
-        api_key="shared-key",
-        client=actor_client,
-        extra_body={"parent_id": None},
-    )
-    args = SimpleNamespace(
-        historian_base_url=None,
-        historian_api_key=None,
-        base_url="http://example.test/api",
-        api_key="shared-key",
-        openwebui_parent_id_null=True,
-    )
-
-    client, extra_body = create_historian_connection(args, agent)
-    assert client is actor_client
-    assert extra_body == {"parent_id": None}
-
-
-def test_historian_connection_can_use_separate_env_credentials(monkeypatch):
-    from types import SimpleNamespace
-    import main
-
-    calls = []
-    fake_client = object()
-    monkeypatch.setattr(
-        main,
-        "create_openai_client",
-        lambda *, api_key, base_url: calls.append((api_key, base_url)) or fake_client,
-    )
-    agent = SimpleNamespace(
-        base_url="http://actor.test/api",
-        api_key="actor-key",
-        client=object(),
-        extra_body={"parent_id": None},
-    )
-    args = SimpleNamespace(
-        historian_base_url="http://historian.test/v1",
-        historian_api_key="historian-key",
-        base_url="http://actor.test/api",
-        api_key="actor-key",
-        openwebui_parent_id_null=True,
-    )
-
-    client, extra_body = create_historian_connection(args, agent)
-    assert client is fake_client
-    assert calls == [("historian-key", "http://historian.test/v1")]
-    assert extra_body is None
-
-
-def test_dotenv_loader_reads_explicit_file_without_overriding_shell(tmp_path, monkeypatch):
-    from config import load_project_env
-
-    env_file = tmp_path / ".env"
-    env_file.write_text(
-        "OPENAI_BASE_URL=http://from-dotenv.test/v1\n"
-        "OPENAI_API_KEY=dotenv-key\n",
-        encoding="utf-8",
-    )
-    monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
-    monkeypatch.setenv("OPENAI_API_KEY", "shell-key")
-
-    load_project_env(env_file, override=False)
-
-    import os
-    assert os.environ["OPENAI_BASE_URL"] == "http://from-dotenv.test/v1"
-    assert os.environ["OPENAI_API_KEY"] == "shell-key"
-
-
-def test_cli_help_never_displays_api_key_defaults(capsys, monkeypatch):
-    from main import build_arg_parser
-
-    monkeypatch.setenv("OPENAI_API_KEY", "super-secret-actor-key")
-    monkeypatch.setenv("HISTORIAN_API_KEY", "super-secret-historian-key")
-    help_text = build_arg_parser().format_help()
-
-    assert "super-secret-actor-key" not in help_text
-    assert "super-secret-historian-key" not in help_text
-    assert "--api-key" in help_text
-    assert "--historian-api-key" in help_text
+def test_episode_logger_writes_actor_experience_dataset(tmp_path):
+    logger = TrialLogger(tmp_path, "actor-rl-log-test")
+    sample = {
+        "record_type": "actor_experience",
+        "episode_id": "trial/episode_0001",
+        "step": 3,
+        "action": "examine door",
+        "discounted_return": 4.5,
+    }
+    with logger.episode(1) as episode:
+        path = episode.write_actor_experiences([sample])
+        episode_log = episode.chat_path
+    lines = path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 1
+    assert json.loads(lines[0]) == sample
+    assert "ACTOR_EXPERIENCE_DATASET_SAVED" in episode_log.read_text(encoding="utf-8")

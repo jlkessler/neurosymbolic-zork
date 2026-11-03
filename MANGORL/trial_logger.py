@@ -45,6 +45,7 @@ class EpisodeLogger:
         self.chat_path = self.run_directory / f"{stem}_chat.txt"
         self.review_path = self.run_directory / f"{stem}_review.txt"
         self.lessons_snapshot_path = self.run_directory / f"{stem}_lessons.txt"
+        self.experience_path = self.run_directory / f"{stem}_experience.jsonl"
         self._output_file = None
         self._chat_file = None
         self._redirects = contextlib.ExitStack()
@@ -88,6 +89,21 @@ class EpisodeLogger:
         lines.extend(f"{index}. {item}" for index, item in enumerate(negatives, 1))
         return "\n".join(lines) + "\n"
 
+    def write_actor_experiences(self, records: list[dict]):
+        """Save this episode's completed Actor training samples for auditing."""
+        with self.experience_path.open("w", encoding="utf-8") as file:
+            for record in records or []:
+                file.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+        print(
+            f"Actor experience samples saved: {len(records or [])} "
+            f"({self.experience_path})"
+        )
+        self.log_chat_event("actor_experience_dataset_saved", {
+            "path": str(self.experience_path),
+            "records": len(records or []),
+        })
+        return self.experience_path
+
     def write_historian_review(self, review: dict):
         """Save the review and lessons in episode-specific and trial files."""
         lessons = review.get("lessons", {})
@@ -96,7 +112,17 @@ class EpisodeLogger:
             f"Historian episode review — episode {self.episode_number}\n"
             + "=" * 48 + "\n\n"
         )
-        source_text = f"Review source: {review.get('review_source', 'unknown')}\n\n"
+        positive_count = len(lessons.get("positives", []))
+        negative_count = len(lessons.get("negatives", []))
+        configured_count = review.get(
+            "lessons_per_category",
+            positive_count if positive_count == negative_count else "unequal",
+        )
+        source_text = (
+            f"Review source: {review.get('review_source', 'unknown')}\n"
+            f"Lessons: {positive_count} positive + {negative_count} negative "
+            f"(configured per category: {configured_count})\n\n"
+        )
         self.review_path.write_text(header + source_text + review_text + "\n", encoding="utf-8")
 
         lessons_text = self._format_lessons(lessons)
@@ -117,6 +143,7 @@ class EpisodeLogger:
             "trial_lessons_path": str(current_lessons_path),
             "review": review_text,
             "lessons": lessons,
+            "lessons_per_category": configured_count,
             "review_source": review.get("review_source"),
         })
         return self.review_path, self.lessons_snapshot_path, current_lessons_path

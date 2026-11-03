@@ -1,32 +1,23 @@
 """Zork I: LLM Actor + Symbolic Navigator + persistent Historian."""
 from __future__ import annotations
 
+# Load project-local .env before reading configuration defaults.
+import config  # noqa: F401
+
 import argparse
 import os
 from multiprocessing import freeze_support
 
-from config import load_project_env
-
-load_project_env()  # Must run before argparse defaults read os.environ.
-
+from MANGORL.actor_experience import ActorExperienceMemory
+from MANGORL.actor_rl_controller import ActorRLController
 from MANGORL.historian import Historian
+from MANGORL.historian_rl_controller import HistorianRLController
 from MANGORL.navigation_controller import NavigationController
-from MANGORL.smart_agent import SmartAgent, create_openai_client
+from MANGORL.smart_agent import SmartAgent
 from MANGORL.trial_logger import TrialLogger
 from MANGORL.world_map import WorldMap
 
 DEFAULT_BASE_URL = "http://cs-steverw.umflint.edu:8080/api"
-
-
-class SafeDefaultsHelpFormatter(argparse.ArgumentDefaultsHelpFormatter):
-    """Show defaults for reproducibility without ever printing credentials."""
-
-    SECRET_DESTINATIONS = {"api_key", "historian_api_key"}
-
-    def _get_help_string(self, action):
-        if action.dest in self.SECRET_DESTINATIONS:
-            return action.help
-        return super()._get_help_string(action)
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -35,9 +26,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
         description=(
             "Run the neuro-symbolic Zork I agent. Each invocation creates a "
             "unique trial folder, with separate console/chat logs, a Historian "
-            "review, and six lessons for every completed episode."
+            "review, and a configurable set of lessons for every completed episode."
         ),
-        formatter_class=SafeDefaultsHelpFormatter,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
         "--agent-type", choices=("smart",), default="smart",
@@ -113,24 +104,20 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--historian-review", action=argparse.BooleanOptionalAction,
         default=True,
-        help="Have the Historian review each finished episode and update six trial lessons.",
+        help="Have the Historian review each finished episode and update the configured trial lessons.",
     )
     parser.add_argument(
         "--historian-model", default=os.getenv("HISTORIAN_MODEL"),
         help="Model used for episode reviews (defaults to --model).",
     )
     parser.add_argument(
-        "--historian-base-url", default=os.getenv("HISTORIAN_BASE_URL") or None,
+        "--historian-lessons-per-category", "--historian-lesson-count", "--historian-lessons",
+        dest="historian_lessons_per_category",
+        type=int,
+        default=int(os.getenv("ZORK_HISTORIAN_LESSONS_PER_CATEGORY", "3")),
         help=(
-            "Optional separate Historian API base URL. Defaults to --base-url "
-            "(OPENAI_BASE_URL)."
-        ),
-    )
-    parser.add_argument(
-        "--historian-api-key", default=os.getenv("HISTORIAN_API_KEY") or None,
-        help=(
-            "Optional separate Historian API key. Defaults to --api-key "
-            "(OPENAI_API_KEY)."
+            "Number of positive lessons to repeat AND negative lessons to avoid "
+            "generated after each episode (1-10 per category)."
         ),
     )
     parser.add_argument(
@@ -140,6 +127,60 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--historian-max-tokens", type=int, default=900,
         help="Maximum completion tokens for each Historian review.",
+    )
+    parser.add_argument(
+        "--actor-rl", action=argparse.BooleanOptionalAction, default=True,
+        help="Enable experience-based Actor action adaptation (disable with --no-actor-rl).",
+    )
+    parser.add_argument(
+        "--actor-experience-path",
+        default=os.getenv("ZORK_ACTOR_EXPERIENCE_PATH", "memory/actor_experiences.jsonl"),
+        help="Append-only JSONL file containing completed Actor experiences.",
+    )
+    parser.add_argument(
+        "--actor-rl-gamma", type=float, default=0.995,
+        help="Discount factor used to assign delayed episode rewards to Actor decisions.",
+    )
+    parser.add_argument(
+        "--actor-rl-beta", type=float, default=0.35,
+        help="Strength of experience advantages in candidate action reranking.",
+    )
+    parser.add_argument(
+        "--actor-rl-exploration", type=float, default=0.08,
+        help="Small bonus favoring less-tried candidate actions.",
+    )
+    parser.add_argument(
+        "--actor-rl-rank-penalty", type=float, default=0.30,
+        help="Prior penalty per position in the Actor's candidate ranking.",
+    )
+    parser.add_argument(
+        "--actor-rl-top-k", type=int, default=40,
+        help="Maximum similar Actor experiences used to estimate action values.",
+    )
+    parser.add_argument(
+        "--actor-rl-min-similarity", type=float, default=0.20,
+        help="Minimum state similarity required when retrieving Actor experiences.",
+    )
+    parser.add_argument(
+        "--actor-rl-environment-reward-weight", type=float, default=0.0,
+        help="Optional weight for Jericho reward in addition to score delta (default 0).",
+    )
+    parser.add_argument(
+        "--actor-rl-no-progress-penalty", type=float, default=0.0,
+        help="Optional reward penalty for repeated no-progress steps (default 0).",
+    )
+    parser.add_argument(
+        "--historian-critic", action=argparse.BooleanOptionalAction, default=False,
+        help="Enable the experimental learned Historian value-function critic (OFF by default).",
+    )
+    parser.add_argument(
+        "--historian-critic-path",
+        default=os.getenv("ZORK_HISTORIAN_CRITIC_PATH", "memory/historian_value.json"),
+        help="Persistent sparse value-function weights for the optional Historian critic.",
+    )
+    parser.add_argument(
+        "--historian-critic-learning-rate", type=float, default=0.025,
+        help="Monte-Carlo value-function update rate when --historian-critic is enabled.",
     )
     parser.add_argument(
         "--openwebui-parent-id-null",
@@ -164,10 +205,24 @@ def parse_args(argv=None):
         raise SystemExit("--max-tokens must be greater than zero")
     if args.historian_max_tokens <= 0:
         raise SystemExit("--historian-max-tokens must be greater than zero")
+    if not 1 <= args.historian_lessons_per_category <= 10:
+        raise SystemExit("--historian-lessons-per-category must be between 1 and 10")
     if args.temperature < 0:
         raise SystemExit("--temperature cannot be negative")
     if args.historian_temperature < 0:
         raise SystemExit("--historian-temperature cannot be negative")
+    if not 0.0 <= args.actor_rl_gamma <= 1.0:
+        raise SystemExit("--actor-rl-gamma must be between 0 and 1")
+    if args.actor_rl_beta < 0 or args.actor_rl_exploration < 0:
+        raise SystemExit("Actor RL beta and exploration coefficient cannot be negative")
+    if args.actor_rl_rank_penalty < 0:
+        raise SystemExit("--actor-rl-rank-penalty cannot be negative")
+    if args.actor_rl_top_k <= 0:
+        raise SystemExit("--actor-rl-top-k must be greater than zero")
+    if not 0.0 <= args.actor_rl_min_similarity <= 1.0:
+        raise SystemExit("--actor-rl-min-similarity must be between 0 and 1")
+    if args.historian_critic_learning_rate <= 0 or args.historian_critic_learning_rate > 1:
+        raise SystemExit("--historian-critic-learning-rate must be in (0, 1]")
     return args
 
 
@@ -235,37 +290,30 @@ def create_agent(args, event_logger=None):
     raise ValueError(f"Unsupported agent type: {args.agent_type}")
 
 
-def create_historian_connection(args, agent):
-    """Return the Historian review client and endpoint-specific request options.
-
-    By default the Historian reuses the Actor's OpenAI client. HISTORIAN_API_KEY
-    and HISTORIAN_BASE_URL in .env (or their CLI equivalents) can point reviews
-    at a separate compatible endpoint.
-    """
-    base_url = args.historian_base_url or args.base_url
-    api_key = args.historian_api_key or args.api_key
-    effective_key = api_key
-    if not effective_key and base_url.rstrip("/").endswith("/v1"):
-        effective_key = "ollama"
-
-    same_url = base_url.rstrip("/") == agent.base_url.rstrip("/")
-    same_key = effective_key == agent.api_key
-    if same_url and same_key:
-        client = agent.client
-        extra_body = agent.extra_body
-    else:
-        client = create_openai_client(api_key=api_key, base_url=base_url)
-        extra_body = (
-            {"parent_id": None}
-            if args.openwebui_parent_id_null
-            and base_url.rstrip("/").endswith("/api")
-            else None
-        )
-    return client, extra_body
+def build_actor_rl_state(
+    *, current_node, current_label, observation, current_score,
+    historian, goal, home_route_status,
+):
+    """Build a compact state snapshot shared by Actor RL and the value critic."""
+    agent_state = getattr(historian, "agent_state", {}) or {}
+    return {
+        "location_id": str(current_node),
+        "location": str(current_label),
+        "observation": str(observation or ""),
+        "score": current_score,
+        "inventory_items": list(agent_state.get("inventory_items", [])),
+        "puzzle_clues": list(agent_state.get("puzzle_clues", [])),
+        "goal_kind": str((goal or {}).get("kind", "unknown")),
+        "goal_description": str((goal or {}).get("description", "")),
+        "home_route_status": str(home_route_status or "unknown"),
+    }
 
 
-def run_episode(args, episode_number, world_map, historian, navigator, agent,
-                episode_logger, map_initialized=False):
+def run_episode(
+    args, episode_number, world_map, historian, navigator, agent,
+    episode_logger, actor_experience, actor_rl_controller,
+    historian_rl_controller, trial_id, map_initialized=False,
+):
     """Run one fresh Jericho episode while preserving trial-level memory."""
     # Import lazily so CLI help and parser tests work without Jericho installed.
     try:
@@ -276,10 +324,6 @@ def run_episode(args, episode_number, world_map, historian, navigator, agent,
         ) from exc
 
     env = FrotzEnv(args.rom_path)
-    review_client, review_extra_body = (
-        create_historian_connection(args, agent)
-        if args.historian_review else (None, None)
-    )
     info = {}
     episode_started = False
     termination_reason = "initialization_failed"
@@ -302,6 +346,9 @@ def run_episode(args, episode_number, world_map, historian, navigator, agent,
         agent.reset_history()
         agent.event_logger = episode_logger.log_chat_event
         episode_started = True
+        episode_key = f"{trial_id}/episode_{episode_number:04d}"
+        actor_experience.start_episode(episode_key)
+        historian_rl_controller.start_episode(episode_key)
         termination_reason = "step_limit"
 
         print(f"Episode: {episode_number}/{args.episodes}")
@@ -363,6 +410,18 @@ def run_episode(args, episode_number, world_map, historian, navigator, agent,
                 current_score=current_score,
             )
             avoid_actions = historian.get_avoid_actions(current_node)
+            actor_rl_state = build_actor_rl_state(
+                current_node=current_node,
+                current_label=current_label,
+                observation=observation,
+                current_score=current_score,
+                historian=historian,
+                goal=goal,
+                home_route_status=home_route_status,
+            )
+            rl_guidance = actor_rl_controller.build_guidance(
+                actor_rl_state, valid_actions
+            )
 
             action = None
             action_source = "smart_actor"
@@ -401,8 +460,23 @@ def run_episode(args, episode_number, world_map, historian, navigator, agent,
                     avoid_actions=avoid_actions,
                     preferred_actions=goal.get("preferred_actions", []),
                     navigation_context=navigator.navigation_context(),
+                    rl_guidance=rl_guidance,
                 )
-                action = decision["action"]
+                base_action = decision["action"]
+                rl_selection = actor_rl_controller.select_action(
+                    actor_rl_state,
+                    decision.get("candidate_actions", [base_action]),
+                    base_action=base_action,
+                )
+                action = rl_selection.get("action") or base_action
+                decision["action"] = action
+                decision["rl_selection"] = rl_selection
+                episode_logger.log_chat_event("actor_rl_selection", {
+                    "state": actor_rl_state,
+                    "base_action": base_action,
+                    "candidate_actions": decision.get("candidate_actions", []),
+                    "selection": rl_selection,
+                })
                 historian.record_agent_report(decision.get("report", {}))
             else:
                 decision = {
@@ -415,8 +489,13 @@ def run_episode(args, episode_number, world_map, historian, navigator, agent,
             print(f"Goal: {goal.get('description')}")
             if home_node is not None:
                 print(f"Home route status this episode: {home_route_status}")
-            # print(f"Action source: {action_source}")
+            print(f"Action source: {action_source}")
             print(f"Action: {action}")
+            if action_source == "smart_actor" and decision.get("rl_selection"):
+                print(
+                    "Actor RL selection method: "
+                    f"{decision['rl_selection'].get('method')}"
+                )
 
             observation_before = observation
             score_before = info.get("score")
@@ -467,9 +546,58 @@ def run_episode(args, episode_number, world_map, historian, navigator, agent,
                 actor_report=decision.get("report", {}),
             )
 
+            next_rl_state = {
+                **actor_rl_state,
+                "location_id": str(after_node),
+                "location": str(after_label),
+                "observation": str(observation or ""),
+                "score": score_after,
+                "inventory_items": list(
+                    (decision.get("report") or {}).get(
+                        "inventory_items", historian.agent_state.get("inventory_items", [])
+                    )
+                ),
+                "puzzle_clues": list(
+                    (decision.get("report") or {}).get(
+                        "puzzle_clues", historian.agent_state.get("puzzle_clues", [])
+                    )
+                ),
+            }
+            no_progress = (
+                str(before_node) == str(after_node)
+                and (score_delta is None or score_delta <= 0)
+                and " ".join(str(observation_before).split())
+                    == " ".join(str(observation).split())
+            )
+            actor_experience.record_step(
+                state=actor_rl_state,
+                action=action,
+                next_state=next_rl_state,
+                score_delta=score_delta,
+                environment_reward=reward,
+                action_source=action_source,
+                actor_decision=(action_source == "smart_actor"),
+                candidate_actions=decision.get("candidate_actions", []),
+                selection_info=decision.get("rl_selection", {}),
+                action_logprob=decision.get("action_logprob"),
+                no_progress=no_progress,
+            )
+            critic_reward = float(score_delta or 0.0)
+            step_terminal = bool(done) or (
+                isinstance(score_after, (int, float))
+                and score_after >= args.target_score
+            )
+            historian_rl_controller.observe_transition(
+                state=actor_rl_state,
+                action=action,
+                reward=critic_reward,
+                next_state=next_rl_state,
+                terminal=step_terminal,
+            )
+
             info = next_info
             print(f"Observation: {observation}")
-            # print(f"New location: {after_label}")
+            print(f"New location: {after_label}")
             print(f"Score: {score_after} (delta: {score_delta}) | reward: {reward}")
             print(f"Navigation status: {navigation_result['plan_status']}")
 
@@ -506,16 +634,32 @@ def run_episode(args, episode_number, world_map, historian, navigator, agent,
                 moves=final_moves,
                 termination_reason=termination_reason,
             )
+            actor_rl_summary = actor_experience.finish_episode(
+                gamma=args.actor_rl_gamma,
+                termination_reason=termination_reason,
+                final_score=final_score,
+            )
+            critic_summary = historian_rl_controller.finish_episode(
+                gamma=args.actor_rl_gamma,
+                termination_reason=termination_reason,
+            )
+            print("Actor experience update:", actor_rl_summary)
+            print("Historian critic update:", critic_summary)
+            episode_logger.write_actor_experiences(
+                actor_experience.last_episode_records
+            )
+            episode_logger.log_chat_event("actor_experience_episode_finalized", actor_rl_summary)
+            episode_logger.log_chat_event("historian_critic_episode_finalized", critic_summary)
             if args.historian_review and finished_episode is not None:
                 try:
                     review = historian.review_episode(
                         finished_episode,
-                        client=review_client,
+                        client=getattr(agent, "client", None),
                         model=args.historian_model or args.model,
                         temperature=args.historian_temperature,
                         max_tokens=args.historian_max_tokens,
                         event_logger=episode_logger.log_chat_event,
-                        extra_body=review_extra_body,
+                        extra_body=getattr(agent, "extra_body", None),
                         trial_episode_number=episode_number,
                     )
                     episode_logger.write_historian_review(review)
@@ -540,15 +684,38 @@ def main(argv=None):
     logger = TrialLogger(args.output_dir, args.trial_name)
     metadata = vars(args).copy()
     metadata["api_key"] = "<redacted>" if args.api_key else None
-    metadata["historian_api_key"] = "<redacted>" if args.historian_api_key else None
     metadata["effective_historian_model"] = args.historian_model or args.model
-    metadata["effective_historian_base_url"] = args.historian_base_url or args.base_url
     logger.write_metadata(metadata)
 
     print(f"Trial output directory: {logger.run_directory}")
     world_map = WorldMap(args.map_path)
-    historian = Historian(args.historian_path, target_score=args.target_score)
+    historian = Historian(
+        args.historian_path,
+        target_score=args.target_score,
+        lessons_per_category=args.historian_lessons_per_category,
+    )
     navigator = NavigationController(world_map)
+    actor_experience = ActorExperienceMemory(
+        args.actor_experience_path,
+        environment_reward_weight=args.actor_rl_environment_reward_weight,
+        no_progress_penalty=args.actor_rl_no_progress_penalty,
+    )
+    historian_critic = HistorianRLController(
+        args.historian_critic_path,
+        enabled=args.historian_critic,
+        gamma=args.actor_rl_gamma,
+        learning_rate=args.historian_critic_learning_rate,
+    )
+    actor_rl_controller = ActorRLController(
+        actor_experience,
+        enabled=args.actor_rl,
+        beta=args.actor_rl_beta,
+        exploration_coefficient=args.actor_rl_exploration,
+        rank_penalty=args.actor_rl_rank_penalty,
+        top_k=args.actor_rl_top_k,
+        min_similarity=args.actor_rl_min_similarity,
+        value_controller=historian_critic if args.historian_critic else None,
+    )
     agent = None
     map_initialized = False
 
@@ -565,6 +732,10 @@ def main(argv=None):
                     navigator=navigator,
                     agent=agent,
                     episode_logger=episode_logger,
+                    actor_experience=actor_experience,
+                    actor_rl_controller=actor_rl_controller,
+                    historian_rl_controller=historian_critic,
+                    trial_id=logger.run_directory.name,
                     map_initialized=map_initialized,
                 )
                 map_initialized = True
