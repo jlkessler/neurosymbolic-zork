@@ -598,8 +598,7 @@ class Historian:
                 "content": (
                     "You are the Historian for a neuro-symbolic agent playing Zork I. "
                     "Review the completed episode using only the supplied runtime evidence. "
-                    "Do not use or invent walkthrough knowledge, puzzle solutions, treasure "
-                    "lists, or point values. Be candid, specific, and fair. Distinguish "
+                    "Be candid, specific, and fair. Distinguish "
                     "confirmed outcomes from hypotheses. Return valid JSON only."
                 ),
             },
@@ -611,7 +610,7 @@ class Historian:
                     "behavior, and actionable advice for its next episode. Assess the "
                     "Actor separately from symbolic-navigation actions where the evidence "
                     "allows. Do not claim an action caused a score increase unless the "
-                    "recorded score event supports that conclusion.\n\n"
+                    "recorded score event supports that conclusion. Add a newline after each sentence for readability. \n\n"
                     f"Then update the cross-episode lessons. Return exactly {self.lessons_per_category} "
                     "concise, actionable positives to repeat and exactly "
                     f"{self.lessons_per_category} negatives to avoid. Treat previous lessons "

@@ -29,9 +29,9 @@ class SmartAgent:
         event_logger=None,
         client=None,
     ):
-        self.model = model or os.getenv("LLM_MODEL", "gemma4:31b")
+        self.model = model or os.getenv("LLM_MODEL", "google/gemini-2.5-flash")
         self.base_url = base_url or os.getenv(
-            "OPENAI_BASE_URL", "http://cs-steverw.umflint.edu:8080/api"
+            "OPENAI_BASE_URL", "https://openrouter.ai/api/v1"
         )
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.extra_body = extra_body
@@ -161,8 +161,7 @@ class SmartAgent:
 
         system_prompt = f"""You are the reasoning Actor in a neuro-symbolic agent playing Zork I.
 
-The objective is to achieve a score greater than 75 (at least {target_score}).
-You do not have a walkthrough, official treasure list, or point-value table.
+The objective is to achieve a score greater than 75 (up to a maximum of {target_score}).
 Discover how the game works from its observations and score feedback.
 
 You choose one game command at a time. A symbolic navigation controller may

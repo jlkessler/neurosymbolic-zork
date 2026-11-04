@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from historian import Historian
-from navigation_controller import NavigationController
-from world_map import WorldMap
+from MANGORL.historian import Historian
+from MANGORL.navigation_controller import NavigationController
+from MANGORL.world_map import WorldMap
 
 
 @pytest.fixture
@@ -276,7 +276,7 @@ def test_controller_can_follow_identity_based_maze_cells(world_map):
 
 def test_simple_agent_includes_historian_goal_and_navigation_in_prompt():
     from types import SimpleNamespace
-    from smart_agent import SmartAgent
+    from MANGORL.smart_agent import SmartAgent
 
     class FakeCompletions:
         def __init__(self):
@@ -507,7 +507,7 @@ def test_historian_persists_actor_clues_without_walkthrough(tmp_path):
 
 def test_smart_agent_returns_action_and_state_report():
     from types import SimpleNamespace
-    from smart_agent import SmartAgent
+    from MANGORL.smart_agent import SmartAgent
 
     class FakeCompletions:
         def __init__(self):

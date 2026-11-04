@@ -2,10 +2,10 @@ import json
 
 import pytest
 
-from historian import Historian
+from MANGORL.historian import Historian
 from main import parse_args
-from smart_agent import SmartAgent
-from trial_logger import TrialLogger
+from MANGORL.smart_agent import SmartAgent
+from MANGORL.trial_logger import TrialLogger
 
 
 def test_cli_parses_agent_model_and_runtime_options():
@@ -343,7 +343,11 @@ def test_smart_agent_logs_full_request_and_response_and_resets_history():
     )
 
     assert decision["action"] == "look"
-    assert [event for event, _ in events] == ["request", "response"]
+    assert [event for event, _ in events] == ["request","response","actor_decision_rationale"]
+    rationale_event = events[2][1]
+    assert rationale_event["rationale"] == decision["decision_rationale"]
+    assert rationale_event["rationale_source"] == "model_emitted_json_field"
+    assert rationale_event["base_action"] == "look"
     request = events[0][1]
     assert request["model"] == "unit-test-model"
     assert request["temperature"] == 0.6

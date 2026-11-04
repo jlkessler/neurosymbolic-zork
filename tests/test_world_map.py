@@ -1,6 +1,6 @@
 import pytest
 
-from world_map import WorldMap
+from MANGORL.world_map import WorldMap
 
 
 @pytest.fixture

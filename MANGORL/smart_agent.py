@@ -165,7 +165,7 @@ class SmartAgent:
 
         system_prompt = f"""You are the reasoning Actor in a neuro-symbolic agent playing Zork I.
 
-The objective is to achieve a score greater than 75 (at least {target_score}).
+The objective is to achieve a score greater than 75 (up to a maximum of {target_score}).
 You do not have a walkthrough, official treasure list, or point-value table.
 Discover how the game works from its observations and score feedback.
 

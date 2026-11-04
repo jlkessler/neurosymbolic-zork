@@ -2,11 +2,11 @@ import json
 
 import pytest
 
-from actor_experience import ActorExperienceMemory
-from actor_rl_controller import ActorRLController
-from historian_rl_controller import HistorianRLController
+from MANGORL.actor_experience import ActorExperienceMemory
+from MANGORL.actor_rl_controller import ActorRLController
+from MANGORL.historian_rl_controller import HistorianRLController
 from main import parse_args
-from smart_agent import SmartAgent
+from MANGORL.smart_agent import SmartAgent
 
 
 def _state(location_id="cellar", observation="The cellar is dim."):
