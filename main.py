@@ -35,15 +35,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Actor implementation to use (only 'smart' is currently implemented).",
     )
     parser.add_argument(
-        "--model", default=os.getenv("LLM_MODEL", "gemma4:31b"),
+        "--model", default=os.getenv("ACTOR_MODEL", "gemma4:31b"),
         help="LLM model identifier passed to the OpenAI-compatible endpoint.",
     )
     parser.add_argument(
-        "--base-url", default=os.getenv("OPENAI_BASE_URL", DEFAULT_BASE_URL),
+        "--base-url", default=os.getenv("ACTOR_BASE_URL", DEFAULT_BASE_URL),
         help="OpenAI-compatible API base URL.",
     )
     parser.add_argument(
-        "--api-key", default=os.getenv("OPENAI_API_KEY"),
+        "--api-key", default=os.getenv("ACTOR_API_KEY"),
         help=(
             "API key (prefer OPENAI_API_KEY; command-line values may be visible "
             "in shell history and process listings)."
@@ -302,6 +302,9 @@ def build_actor_rl_state(
         "observation": str(observation or ""),
         "score": current_score,
         "inventory_items": list(agent_state.get("inventory_items", [])),
+        "treasure_candidates": list(agent_state.get("treasure_candidates", [])),
+        "ordinary_items": list(agent_state.get("ordinary_items", [])),
+        "useful_items": list(agent_state.get("useful_items", [])),
         "puzzle_clues": list(agent_state.get("puzzle_clues", [])),
         "goal_kind": str((goal or {}).get("kind", "unknown")),
         "goal_description": str((goal or {}).get("description", "")),
@@ -431,14 +434,19 @@ def run_episode(
                 if action:
                     action_source = "historian_observed_score"
 
-            elif goal.get("kind") in {"navigate_to_home", "navigate_score_goal"}:
+            elif goal.get("kind") in {
+                "navigate_to_home", "establish_return_route", "navigate_score_goal"
+            }:
                 target_node = goal.get("target_node")
                 if target_node is not None:
-                    if goal.get("kind") == "navigate_to_home":
+                    if goal.get("kind") in {"navigate_to_home", "establish_return_route"}:
                         plan = navigator.plan_to_home(target_node)
                     else:
+                        # Previously productive rooms are reached through
+                        # historical candidate paths. The navigator probes
+                        # each transition and cancels on the first failure.
                         plan = navigator.ensure_plan(
-                            target_node, require_confirmed=True
+                            target_node, require_confirmed=False
                         )
                     if plan is not None:
                         action = navigator.next_action(valid_actions)
@@ -477,16 +485,40 @@ def run_episode(
                     "candidate_actions": decision.get("candidate_actions", []),
                     "selection": rl_selection,
                 })
+                episode_logger.log_chat_event("actor_final_selection", {
+                    "location": current_label,
+                    "goal": goal,
+                    "decision_rationale": decision.get("decision_rationale", ""),
+                    "base_model_action": base_action,
+                    "final_action_after_rl": action,
+                    "candidate_actions": decision.get("candidate_actions", []),
+                    "selection": rl_selection,
+                })
                 historian.record_agent_report(decision.get("report", {}))
             else:
                 decision = {
                     "action": action,
                     "report": {},
+                    "decision_rationale": "",
                     "raw_response": "symbolic navigation or Historian-observed score action",
                 }
+                episode_logger.log_chat_event("non_llm_action_selection", {
+                    "location": current_label,
+                    "goal": goal,
+                    "action_source": action_source,
+                    "selected_action": action,
+                    "navigation_context": navigator.navigation_context(),
+                    "note": "No LLM rationale exists because this command was selected by the symbolic navigator or deterministic Historian score policy.",
+                })
 
             print(f"Location: {current_label}")
             print(f"Goal: {goal.get('description')}")
+            for sequence_step in goal.get("sequence", [])[:5]:
+                print(
+                    f"  {sequence_step.get('order', '?')}. "
+                    f"{sequence_step.get('goal', 'Next objective')}: "
+                    f"{sequence_step.get('details', '')}"
+                )
             if home_node is not None:
                 print(f"Home route status this episode: {home_route_status}")
             print(f"Action source: {action_source}")
@@ -544,6 +576,7 @@ def run_episode(
                 goal=goal,
                 action_source=action_source,
                 actor_report=decision.get("report", {}),
+                home_node=home_node,
             )
 
             next_rl_state = {
@@ -553,9 +586,16 @@ def run_episode(
                 "observation": str(observation or ""),
                 "score": score_after,
                 "inventory_items": list(
-                    (decision.get("report") or {}).get(
-                        "inventory_items", historian.agent_state.get("inventory_items", [])
-                    )
+                    historian.agent_state.get("inventory_items", [])
+                ),
+                "treasure_candidates": list(
+                    historian.agent_state.get("treasure_candidates", [])
+                ),
+                "ordinary_items": list(
+                    historian.agent_state.get("ordinary_items", [])
+                ),
+                "useful_items": list(
+                    historian.agent_state.get("useful_items", [])
                 ),
                 "puzzle_clues": list(
                     (decision.get("report") or {}).get(
@@ -667,7 +707,7 @@ def run_episode(
                     # A review/logging problem should not erase a completed
                     # game episode or prevent the next episode from running.
                     print(
-                        "Historian review failed unexpectedly: "
+                        "Historian LLM review failed (no fallback used): "
                         f"{type(review_exc).__name__}: {review_exc}"
                     )
                 historian.save()

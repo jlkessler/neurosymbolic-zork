@@ -22,6 +22,7 @@ class NavigationController:
         self.blocked_edges: set[tuple[Any, Any, Any]] = set()
         self.active_plan: dict | None = None
         self.last_status = "idle"
+        self.last_plan_summary: dict | None = None
 
     @staticmethod
     def _normalize_action(action: str) -> str:
@@ -42,6 +43,7 @@ class NavigationController:
         self.blocked_edges.clear()
         self.active_plan = None
         self.last_status = "idle"
+        self.last_plan_summary = None
 
     def _resolve_node(self, location, location_id=None):
         if location in self.world_map.graph:
@@ -266,8 +268,38 @@ class NavigationController:
         return matches
 
     def cancel_plan(self, reason="cancelled"):
+        if self.active_plan is not None:
+            plan = self.active_plan
+            self.last_plan_summary = {
+                "destination": plan.get("destination_label", plan.get("destination")),
+                "start": plan.get("start_label", plan.get("start")),
+                "remaining_actions": self.remaining_actions(),
+                "transition_index": plan.get("transition_index", 0),
+                "transition_count": len(plan.get("transitions", [])),
+                "route_type": (
+                    "historical candidate"
+                    if not plan.get("require_confirmed", True)
+                    else "episode-confirmed route"
+                ),
+                "result": str(reason),
+            }
+        elif reason and reason != "actor_or_puzzle_decision":
+            self.last_plan_summary = {
+                "destination": None,
+                "start": self.world_map.display_location(self.world_map.current_location)
+                if self.world_map.current_location is not None else None,
+                "remaining_actions": [],
+                "transition_index": 0,
+                "transition_count": 0,
+                "route_type": "none",
+                "result": str(reason),
+            }
         self.active_plan = None
-        self.last_status = reason
+        # The main loop routinely hands control to the Actor even when no
+        # plan was active. Do not overwrite a more informative status such as
+        # home_route_blocked or planned_action_unavailable in that case.
+        if reason != "actor_or_puzzle_decision" or self.last_status in {"idle", "active", "complete"}:
+            self.last_status = reason
 
     def next_action(self, valid_actions=None):
         """Return the next route command, mapped to an available action string.
@@ -449,10 +481,57 @@ class NavigationController:
         return actions
 
     def navigation_context(self):
-        """Compact, prompt-friendly description of the active route."""
-        if not self.active_plan or self.active_plan.get("status") != "active":
-            return "No active symbolic navigation plan."
-        return (
-            f"Active destination: {self.active_plan['destination_label']}\n"
-            f"Remaining directions: {' -> '.join(self.remaining_actions())}"
+        """Describe active or recently abandoned routing evidence for the Actor.
+
+        The main loop can hand control back to the Actor after a route is
+        unavailable or blocked. Keeping the last plan summary lets the Actor
+        see what the navigator tried instead of losing that context when the
+        active plan is cancelled.
+        """
+        if self.active_plan and self.active_plan.get("status") == "active":
+            plan = self.active_plan
+            route_type = (
+                "historical candidate; not yet verified in this episode"
+                if not plan.get("require_confirmed", True)
+                else "confirmed during this episode"
+            )
+            remaining = self.remaining_actions()
+            return (
+                f"ACTIVE SYMBOLIC ROUTE\n"
+                f"Destination: {plan['destination_label']}\n"
+                f"Route type: {route_type}\n"
+                f"Progress: transition {plan.get('transition_index', 0) + 1} "
+                f"of {len(plan.get('transitions', []))}\n"
+                f"Remaining commands: {' -> '.join(remaining) or 'none'}\n"
+                "The navigator executes only the next command and validates its result."
+            )
+
+        summary = self.last_plan_summary or {}
+        blocked_descriptions = []
+        for source, destination, key in list(self.blocked_edges)[-5:]:
+            edge_data = self.world_map.graph.get_edge_data(source, destination, key) or {}
+            edge_actions = edge_data.get("actions", [])
+            blocked_descriptions.append(
+                f"{self.world_map.display_location(source)} --"
+                f"[{', '.join(edge_actions)}]--> "
+                f"{self.world_map.display_location(destination)}"
+            )
+
+        lines = [
+            "NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.",
+            f"Last navigation status: {summary.get('result', self.last_status)}.",
+        ]
+        if summary.get("destination"):
+            lines.extend([
+                f"Last route destination: {summary['destination']}.",
+                f"Last route type: {summary.get('route_type', 'unknown')}.",
+                f"Unexecuted route commands at handoff: "
+                f"{' -> '.join(summary.get('remaining_actions', [])) or 'none'}.",
+            ])
+        if blocked_descriptions:
+            lines.append("Edges blocked during this episode: " + "; ".join(blocked_descriptions))
+        lines.append(
+            "Use this information as evidence, not as a guarantee that a historical "
+            "passage is currently open. Investigate blocked prerequisites or an alternate route."
         )
+        return "\n".join(lines)

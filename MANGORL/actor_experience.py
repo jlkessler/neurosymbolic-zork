@@ -129,6 +129,9 @@ class ActorExperienceMemory:
             "location": str(state.get("location", "") or "")[:160],
             "observation": " ".join(str(state.get("observation", "") or "").split())[:700],
             "inventory_items": _clean_strings(state.get("inventory_items", []), 50),
+            "treasure_candidates": _clean_strings(state.get("treasure_candidates", []), 30),
+            "ordinary_items": _clean_strings(state.get("ordinary_items", []), 30),
+            "useful_items": _clean_strings(state.get("useful_items", []), 30),
             "puzzle_clues": _clean_strings(state.get("puzzle_clues", []), 20),
             "goal_kind": str(state.get("goal_kind", "unknown") or "unknown"),
             "goal_description": " ".join(

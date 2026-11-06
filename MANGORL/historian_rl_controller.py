@@ -124,6 +124,9 @@ class HistorianRLController:
 
         for key, prefix in (
             ("inventory_items", "inventory"),
+            ("treasure_candidates", "treasure"),
+            ("ordinary_items", "ordinary"),
+            ("useful_items", "useful"),
             ("puzzle_clues", "clue"),
             ("observation", "obs"),
             ("goal_description", "goalword"),

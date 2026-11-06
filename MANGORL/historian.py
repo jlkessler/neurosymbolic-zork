@@ -44,6 +44,10 @@ class Historian:
         return {
             "inventory_items": [],
             "carried_treasures": [],
+            "treasure_candidates": [],
+            "ordinary_items": [],
+            "useful_items": [],
+            "uncertain_items": [],
             "puzzle_clues": [],
             "state_note": "",
         }
@@ -55,6 +59,8 @@ class Historian:
             "episodes": [],
             "score_profiles": {},
             "score_events": [],
+            "item_value_evidence": {},
+            "productive_locations": {},
             "blocked_actions": {},
             "repeat_failures": {},
             "puzzle_clues": [],
@@ -139,6 +145,10 @@ class Historian:
             "deviations": [],
             "goal_history": [],
             "action_log": [],
+            "underground_reached": False,
+            "first_underground_location": None,
+            "home_return_verified": False,
+            "home_return_step": None,
         }
         self._recent_attempts = []
         self._completed_score_tasks = set()
@@ -147,16 +157,148 @@ class Historian:
         # and puzzle clues remain in persistent memory.
         self.agent_state = self._empty_agent_state()
 
+    @staticmethod
+    def _normalize_item_name(item):
+        value = " ".join(str(item or "").casefold().split())
+        value = re.sub(r"^(?:the|a|an)\s+", "", value)
+        return re.sub(r"[^a-z0-9 ]+", "", value).strip()
+
+    @classmethod
+    def _items_match(cls, left, right):
+        left_key = cls._normalize_item_name(left)
+        right_key = cls._normalize_item_name(right)
+        if not left_key or not right_key:
+            return False
+        if left_key == right_key:
+            return True
+        left_tokens, right_tokens = set(left_key.split()), set(right_key.split())
+        shorter, longer = (left_tokens, right_tokens) if len(left_tokens) <= len(right_tokens) else (right_tokens, left_tokens)
+        return len(shorter) >= 1 and shorter.issubset(longer)
+
+    @classmethod
+    def _is_obvious_non_treasure(cls, item):
+        """Conservatively exclude common information/tool/utility objects.
+
+        This is not a treasure whitelist. Positive in-game score evidence always
+        overrides this heuristic, and the Actor may still retain these items as
+        useful tools or puzzle objects.
+        """
+        normalized = cls._normalize_item_name(item)
+        ordinary_exact = {
+            "leaflet", "bottle of water", "water", "brass lantern", "lantern",
+            "sword", "rope", "nasty looking knife", "broken lantern",
+        }
+        return normalized in ordinary_exact
+
+    @classmethod
+    def _item_from_rewarded_action(cls, action):
+        """Extract an item name when a score-positive command names one."""
+        text = " ".join(str(action or "").strip().split())
+        patterns = (
+            r"^(?:take|pick up|get|grab|collect|remove|lift)\s+(?:the\s+)?(.+?)$",
+            r"^(?:put|place|insert|drop)\s+(?:the\s+)?(.+?)\s+(?:in|into)\s+(?:the\s+)?(?:trophy case|case)$",
+        )
+        for pattern in patterns:
+            match = re.match(pattern, text, flags=re.I)
+            if match:
+                item = match.group(1).strip(" .,!?")
+                if item.casefold() not in {"all", "everything", "it", "them"}:
+                    return item
+        return None
+
+    def _record_item_value_evidence(self, item, *, action, score_delta, location):
+        normalized = self._normalize_item_name(item)
+        if not normalized:
+            return
+        evidence = self.memory.setdefault("item_value_evidence", {}).setdefault(
+            normalized,
+            {
+                "item": item,
+                "score_positive_events": 0,
+                "total_score_gain": 0.0,
+                "locations": [],
+                "actions": [],
+                "confirmed_treasure": False,
+            },
+        )
+        evidence["score_positive_events"] = int(evidence.get("score_positive_events", 0)) + 1
+        evidence["total_score_gain"] = float(evidence.get("total_score_gain", 0.0)) + float(score_delta)
+        evidence["confirmed_treasure"] = True
+        if location and location not in evidence.setdefault("locations", []):
+            evidence["locations"].append(str(location)[:120])
+            evidence["locations"] = evidence["locations"][-10:]
+        if action and action not in evidence.setdefault("actions", []):
+            evidence["actions"].append(str(action)[:120])
+            evidence["actions"] = evidence["actions"][-10:]
+
     def record_agent_report(self, report):
-        """Store Actor's compact state report; no external guide is consulted."""
+        """Store Actor inventory classifications and clues.
+
+        The Actor supplies tentative semantic classifications. Actual positive
+        Jericho score events are stronger evidence and can confirm an item's
+        score relevance across episodes.
+        """
         if not isinstance(report, dict):
             return
-        self.agent_state["inventory_items"] = self._clean_strings(
-            report.get("inventory_items", []), limit=50
+        inventory = self._clean_strings(report.get("inventory_items", []), limit=50)
+        reported_treasures = self._clean_strings(
+            report.get("treasure_candidates") or report.get("carried_treasures", []),
+            limit=30,
         )
-        self.agent_state["carried_treasures"] = self._clean_strings(
-            report.get("carried_treasures", []), limit=30
-        )
+        ordinary = self._clean_strings(report.get("ordinary_items", []), limit=40)
+        useful = self._clean_strings(report.get("useful_items", []), limit=40)
+        uncertain = self._clean_strings(report.get("uncertain_items", []), limit=40)
+        for item in inventory:
+            if self._is_obvious_non_treasure(item) and not any(
+                self._items_match(item, existing) for existing in ordinary
+            ):
+                ordinary.append(item)
+
+        ordinary_keys = {self._normalize_item_name(item) for item in ordinary}
+        evidence = self.memory.setdefault("item_value_evidence", {})
+        confirmed_carried = []
+        if inventory:
+            for inventory_item in inventory:
+                if any(
+                    value.get("confirmed_treasure") and self._items_match(key, inventory_item)
+                    for key, value in evidence.items()
+                ):
+                    confirmed_carried.append(inventory_item)
+
+        ordinary = [
+            item for item in ordinary
+            if not any(
+                value.get("confirmed_treasure") and self._items_match(key, item)
+                for key, value in evidence.items()
+            )
+        ]
+        ordinary_keys = {self._normalize_item_name(item) for item in ordinary}
+        treasure_candidates = []
+        for item in reported_treasures + confirmed_carried:
+            key = self._normalize_item_name(item)
+            has_reward_evidence = any(
+                value.get("confirmed_treasure") and self._items_match(evidence_key, item)
+                for evidence_key, value in evidence.items()
+            )
+            if not has_reward_evidence and (
+                key in ordinary_keys or self._is_obvious_non_treasure(item)
+            ):
+                if item not in ordinary:
+                    ordinary.append(item)
+                continue
+            if inventory and not any(self._items_match(item, present) for present in inventory):
+                continue
+            if item.casefold() not in {existing.casefold() for existing in treasure_candidates}:
+                treasure_candidates.append(item)
+
+        # Keep backward compatibility: carried_treasures now means the subset
+        # of current inventory worth considering for trophy-case return.
+        self.agent_state["inventory_items"] = inventory
+        self.agent_state["treasure_candidates"] = treasure_candidates
+        self.agent_state["carried_treasures"] = list(treasure_candidates)
+        self.agent_state["ordinary_items"] = ordinary
+        self.agent_state["useful_items"] = useful
+        self.agent_state["uncertain_items"] = uncertain
         self.agent_state["puzzle_clues"] = self._clean_strings(
             report.get("puzzle_clues", []), limit=12
         )
@@ -179,12 +321,127 @@ class Historian:
 
         self.memory["agent_reports"].append({
             "location": str(report.get("location", ""))[:120],
-            "inventory_items": self.agent_state["inventory_items"],
+            "inventory_items": inventory,
             "carried_treasures": self.agent_state["carried_treasures"],
+            "ordinary_items": ordinary,
+            "useful_items": useful,
+            "uncertain_items": uncertain,
             "state_note": self.agent_state["state_note"],
             "episode": len(self.memory["episodes"]) + 1,
         })
         self.memory["agent_reports"] = self.memory["agent_reports"][-50:]
+
+    def _update_inventory_from_action_result(self, action, observation, score_delta):
+        """Reconcile one explicit take/deposit action after Jericho responds.
+
+        Actor reports are produced before the selected command executes. This
+        small deterministic update avoids keeping the inventory one step stale
+        when the Actor takes or deposits an item.
+        """
+        text = " ".join(str(action or "").split())
+        observation_text = " ".join(str(observation or "").casefold().split())
+        take_match = re.match(
+            r"^(?:take|pick up|get|grab|collect|lift)\s+(?:the\s+)?(.+?)$",
+            text,
+            flags=re.I,
+        )
+        deposit_match = re.match(
+            r"^(?:put|place|insert)\s+(?:the\s+)?(.+?)\s+(?:in|into)\s+(?:the\s+)?(?:trophy case|case)$",
+            text,
+            flags=re.I,
+        )
+        if take_match:
+            item = take_match.group(1).strip(" .,!? ")
+            if item.casefold() in {"all", "everything", "it", "them"}:
+                return
+            success = bool(
+                (score_delta is not None and score_delta > 0)
+                or re.search(
+                    r"\b(taken|you take|you pick up|you now have|you are now carrying)\b",
+                    observation_text,
+                )
+            )
+            if not success:
+                return
+            inventory = self.agent_state.setdefault("inventory_items", [])
+            if not any(self._items_match(item, existing) for existing in inventory):
+                inventory.append(item)
+            evidence = self.memory.setdefault("item_value_evidence", {})
+            has_reward_evidence = any(
+                value.get("confirmed_treasure") and self._items_match(key, item)
+                for key, value in evidence.items()
+            )
+            if has_reward_evidence or (score_delta is not None and score_delta > 0):
+                treasure_items = self.agent_state.setdefault("treasure_candidates", [])
+                if not any(self._items_match(item, existing) for existing in treasure_items):
+                    treasure_items.append(item)
+                self.agent_state["carried_treasures"] = list(treasure_items)
+                self.agent_state["ordinary_items"] = [
+                    old for old in self.agent_state.get("ordinary_items", [])
+                    if not self._items_match(old, item)
+                ]
+                self.agent_state["uncertain_items"] = [
+                    old for old in self.agent_state.get("uncertain_items", [])
+                    if not self._items_match(old, item)
+                ]
+            elif self._is_obvious_non_treasure(item):
+                ordinary = self.agent_state.setdefault("ordinary_items", [])
+                if not any(self._items_match(item, existing) for existing in ordinary):
+                    ordinary.append(item)
+            else:
+                uncertain = self.agent_state.setdefault("uncertain_items", [])
+                if not any(self._items_match(item, existing) for existing in uncertain):
+                    uncertain.append(item)
+            return
+
+        if deposit_match:
+            item = deposit_match.group(1).strip(" .,!? ")
+            if item.casefold() in {"all", "everything", "it", "them"}:
+                return
+            # A trophy-case command with an explicit item is treated as
+            # successful only when the response indicates acceptance, or a
+            # score increase confirms the deposit.
+            success = bool(
+                (score_delta is not None and score_delta > 0)
+                or re.search(
+                    r"\b(you put|you place|you deposit|placed in|is now in the trophy case|case now contains|you secure)\b",
+                    observation_text,
+                )
+            )
+            if not success:
+                return
+            for key in ("inventory_items", "treasure_candidates", "carried_treasures", "ordinary_items", "useful_items", "uncertain_items"):
+                self.agent_state[key] = [
+                    old for old in self.agent_state.get(key, [])
+                    if not self._items_match(item, old)
+                ]
+
+    @staticmethod
+    def _is_underground_location(location, observation=""):
+        """Identify known subterranean room labels without treating surface clues as entry.
+
+        The room label is authoritative. Observation text is only used for
+        explicit statements that the player is already underground; merely
+        seeing a grating or trap door on the surface does not trigger the goal.
+        """
+        label = " ".join(str(location or "").casefold().split())
+        label_markers = (
+            "cellar", "underground", "maze", "troll room", "cyclops",
+            "dungeon", "cave", "temple", "dam base", "reservoir",
+            "mine", "shaft", "torch room", "gas room", "loud room",
+            "round room", "deep canyon", "volcano", "treasure room",
+            "east-west passage", "north-south passage",
+        )
+        if any(marker in label for marker in label_markers):
+            return True
+
+        description = " ".join(str(observation or "").casefold().split())
+        explicit_entry_phrases = (
+            "you are underground", "you are in the cellar",
+            "you are in a maze", "you have entered the underground",
+            "you are deep underground", "you are in the cave",
+        )
+        return any(phrase in description for phrase in explicit_entry_phrases)
 
     def observe_step(
         self,
@@ -203,6 +460,7 @@ class Historian:
         goal=None,
         action_source=None,
         actor_report=None,
+        home_node=None,
     ):
         if self.episode is None:
             raise RuntimeError("Call start_episode() before observe_step().")
@@ -219,6 +477,20 @@ class Historian:
         before_text = " ".join(str(observation_before or "").split())[:300]
         after_text = " ".join(str(observation or "").split())[:300]
         state_changed = bool(before_text and after_text and before_text != after_text)
+
+        if self._is_underground_location(after_location, after_text):
+            if not self.episode.get("underground_reached"):
+                self.episode["first_underground_location"] = str(after_location)
+                self.episode["underground_entry_step"] = self.episode.get("steps", 0) + 1
+            self.episode["underground_reached"] = True
+        if (
+            self.episode.get("underground_reached")
+            and home_node is not None
+            and after_key == str(home_node)
+        ):
+            self.episode["home_return_verified"] = True
+            if self.episode.get("home_return_step") is None:
+                self.episode["home_return_step"] = self.episode.get("steps", 0) + 1
 
         profile_key = json.dumps([before_key, normalized], separators=(",", ":"))
         previous_attempt = self.memory["repeat_failures"].get(profile_key, {})
@@ -295,9 +567,43 @@ class Historian:
                 "observation": str(observation or "")[:500],
                 "episode": len(self.memory["episodes"]) + 1,
             }
+            rewarded_item = self._item_from_rewarded_action(normalized)
+            if rewarded_item:
+                event["item"] = rewarded_item
+                self._record_item_value_evidence(
+                    rewarded_item,
+                    action=normalized,
+                    score_delta=score_delta,
+                    location=before_location,
+                )
             self.episode["score_events"].append(event)
             self.memory["score_events"].append(event)
             self.memory["score_events"] = self.memory["score_events"][-250:]
+
+            productive = self.memory.setdefault("productive_locations", {}).setdefault(
+                before_key,
+                {
+                    "node": before_key,
+                    "location": before_location,
+                    "score_events": 0,
+                    "total_score_gain": 0.0,
+                    "best_score_gain": 0.0,
+                    "actions": {},
+                },
+            )
+            productive["score_events"] = int(productive.get("score_events", 0)) + 1
+            productive["total_score_gain"] = float(productive.get("total_score_gain", 0.0)) + float(score_delta)
+            productive["best_score_gain"] = max(
+                float(productive.get("best_score_gain", 0.0)), float(score_delta)
+            )
+            action_profile = productive.setdefault("actions", {}).setdefault(
+                normalized, {"count": 0, "total_gain": 0.0, "best_gain": 0.0}
+            )
+            action_profile["count"] = int(action_profile.get("count", 0)) + 1
+            action_profile["total_gain"] = float(action_profile.get("total_gain", 0.0)) + float(score_delta)
+            action_profile["best_gain"] = max(
+                float(action_profile.get("best_gain", 0.0)), float(score_delta)
+            )
 
             if existing is None:
                 self.memory["score_profiles"][profile_key] = {
@@ -316,6 +622,8 @@ class Historian:
             self._completed_score_tasks.add(profile_key)
             self._attempted_score_tasks.add(profile_key)
 
+        self._update_inventory_from_action_result(normalized, observation, score_delta)
+
         if moved and after_key not in self.episode["visited_nodes"]:
             self.episode["visited_nodes"].append(after_key)
             self.episode["new_locations"].append(after_location)
@@ -327,6 +635,21 @@ class Historian:
                 "after_location": after_location,
                 "navigation_status": navigation_result.get("plan_status"),
             })
+
+        if goal:
+            goal_record = {
+                "step": self.episode["steps"] + 1,
+                "kind": str(goal.get("kind", "unknown")),
+                "description": str(goal.get("description", ""))[:600],
+                "sequence": goal.get("sequence", []),
+                "source": goal.get("source", "unknown"),
+            }
+            history = self.episode.setdefault("goal_history", [])
+            if not history or (
+                history[-1].get("kind") != goal_record["kind"]
+                or history[-1].get("description") != goal_record["description"]
+            ):
+                history.append(goal_record)
 
         record = {
             "before_node": before_key,
@@ -344,7 +667,8 @@ class Historian:
             if navigation_result else None,
             "action_source": str(action_source or "unknown"),
             "goal_kind": str((goal or {}).get("kind", "unknown")),
-            "goal_description": str((goal or {}).get("description", ""))[:300],
+            "goal_description": str((goal or {}).get("description", ""))[:600],
+            "goal_sequence": (goal or {}).get("sequence", []),
             "actor_state_note": str((actor_report or {}).get("state_note", ""))[:300],
         }
         self.episode["steps"] += 1
@@ -395,133 +719,6 @@ class Historian:
         return {}
 
     @staticmethod
-    def _fit_lesson_count(values, fallback, count):
-        """Return exactly ``count`` distinct, non-empty lessons.
-
-        The deterministic fallback pool is deliberately longer than the old
-        three-item list so API failures still produce the configured number of
-        useful prompt lessons.
-        """
-        count = int(count)
-        cleaned = Historian._clean_strings(values, limit=max(count, 20))
-        result = cleaned[:count]
-        seen = {entry.casefold() for entry in result}
-        for item in fallback:
-            if len(result) >= count:
-                break
-            normalized = " ".join(str(item).split()).strip()
-            if normalized and normalized.casefold() not in seen:
-                result.append(normalized[:180])
-                seen.add(normalized.casefold())
-        return result[:count]
-
-    @staticmethod
-    def _exactly_three(values, fallback):
-        """Backward-compatible helper retained for existing callers/tests."""
-        return Historian._fit_lesson_count(values, fallback, 3)
-
-    def _fallback_episode_review(self, episode):
-        """Produce evidence-based coaching if the review model is unavailable."""
-        score_delta = episode.get("score_delta")
-        start_score = episode.get("start_score")
-        end_score = episode.get("end_score")
-        steps = episode.get("action_log", episode.get("recent_steps", []))
-        score_events = episode.get("score_events", [])
-        repeated = episode.get("repeated_actions", [])
-        new_locations = episode.get("new_locations", [])
-        reason = episode.get("termination_reason", "unknown")
-
-        score_text = (
-            f"The score changed from {start_score:g} to {end_score:g} "
-            f"({score_delta:+g} points)"
-            if isinstance(start_score, (int, float))
-            and isinstance(end_score, (int, float))
-            and isinstance(score_delta, (int, float))
-            else "A complete score comparison was unavailable"
-        )
-        score_actions = [
-            f"'{event.get('action')}' at {event.get('location')} (+{event.get('score_delta')} points)"
-            for event in score_events[:3]
-        ]
-        first = (
-            f"Episode review: {score_text} across {episode.get('steps', len(steps))} "
-            f"recorded commands, ending because of '{reason}'. "
-        )
-        if score_actions:
-            first += "Observed score-positive behavior included " + "; ".join(score_actions) + "."
-        else:
-            first += "No positive score event was recorded in the episode data."
-
-        second = (
-            f"The run visited {len(episode.get('visited_nodes', []))} distinct mapped "
-            f"locations and recorded {len(new_locations)} newly encountered locations, "
-            f"with {len(repeated)} repeated-action warning(s). "
-        )
-        if repeated:
-            examples = [
-                f"'{item.get('action')}' at {item.get('location')}"
-                for item in repeated[:3]
-            ]
-            second += "The clearest behavior to reconsider was " + ", ".join(examples) + "."
-        else:
-            second += "The stored episode summary did not flag repeated no-progress actions."
-
-        positives = []
-        if score_actions:
-            positives.append("Prioritize interactions that produced an observed score increase; revisit them only when the context supports it.")
-        if new_locations:
-            positives.append("Continue exploring newly discovered locations and recording their transitions in the persistent map.")
-        if episode.get("score_events"):
-            positives.append("Use Jericho score deltas as feedback rather than relying only on whether an action sounds promising.")
-        if episode.get("deviations"):
-            positives.append("Let the symbolic navigator validate each movement transition before continuing along a mapped route.")
-        positive_fallback = [
-            "Use score changes and environment responses as concrete feedback for choosing subsequent actions.",
-            "Inspect unfamiliar rooms and objects before committing to a long sequence of movement commands.",
-            "Record successful transitions and useful environmental clues so later decisions can reuse them.",
-            "Verify that a proposed route works one transition at a time before relying on it.",
-            "Compare the current observation with earlier responses before repeating an interaction.",
-            "Reassess the active goal when new score events or puzzle clues change the situation.",
-            "Preserve potentially useful inventory items until their purpose is better understood.",
-            "Use the available action list to keep commands grounded in actions the game accepts.",
-            "Prefer focused exploration of a room's objects and exits over unstructured movement.",
-            "Carry forward only puzzle conclusions that are supported by explicit environment feedback.",
-        ]
-
-        negatives = []
-        if repeated:
-            negatives.append("Do not repeat commands that produce the same no-progress response unless new evidence changes the situation.")
-        if episode.get("deviations"):
-            negatives.append("Do not assume a historical map edge is open; verify each transition and abandon a route after a failed step.")
-        if reason == "step_limit":
-            negatives.append("Avoid spending too many commands on an unproductive line of investigation; change approach when observations stop changing.")
-        negative_fallback = [
-            "Avoid repeating an unsuccessful command without a new clue, item, or change in circumstances.",
-            "Do not treat remembered routes, inventory guesses, or puzzle hypotheses as confirmed facts.",
-            "Avoid exploring without a concrete short-term objective when a score opportunity or unresolved obstacle is already evident.",
-            "Do not continue a route after the environment has shown that its next transition is blocked.",
-            "Do not assume that a movement command returns to the room from which the player came.",
-            "Avoid abandoning a potentially useful object without first examining its description or behavior.",
-            "Do not confuse an Actor-reported inventory guess with an environment-verified inventory state.",
-            "Avoid pursuing the same puzzle hypothesis after repeated contradictory feedback.",
-            "Do not spend many consecutive steps on an action that produces no new information.",
-            "Avoid treating another episode's successful puzzle state as proof that the current episode has the same state.",
-        ]
-
-        positives = self._fit_lesson_count(
-            positives, positive_fallback, self.lessons_per_category
-        )
-        negatives = self._fit_lesson_count(
-            negatives, negative_fallback, self.lessons_per_category
-        )
-        return {
-            "report": first + "\n\n" + second,
-            "positives": positives,
-            "negatives": negatives,
-            "review_source": "deterministic_fallback",
-        }
-
-    @staticmethod
     def _review_payload(episode):
         """Build a compact, bounded review context from the recorded trajectory."""
         action_log = episode.get("action_log", episode.get("recent_steps", []))
@@ -535,7 +732,7 @@ class Historian:
                 for key in (
                     "before_location", "action", "after_location", "moved",
                     "score_delta", "navigation_status", "action_source",
-                    "goal_kind", "goal_description", "actor_state_note",
+                    "goal_kind", "goal_description", "goal_sequence", "actor_state_note",
                 )
                 if step.get(key) not in (None, "")
             }
@@ -559,6 +756,13 @@ class Historian:
             "score_events": episode.get("score_events", [])[-30:],
             "repeated_actions": episode.get("repeated_actions", [])[-30:],
             "navigation_deviations": episode.get("deviations", [])[-30:],
+            "strategic_goal_history": episode.get("goal_history", [])[-30:],
+            "underground_return_milestones": {
+                "underground_reached": episode.get("underground_reached", False),
+                "first_underground_location": episode.get("first_underground_location"),
+                "home_return_verified": episode.get("home_return_verified", False),
+                "home_return_step": episode.get("home_return_step"),
+            },
             "trajectory_is_truncated": len(action_log) > len(selected),
             "trajectory": compact_steps,
         }
@@ -575,12 +779,13 @@ class Historian:
         extra_body=None,
         trial_episode_number=None,
     ):
-        """Review a completed episode and refresh this trial's configurable coaching lessons.
+        """Ask the configured LLM to review an episode and update trial lessons.
 
-        The model sees only runtime episode evidence and prior lessons. It does
-        not receive the walkthrough, guide, or a treasure point-value table.
-        A deterministic fallback keeps the next episode usable if the review
-        endpoint is unavailable or returns malformed output.
+        There is deliberately no deterministic review or lesson fallback. If
+        the model cannot be reached, returns malformed JSON, or omits required
+        lessons, the failure is logged and raised. Existing trial lessons are
+        left untouched so an unsuccessful review cannot silently invent
+        coaching or replace the previous successful review.
         """
         episode_number = (
             int(trial_episode_number)
@@ -598,7 +803,8 @@ class Historian:
                 "content": (
                     "You are the Historian for a neuro-symbolic agent playing Zork I. "
                     "Review the completed episode using only the supplied runtime evidence. "
-                    "Be candid, specific, and fair. Distinguish "
+                    "Do not use or invent walkthrough knowledge, puzzle solutions, treasure "
+                    "lists, or point values. Be candid, specific, and fair. Distinguish "
                     "confirmed outcomes from hypotheses. Return valid JSON only."
                 ),
             },
@@ -610,7 +816,7 @@ class Historian:
                     "behavior, and actionable advice for its next episode. Assess the "
                     "Actor separately from symbolic-navigation actions where the evidence "
                     "allows. Do not claim an action caused a score increase unless the "
-                    "recorded score event supports that conclusion. Add a newline after each sentence for readability. \n\n"
+                    "recorded score event supports that conclusion.\n\n"
                     f"Then update the cross-episode lessons. Return exactly {self.lessons_per_category} "
                     "concise, actionable positives to repeat and exactly "
                     f"{self.lessons_per_category} negatives to avoid. Treat previous lessons "
@@ -640,11 +846,13 @@ class Historian:
         if event_logger:
             event_logger("historian_review_request", request)
 
-        result = None
         raw_response = ""
         try:
             if client is None:
-                raise RuntimeError("No review client is configured.")
+                raise RuntimeError(
+                    "No Historian review client is configured; the LLM review was not called."
+                )
+
             response = client.chat.completions.create(**request)
             raw_response = response.choices[0].message.content or ""
             if event_logger:
@@ -653,6 +861,7 @@ class Historian:
                     "content": raw_response,
                     "finish_reason": getattr(response.choices[0], "finish_reason", None),
                 })
+
             parsed = self._parse_review_json(raw_response)
             report = "\n\n".join(
                 part.strip()
@@ -666,62 +875,45 @@ class Historian:
             negatives = self._clean_strings(
                 parsed.get("negatives", []), limit=max(20, requested_count)
             )
-            if not report or len(positives) < requested_count or len(negatives) < requested_count:
+            if not report:
                 raise ValueError(
-                    "Historian response did not contain a report and "
-                    f"{requested_count} lessons in each category."
+                    "Historian model response did not contain a non-empty 'report' field."
                 )
+            if len(positives) != requested_count:
+                raise ValueError(
+                    "Historian model response must contain exactly "
+                    f"{requested_count} distinct positive lessons; received {len(positives)}."
+                )
+            if len(negatives) != requested_count:
+                raise ValueError(
+                    "Historian model response must contain exactly "
+                    f"{requested_count} distinct negative lessons; received {len(negatives)}."
+                )
+
             result = {
                 "report": report,
-                "positives": positives[:requested_count],
-                "negatives": negatives[:requested_count],
+                "positives": positives,
+                "negatives": negatives,
                 "review_source": "llm",
             }
         except Exception as exc:
+            error_payload = {
+                "error_type": type(exc).__name__,
+                "error": str(exc),
+                "raw_response": raw_response,
+                "fallback_used": False,
+            }
+            episode["historian_review_error"] = error_payload
+            self.save()
             if event_logger:
-                event_logger("historian_review_error", {
-                    "error_type": type(exc).__name__,
-                    "error": str(exc),
-                    "raw_response": raw_response,
-                })
-            result = self._fallback_episode_review(episode)
-            result["review_error"] = f"{type(exc).__name__}: {exc}"
+                event_logger("historian_review_error", error_payload)
+            raise
 
-        # Normalize both LLM and deterministic-fallback results to the exact
-        # requested count, so prompt size and per-episode artifacts are stable.
+        # Update cross-episode coaching only after a complete, valid model
+        # response. Failed calls never substitute deterministic lessons.
         self.trial_lessons = {
-            "positives": self._fit_lesson_count(
-                result.get("positives", []),
-                [
-                    "Use score changes and environment responses as concrete feedback.",
-                    "Inspect unfamiliar rooms and potentially useful objects.",
-                    "Record successful transitions and environmental clues.",
-                    "Verify routes one transition at a time.",
-                    "Reassess goals when new evidence appears.",
-                    "Preserve potentially useful inventory items.",
-                    "Use valid actions and explicit observations to ground decisions.",
-                    "Compare outcomes before repeating an interaction.",
-                    "Focus exploration on relevant objects and exits.",
-                    "Retain only puzzle conclusions supported by feedback.",
-                ],
-                self.lessons_per_category,
-            ),
-            "negatives": self._fit_lesson_count(
-                result.get("negatives", []),
-                [
-                    "Avoid repeating unsuccessful commands without new evidence.",
-                    "Do not assume historical routes are currently open.",
-                    "Change approach when an investigation repeatedly makes no progress.",
-                    "Do not assume reverse movement returns to the previous room.",
-                    "Do not treat guessed inventory as verified inventory.",
-                    "Do not pursue hypotheses contradicted by environment feedback.",
-                    "Avoid long sequences that produce no new information.",
-                    "Do not assume puzzle state carries across episodes.",
-                    "Do not abandon useful objects without inspection.",
-                    "Do not treat a blocked route as temporarily open without evidence.",
-                ],
-                self.lessons_per_category,
-            ),
+            "positives": list(result["positives"]),
+            "negatives": list(result["negatives"]),
         }
         result["episode_number"] = episode_number
         result["lessons_per_category"] = self.lessons_per_category
@@ -729,9 +921,10 @@ class Historian:
             "positives": list(self.trial_lessons["positives"]),
             "negatives": list(self.trial_lessons["negatives"]),
         }
+        episode.pop("historian_review_error", None)
         episode["historian_review"] = result["report"]
         episode["lessons_after_review"] = result["lessons"]
-        episode["review_source"] = result["review_source"]
+        episode["review_source"] = "llm"
         self.save()
         if event_logger:
             event_logger("historian_review_result", result)
@@ -761,18 +954,43 @@ class Historian:
         return sorted(set(blocked) | set(repeated))
 
     def build_guidance(self, current_node, current_location, current_score=None):
+        """Build a strategic prompt from reward, inventory, route, and lesson evidence."""
         score = self._as_number(current_score)
         remaining = (
             max(0, self.target_score - score)
             if score is not None else self.target_score
         )
         lines = [
-            f"Primary objective: exceed 75 points (target {self.target_score}; current {score if score is not None else 'unknown'}; at least {remaining} additional point(s) needed).",
-            "Do not optimize for fewest moves. A long detour can be worthwhile if it helps discover score-producing opportunities.",
-            "Investigate objects and interactions that may be valuable. When carrying likely valuables, prioritize bringing them to the Living Room and securing them in the trophy case.",
-            "If the route home is unknown or blocked, investigate clues and alternate return paths. Consider what the environment implies about barriers, guardians, keys, unusual locations, and special actions; infer solutions from feedback rather than repeating guesses.",
-            "Treat score changes as reliable feedback. Remember actions that increased score and avoid repeating identical no-progress actions.",
+            f"Primary objective: exceed 75 points and reach the configured target of {self.target_score} (current score {score if score is not None else 'unknown'}; approximately {remaining} additional point(s) needed).",
+            "Do not optimize for fewest moves. Pursue a sequence of meaningful objectives: establish a reliable way home, exploit proven score opportunities, secure valuables, and continue exploring productive areas.",
+            "Treat previous score increases as empirical evidence. Prefer repeating a previously successful interaction when you are at the same room with comparable inventory and puzzle state; use the persistent map to cautiously revisit rooms where those interactions worked.",
+            "A historical route is a candidate, not a guarantee. Follow it one transition at a time and switch back to puzzle reasoning if a passage is blocked or unavailable.",
         ]
+
+        inventory = self.agent_state.get("inventory_items", [])
+        treasures = self.agent_state.get("carried_treasures", [])
+        ordinary = self.agent_state.get("ordinary_items", [])
+        useful = self.agent_state.get("useful_items", [])
+        if inventory:
+            lines.append("Current reported inventory: " + ", ".join(inventory) + ".")
+        if treasures:
+            lines.append(
+                "Prioritize returning these treasure candidates to the Living Room trophy case: "
+                + ", ".join(treasures)
+                + ". These are candidates unless reinforced by recorded score evidence."
+            )
+        if ordinary:
+            lines.append(
+                "Do not treat these reported ordinary items as trophy-case valuables merely because they are carried: "
+                + ", ".join(ordinary)
+                + ". They may still have informational or puzzle utility."
+            )
+        if useful:
+            lines.append(
+                "Preserve these reported tools/puzzle items when useful: "
+                + ", ".join(useful)
+                + "."
+            )
 
         avoid = self.get_avoid_actions(current_node)
         if avoid:
@@ -781,35 +999,157 @@ class Historian:
             )
 
         positive = sorted(
-            self.memory["score_profiles"].values(),
+            self.memory.get("score_profiles", {}).values(),
             key=lambda item: (
-                item.get("total_gain", 0.0),
+                float(item.get("total_gain", 0.0)) /
+                max(1, int(item.get("attempts", item.get("samples", 1)))),
                 item.get("best_gain", 0.0),
+                item.get("samples", 0),
             ),
             reverse=True,
-        )[:5]
-        if positive:
-            lessons = []
-            for item in positive:
-                if item.get("total_gain", 0) > 0:
-                    lessons.append(
-                        f"Observed score increase after '{item['action']}' at {item['location']}."
-                    )
-            if lessons:
-                lines.append("Learned from actual score feedback: " + " ".join(lessons))
+        )[:7]
+        successful = []
+        for item in positive:
+            if item.get("total_gain", 0) > 0:
+                attempts = max(1, int(item.get("attempts", item.get("samples", 1))))
+                average = float(item.get("total_gain", 0.0)) / attempts
+                successful.append(
+                    f"{item.get('location', item.get('node'))}: '{item.get('action')}' "
+                    f"(observed total +{float(item.get('total_gain', 0.0)):g} over {attempts} attempt(s); "
+                    f"best single gain +{float(item.get('best_gain', 0.0)):g}; average +{average:.2f}/attempt)"
+                )
+        if successful:
+            lines.append(
+                "Previously fruitful interactions to exploit when context matches: "
+                + "; ".join(successful)
+                + "."
+            )
 
-        clues = self.memory.get("puzzle_clues", [])[-5:]
+        confirmed_items = [
+            value.get("item", key)
+            for key, value in self.memory.get("item_value_evidence", {}).items()
+            if value.get("confirmed_treasure")
+        ]
+        if confirmed_items:
+            lines.append(
+                "Items associated with an actual score-positive pickup/deposit event in prior play: "
+                + ", ".join(confirmed_items[:15])
+                + ". Return them when currently carried."
+            )
+
+        episode = self.episode or {}
+        if episode.get("underground_reached") and not episode.get("home_return_verified"):
+            lines.append(
+                "EARLY UNDERGROUND PRIORITY: establish and test at least one route back to the Living Room before committing to a long underground treasure expedition. Once that return is verified, continue exploring and use it as a recovery route."
+            )
+        elif episode.get("home_return_verified"):
+            lines.append(
+                "A return from the underground to the Living Room has been verified during this episode. Preserve that knowledge, but still treat any untested alternate passages as uncertain."
+            )
+
+        clues = self.memory.get("puzzle_clues", [])[-7:]
         if clues:
             lines.append(
                 "Previously reported environmental clues: "
-                + " | ".join(f"{c.get('location', 'unknown')}: {c.get('clue', '')}" for c in clues)
+                + " | ".join(
+                    f"{c.get('location', 'unknown')}: {c.get('clue', '')}"
+                    for c in clues
+                )
             )
 
         trial_lessons = self.format_trial_lessons()
         if trial_lessons != "No completed-episode lessons are available yet.":
             lines.append(trial_lessons)
-
         return "\n".join(lines)
+
+    @staticmethod
+    def _goal_sequence(*steps):
+        """Normalize a human-readable ordered strategic plan."""
+        result = []
+        for index, step in enumerate(steps, 1):
+            if step:
+                result.append({"order": index, **step})
+        return result
+
+    def _productive_goal_candidates(
+        self, *, current_key, valid_by_normalized, route_by_destination
+    ):
+        candidates = []
+        for profile_key, pattern in self.memory.get("score_profiles", {}).items():
+            attempts = max(1, int(pattern.get("attempts", pattern.get("samples", 1))))
+            total_gain = float(pattern.get("total_gain", 0.0))
+            average_gain = total_gain / attempts
+            if average_gain <= 0:
+                continue
+            if profile_key in self._completed_score_tasks or profile_key in self._attempted_score_tasks:
+                continue
+
+            target_node = str(pattern.get("node", ""))
+            action = str(pattern.get("action", ""))
+            if target_node == current_key:
+                suggested_action = valid_by_normalized.get(self.normalize_action(action))
+                if suggested_action is None:
+                    continue
+                kind = "score_action"
+                target_route = None
+            else:
+                target_route = route_by_destination.get(target_node)
+                if target_route is None:
+                    continue
+                suggested_action = None
+                kind = "navigate_score_goal"
+
+            candidates.append({
+                "kind": kind,
+                "description": (
+                    f"Exploit a previously score-positive opportunity at {pattern.get('location', target_node)}: "
+                    f"the interaction '{action}' produced an observed total gain of +{total_gain:g} "
+                    f"({average_gain:.2f} points per recorded attempt). Revisit it only if the current "
+                    "observation and prerequisites remain compatible; verify the new score response."
+                ),
+                "target_node": target_node,
+                "target_label": pattern.get("location", target_node),
+                "suggested_action": suggested_action,
+                "productive_action": action,
+                "expected_score_gain": average_gain,
+                "total_observed_gain": total_gain,
+                "evidence_samples": int(pattern.get("samples", 0)),
+                "observed_attempts": attempts,
+                "route": target_route,
+                "route_status": "historical_candidate" if target_route else "current_location",
+                "preferred_actions": [suggested_action] if suggested_action else [],
+                "sequence": self._goal_sequence(
+                    {
+                        "goal": "Reach the previously productive location",
+                        "details": (
+                            "Use the persistent directed map route as a historical candidate. "
+                            "Probe it one transition at a time; if an edge is blocked, stop and let "
+                            "the Actor investigate instead of repeating it."
+                        ) if target_route else "You are already at the room where the interaction previously produced score."
+                    },
+                    {
+                        "goal": f"Reassess and try '{action}'",
+                        "details": "Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction."
+                    },
+                    {
+                        "goal": "Verify progress and secure valuables",
+                        "details": "Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case."
+                    },
+                    {
+                        "goal": "Continue to the next productive opportunity",
+                        "details": "Use other previously fruitful locations/actions and then explore unmapped frontiers."
+                    },
+                ),
+                "source": "observed_score_delta_and_persistent_world_map",
+            })
+        candidates.sort(
+            key=lambda item: (
+                -item["expected_score_gain"],
+                -item["evidence_samples"],
+                item["target_label"],
+            )
+        )
+        return candidates
 
     def choose_goal(
         self,
@@ -824,11 +1164,11 @@ class Historian:
         home_label="Living Room",
         home_route_status="unknown",
     ):
-        """Choose a strategy from observed score/inventory/map feedback.
+        """Choose an ambitious, sequential strategy from accumulated evidence.
 
-        No guide-derived score table or walkthrough is loaded. Goal order:
-        target reached -> recover carried valuables -> repeat observed positive
-        scoring action -> explore unknown transitions -> investigate puzzles.
+        Priority: target reached -> return/deposit carried valuables -> establish
+        an early underground return route -> revisit reward-positive actions and
+        locations using the persistent map -> explore new frontiers/puzzles.
         """
         score = self._as_number(current_score)
         if score is not None and score >= self.target_score:
@@ -838,148 +1178,199 @@ class Historian:
                 "target_node": None,
                 "target_label": None,
                 "expected_score_gain": 0,
+                "sequence": [],
                 "source": "jericho_score",
             }
 
-        carried = self.agent_state.get("carried_treasures", [])
-        home_key = str(home_node) if home_node is not None else None
         current_key = str(current_node)
+        home_key = str(home_node) if home_node is not None else None
+        episode = self.episode or {}
+        if self._is_underground_location(current_location):
+            episode["underground_reached"] = True
+            episode.setdefault("first_underground_location", str(current_location))
+        if (
+            episode.get("underground_reached")
+            and home_key is not None
+            and current_key == home_key
+        ):
+            episode["home_return_verified"] = True
 
-        # If treasure is believed to be carried, secure it before further roaming.
-        if carried:
+        carried = list(self.agent_state.get("carried_treasures", []))
+        inventory = list(self.agent_state.get("inventory_items", []))
+        ordinary = list(self.agent_state.get("ordinary_items", []))
+        useful = list(self.agent_state.get("useful_items", []))
+        treasure_priority = bool(carried)
+
+        # Goal sequence A: recover and bank score-relevant valuables before
+        # pursuing optional exploration. Ordinary tools/information objects are
+        # explicitly not included in the return/deposit requirement.
+        if treasure_priority:
+            follow_on = self._goal_sequence(
+                {
+                    "goal": f"Return to {home_label}",
+                    "details": "Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked."
+                },
+                {
+                    "goal": "Deposit the treasure candidates",
+                    "details": "Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward."
+                },
+                {
+                    "goal": "Resume the highest-value exploration",
+                    "details": "Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities."
+                },
+            )
             if home_key is None:
                 return {
                     "kind": "solve_return_route",
                     "description": (
-                        f"Find a way back to {home_label} while preserving the carried valuables. "
-                        "Investigate environmental clues and alternate routes; keep the return objective in mind."
+                        f"Return the carried treasure candidates ({', '.join(carried)}) to {home_label}. "
+                        "The home room is not yet identified in the current map. Preserve the items, inspect route clues, "
+                        "and discover a way back before attempting further optional exploration."
                     ),
                     "target_node": None,
                     "target_label": home_label,
                     "carried_treasures": carried,
+                    "ordinary_items": ordinary,
+                    "useful_items": useful,
+                    "sequence": follow_on,
                     "route_available": False,
-                    "source": "actor_inventory_report",
+                    "source": "actor_inventory_and_reward_evidence",
                 }
-
-            if current_key != home_key:
-                # A persistent map path is a candidate. The navigator probes
-                # its transitions individually and abandons it on failure.
-                if home_route_status in {"confirmed", "historical_unconfirmed"}:
-                    route_instruction = (
-                        "Use the route confirmed in this episode."
-                        if home_route_status == "confirmed"
-                        else (
-                            "The persistent map has a previously observed candidate route, "
-                            "but it is not fully confirmed this episode. Follow it cautiously "
-                            "one transition at a time; stop and investigate if a passage is blocked."
-                        )
-                    )
-                    return {
-                        "kind": "navigate_to_home",
-                        "description": (
-                            f"Return to {home_label} with carried valuables. {route_instruction} "
-                            "Then deposit the carried valuables in the trophy case."
-                        ),
-                        "target_node": home_key,
-                        "target_label": home_label,
-                        "carried_treasures": carried,
-                        "route_available": True,
-                        "route_status": home_route_status,
-                        "source": "actor_inventory_report",
-                    }
-
-                if home_route_status == "blocked":
-                    return_description = (
-                        f"Find another way back to {home_label} while preserving the carried valuables. "
-                        "All currently known candidate paths have failed during this episode. Treat those "
-                        "passages as blocked for now; investigate environmental clues, prerequisites, and alternate routes."
-                    )
-                else:
-                    return_description = (
-                        f"Find a way back to {home_label} while preserving the carried valuables. "
-                        "No usable route is currently known; investigate environmental clues and alternate "
-                        "routes, and keep the return objective in mind."
-                    )
-
-                return {
-                    "kind": "solve_return_route",
-                    "description": return_description,
-                    "target_node": home_key,
-                    "target_label": home_label,
-                    "carried_treasures": carried,
-                    "route_available": False,
-                    "route_status": home_route_status,
-                    "source": "actor_inventory_report",
-                }
-
-            if home_key is not None and current_key == home_key:
+            if current_key == home_key:
                 return {
                     "kind": "deposit_treasure",
                     "description": (
-                        f"Deposit carried valuables ({', '.join(carried)}) in the trophy case and verify the result."
+                        f"You are in {home_label} carrying treasure candidates: {', '.join(carried)}. "
+                        "Deposit those candidates in the trophy case, but do not mistake ordinary items "
+                        f"({', '.join(ordinary) if ordinary else 'none currently reported'}) or useful tools "
+                        f"({', '.join(useful) if useful else 'none currently reported'}) for treasure. "
+                        "Then inspect inventory and score feedback to verify what was secured."
                     ),
                     "target_node": home_key,
                     "target_label": home_label,
                     "carried_treasures": carried,
-                    "source": "actor_inventory_report",
+                    "ordinary_items": ordinary,
+                    "useful_items": useful,
+                    "sequence": follow_on,
+                    "source": "actor_inventory_and_reward_evidence",
                 }
+            if home_route_status in {"confirmed", "historical_unconfirmed"}:
+                instruction = (
+                    "The route has been traversed successfully this episode."
+                    if home_route_status == "confirmed"
+                    else "The map contains a historical candidate route, not a guarantee; probe one transition at a time and stop immediately if a passage is blocked."
+                )
+                return {
+                    "kind": "navigate_to_home",
+                    "description": (
+                        f"Return to {home_label} with treasure candidates {', '.join(carried)}. {instruction} "
+                        "Do not divert to ordinary items or unrelated exploration until these valuables have been banked."
+                    ),
+                    "target_node": home_key,
+                    "target_label": home_label,
+                    "carried_treasures": carried,
+                    "ordinary_items": ordinary,
+                    "useful_items": useful,
+                    "route_available": True,
+                    "route_status": home_route_status,
+                    "sequence": follow_on,
+                    "source": "actor_inventory_and_reward_evidence",
+                }
+            return {
+                "kind": "solve_return_route",
+                "description": (
+                    f"Find a way back to {home_label} while preserving treasure candidates {', '.join(carried)}. "
+                    f"Current route status is {home_route_status}; investigate environmental clues, puzzle prerequisites, "
+                    "and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools "
+                    "separate from the valuables that need to be deposited."
+                ),
+                "target_node": home_key,
+                "target_label": home_label,
+                "carried_treasures": carried,
+                "ordinary_items": ordinary,
+                "useful_items": useful,
+                "route_available": False,
+                "route_status": home_route_status,
+                "sequence": follow_on,
+                "source": "actor_inventory_and_reward_evidence",
+            }
 
-        # Retry only observed score-positive tasks, not speculative values.
+        # Goal sequence B: after first entering the underground, make a return
+        # trip a deliberate early milestone even when no treasure is carried.
+        if episode.get("underground_reached") and not episode.get("home_return_verified"):
+            sequence = self._goal_sequence(
+                {
+                    "goal": f"Establish a return route to {home_label}",
+                    "details": "Do this early, before committing to a long treasure expedition. Use a historical route as a cautious candidate, not as proof that the door or puzzle prerequisite is currently solved."
+                },
+                {
+                    "goal": "Verify the route by reaching {home_label}".format(home_label=home_label),
+                    "details": "A route is established only after the environment actually returns the player to the Living Room. Record any obstacles and newly discovered transitions."
+                },
+                {
+                    "goal": "Resume underground exploration",
+                    "details": "Once the return trip is verified, explore productive areas, collect likely treasures, and use the tested route to bank valuables."
+                },
+            )
+            if home_key is not None and current_key != home_key and home_route_status in {"confirmed", "historical_unconfirmed"}:
+                return {
+                    "kind": "establish_return_route",
+                    "description": (
+                        f"Before deep exploration, make an early return trip to {home_label}. A candidate path is present "
+                        "in the learned map. Follow it one action/transition at a time; if it fails, stop and investigate "
+                        "the prerequisite or alternate route rather than repeating it. Reaching the Living Room will "
+                        "verify a practical return path for this episode."
+                    ),
+                    "target_node": home_key,
+                    "target_label": home_label,
+                    "route_available": True,
+                    "route_status": home_route_status,
+                    "sequence": sequence,
+                    "source": "early_underground_safety_milestone",
+                }
+            return {
+                "kind": "solve_return_route",
+                "description": (
+                    f"Make finding a way back to {home_label} your immediate strategic objective, even though you are "
+                    "not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, "
+                    "guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked "
+                    "actions. Establish the return route before beginning a lengthy treasure-hunting sequence."
+                ),
+                "target_node": home_key,
+                "target_label": home_label,
+                "route_available": False,
+                "route_status": home_route_status,
+                "sequence": sequence,
+                "source": "early_underground_safety_milestone",
+            }
+
+        # Goal sequence C: exploit earlier score-positive actions and navigate
+        # through historical map routes to productive rooms.
         valid_by_normalized = {
             self.normalize_action(action): action for action in valid_actions
         }
         route_by_destination = {
             str(route.get("destination")): route for route in (known_routes or [])
         }
-        candidates = []
-        for profile_key, pattern in self.memory["score_profiles"].items():
-            attempts = max(
-                1, int(pattern.get("attempts", pattern.get("samples", 0)))
-            )
-            average_gain = pattern.get("total_gain", 0.0) / attempts
-            if average_gain <= 0:
-                continue
-            if profile_key in self._completed_score_tasks or profile_key in self._attempted_score_tasks:
-                continue
-            target_node = str(pattern["node"])
-            action = pattern["action"]
-            if target_node == current_key:
-                if action not in valid_by_normalized:
-                    continue
-                kind = "score_action"
-                target_route = None
-            else:
-                target_route = route_by_destination.get(target_node)
-                if target_route is None:
-                    continue
-                kind = "navigate_score_goal"
-
-            candidates.append({
-                "kind": kind,
-                "description": (
-                    f"Revisit an action that previously increased score: '{action}' at {pattern['location']}."
-                ),
-                "target_node": target_node,
-                "target_label": pattern["location"],
-                "suggested_action": valid_by_normalized.get(action) if kind == "score_action" else None,
-                "expected_score_gain": average_gain,
-                "evidence_samples": pattern.get("samples", 0),
-                "observed_attempts": attempts,
-                "route": target_route,
-                "source": "observed_score_delta",
-            })
-
+        candidates = self._productive_goal_candidates(
+            current_key=current_key,
+            valid_by_normalized=valid_by_normalized,
+            route_by_destination=route_by_destination,
+        )
         if candidates:
-            # Score gain dominates; travel distance is not a utility penalty.
-            candidates.sort(
-                key=lambda item: (
-                    -item["expected_score_gain"],
-                    -item["evidence_samples"],
-                    item["target_label"],
-                )
-            )
-            return candidates[0]
+            chosen = candidates[0]
+            chosen["next_productive_opportunities"] = [
+                {
+                    "location": candidate["target_label"],
+                    "action": candidate.get("productive_action"),
+                    "expected_score_gain": candidate["expected_score_gain"],
+                }
+                for candidate in candidates[1:4]
+            ]
+            return chosen
 
+        # Goal sequence D: explore systematically when no known score-positive
+        # task is available from the current map position.
         known = {self.normalize_action(a) for a in known_outgoing_actions}
         blocked_at_node = self.memory["blocked_actions"].get(current_key, {})
         blocked = {
@@ -996,23 +1387,38 @@ class Historian:
             return {
                 "kind": "explore_frontier",
                 "description": (
-                    "Explore an unmapped exit to discover new rooms and possible scoring opportunities. "
-                    "Do not prioritize speed over useful discovery."
+                    "Explore an unmapped exit, but do so deliberately: inspect the current room and available objects, "
+                    "record the resulting transition, and look for score-producing interactions. If you enter the "
+                    "underground, make establishing a return route your next milestone before extensive exploration."
                 ),
                 "target_node": None,
                 "target_label": None,
                 "preferred_actions": frontier,
-                "source": "map_frontier",
+                "sequence": self._goal_sequence(
+                    {"goal": "Explore an unmapped exit", "details": "Choose a valid frontier action and inspect the destination."},
+                    {"goal": "Investigate the new room", "details": "Examine notable objects and available interactions; compare score before and after each action."},
+                    {"goal": "Preserve recoverability", "details": "If the room is underground, establish a route to the Living Room before pursuing a lengthy treasure sequence."},
+                    {"goal": "Pursue productive discoveries", "details": "Record newly successful actions and routes so they can be exploited in later episodes."},
+                ),
+                "source": "map_frontier_and_reward_history",
             }
 
         return {
             "kind": "investigate",
             "description": (
-                "Investigate the current environment for score-producing actions, treasure, puzzle clues, "
-                "or a way to unlock new routes. Examine objects and try contextually plausible interactions."
+                "Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, "
+                "or a way to unlock new routes. Reuse prior successful interactions only when their preconditions "
+                "match the current state. Inspect objects, reason from textual clues, and change approach when feedback "
+                "shows that an action is ineffective."
             ),
             "target_node": None,
             "target_label": None,
             "preferred_actions": [],
-            "source": "fallback_reasoning",
+            "sequence": self._goal_sequence(
+                {"goal": "Resolve the most informative local uncertainty", "details": "Inspect the environment or test a contextually plausible interaction."},
+                {"goal": "Record reward and transition evidence", "details": "Use score changes and room transitions to update what is known."},
+                {"goal": "Choose the next productive target", "details": "Prefer previously successful opportunities when state conditions match; otherwise explore a new frontier."},
+            ),
+            "source": "fallback_reasoning_and_reward_history",
         }
+
