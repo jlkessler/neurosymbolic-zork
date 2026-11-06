@@ -13,6 +13,9 @@ import os
 import random
 import re
 
+from .evolution import SECTION_NAMES, validate_configuration
+from .policy_logits import LabelLogprobScorer
+
 try:
     from openai import OpenAI
 except ImportError:
@@ -31,12 +34,14 @@ class SmartAgent:
         max_tokens=300,
         event_logger=None,
         client=None,
+        policy_mode="rank",
+        seed=0,
     ):
-        self.model = model or os.getenv("LLM_MODEL", "gemma4:31b")
+        self.model = model or os.getenv("ACTOR_MODEL", "gemma4:31b")
         self.base_url = base_url or os.getenv(
-            "OPENAI_BASE_URL", "http://cs-steverw.umflint.edu:8080/api"
+            "ACTOR_BASE_URL", "http://cs-steverw.umflint.edu:8080/api"
         )
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        self.api_key = api_key or os.getenv("ACTOR_API_KEY")
         self.extra_body = extra_body
         if client is not None:
             self.client = client
@@ -46,7 +51,7 @@ class SmartAgent:
                     self.api_key = "ollama"
                 else:
                     raise RuntimeError(
-                        "Set OPENAI_API_KEY to your Open WebUI/API key before starting."
+                        "Set ACTOR_API_KEY to your Open WebUI/API key before starting."
                     )
             if OpenAI is None:
                 raise RuntimeError("Install the OpenAI Python package: pip install openai")
@@ -57,6 +62,14 @@ class SmartAgent:
         self.max_tokens = int(max_tokens)
         self.event_logger = event_logger
         self.history = []
+        self.configuration = None
+        self.policy_mode = policy_mode
+        self.rng = random.Random(seed)
+
+    def apply_configuration(self, configuration):
+        self.configuration = validate_configuration(configuration)
+        self.temperature = configuration["temperature"]
+        self.history_length = configuration["history_length"]
 
     def reset_history(self):
         """Clear short-term Actor context at the start of a fresh episode."""
@@ -165,7 +178,7 @@ class SmartAgent:
 
         system_prompt = f"""You are the reasoning Actor in a neuro-symbolic agent playing Zork I.
 
-The objective is to achieve a score greater than 75 (up to a maximum of {target_score}).
+The objective is to reach the configured score target of {target_score}.
 You do not have a walkthrough, official treasure list, or point-value table.
 Discover how the game works from its observations and score feedback.
 
@@ -181,10 +194,24 @@ STRATEGY:
 - Explore thoroughly and pursue likely score-producing opportunities. Do not
   optimize for speed; episodes may last hundreds of commands.
 - Pay attention to unique objects, descriptions, treasure-like items, and
-  interactions that may produce score. Learn from actual score increases.
-- When you acquire an item that appears valuable, report it as a carried
-  treasure candidate. When carrying such items, prioritize returning to the
-  Living Room and putting them in the trophy case, then verify the result.
+  interactions that may produce score. Learn from actual score increases and
+  from previously successful actions/locations listed in Historian guidance.
+- Make goals sequential rather than impulsive: after entering the underground,
+  establish and test a route back to the Living Room early; then pursue known
+  score-positive opportunities, collect likely valuables, return and deposit
+  those valuables, and continue to the next productive opportunity.
+- Classify inventory carefully. `inventory_items` must list everything you
+  currently carry. `treasure_candidates` (and the compatibility field
+  `carried_treasures`) should include only items that plausibly belong in the
+  trophy case, especially items associated with score increases. `ordinary_items`
+  should include mundane informational/consumable possessions such as the
+  leaflet or bottle of water. `useful_items` should include tools and puzzle
+  objects (for example, a lantern, sword, keys, or rope) that may be needed
+  later even if they are not treasures. Put genuinely uncertain objects in
+  `uncertain_items`; do not force every item into the treasure category.
+- Do not assume an item is treasure just because it is unusual or carried.
+  Recorded score-positive pickup/deposit evidence is stronger than a guess.
+  If item purpose is unclear, inspect it or retain it while you gather evidence.
 - Treat persistent map routes as historical hypotheses, not proof that a
   passage is currently open. The symbolic navigator may cautiously probe a
   historical candidate one transition at a time; each step must succeed before
@@ -206,18 +233,32 @@ STRATEGY:
 OUTPUT:
 Return one JSON object only, with this schema:
 {{
+  "decision_rationale": "1-3 concise sentences summarizing the key evidence, goal, and why the selected command is appropriate; do not provide hidden/private chain-of-thought or lengthy internal deliberation",
   "action": "<your single best command from AVAILABLE ACTIONS>",
   "candidate_actions": ["best candidate first", "other plausible candidates"],
-  "inventory_items": ["items you currently believe are carried"],
-  "carried_treasures": ["items currently carried that may be valuable/score-relevant"],
+  "inventory_items": ["all items you currently believe are carried"],
+  "treasure_candidates": ["only carried items plausibly worth depositing in the trophy case"],
+  "carried_treasures": ["same treasure candidates, retained for compatibility"],
+  "ordinary_items": ["mundane information/consumable items, such as the leaflet or bottle of water"],
+  "useful_items": ["tools and puzzle objects worth retaining, even if they are not treasures"],
+  "uncertain_items": ["items whose purpose or value is not yet clear"],
   "puzzle_clues": ["new concise environmental clues learned this turn"],
   "state_note": "brief note about changed state, obstacle, or next reasoning step"
 }}
 candidate_actions should contain up to five distinct commands from AVAILABLE
 ACTIONS, ordered from your most preferred to least preferred. Put action first.
 If only one command is reasonable, return a one-item list. Do not invent
-commands. Do not include markdown fences or prose outside the JSON.
+commands. Put the concise decision_rationale field first in the JSON, followed
+by the action and state report. The rationale should summarize the decisive
+considerations, not expose private step-by-step chain-of-thought. Do not include
+markdown fences or prose outside the JSON.
 """
+
+        if self.configuration is not None:
+            start = system_prompt.index("STRATEGY:")
+            end = system_prompt.index("OUTPUT:", start)
+            system_prompt = (system_prompt[:start] + "STRATEGY:\n" +
+                             self.configuration["actor_strategy"] + "\n\n" + system_prompt[end:])
 
         goal_text = (
             f"Type: {goal.get('kind')}\n"
@@ -226,49 +267,25 @@ commands. Do not include markdown fences or prose outside the JSON.
             f"Carried treasure candidates: {goal.get('carried_treasures', [])}\n"
             f"Home route status: {goal.get('route_status', 'not supplied')}\n"
             f"Suggested action: {goal.get('suggested_action')}\n"
-            f"Preferred actions: {goal.get('preferred_actions', [])}"
+            f"Preferred actions: {goal.get('preferred_actions', [])}\n"
+            f"Ordered strategic sequence: {json.dumps(goal.get('sequence', []), ensure_ascii=False)}\n"
+            f"Next productive opportunities: {json.dumps(goal.get('next_productive_opportunities', []), ensure_ascii=False)}\n"
+            f"Ordinary items to keep distinct from treasure: {goal.get('ordinary_items', [])}\n"
+            f"Useful tools/puzzle items to preserve: {goal.get('useful_items', [])}"
         )
         actions_text = "\n".join(f"- {action}" for action in valid_actions)
-        user_prompt = f"""CURRENT LOCATION:
-{current_location}
-
-CURRENT SCORE:
-{current_score}
-
-CURRENT OBSERVATION:
-{observation}
-
-HISTORIAN GOAL:
-{goal_text}
-
-HISTORIAN GUIDANCE (includes lessons from completed episodes when available):
-{historian_guidance or 'No persistent lessons yet.'}
-
-ACTOR REINFORCEMENT-LEARNING GUIDANCE:
-{rl_guidance or 'No Actor experience-based guidance is currently available.'}
-
-NAVIGATION CONTROLLER:
-{navigation_context}
-
-KNOWN LOCATIONS:
-{', '.join(known_locations[:100]) if known_locations else 'None yet.'}
-
-KNOWN ROUTES (persistent historical map; these are candidate paths, not
-proof that every passage is currently open):
-{navigation_text}
-
-ACTIONS TO AVOID REPEATING WITHOUT NEW EVIDENCE:
-{', '.join(avoid_actions) if avoid_actions else 'None recorded.'}
-
-RECENT ACTION HISTORY:
-{self.format_history()}
-
-AVAILABLE ACTIONS:
-{actions_text}
-
-Choose the single best next command. Report inventory, likely carried valuables,
-and any new puzzle clue in the required JSON object.
-"""
+        sections = {
+            "state": f"CURRENT LOCATION:\n{current_location}\nCURRENT SCORE:\n{current_score}\nCURRENT OBSERVATION:\n{observation}",
+            "goal": f"HISTORIAN GOAL:\n{goal_text}",
+            "guidance": f"HISTORIAN GUIDANCE:\n{historian_guidance or 'No persistent lessons yet.'}\nACTIONS TO AVOID REPEATING WITHOUT NEW EVIDENCE:\n{', '.join(avoid_actions)}",
+            "experience": f"ACTOR REINFORCEMENT-LEARNING GUIDANCE:\n{rl_guidance}",
+            "navigation": f"NAVIGATION CONTROLLER:\n{navigation_context}",
+            "map": f"KNOWN LOCATIONS:\n{', '.join(known_locations[:100])}\nKNOWN ROUTES (historical hypotheses):\n{navigation_text}",
+            "history": f"RECENT ACTION HISTORY:\n{self.format_history()}",
+            "actions": f"AVAILABLE ACTIONS:\n{actions_text}",
+        }
+        order = self.configuration["section_order"] if self.configuration else SECTION_NAMES
+        user_prompt = "\n\n".join(sections[name] for name in order)
 
         request = {
             "model": self.model,
@@ -323,19 +340,72 @@ and any new puzzle clue in the required JSON object.
                 item for item in candidate_actions if item != action
             ]
             candidate_actions = candidate_actions[:5]
+            policy = None
+            if self.policy_mode == "logprobs":
+                policy = LabelLogprobScorer().score(
+                    client=self.client, model=self.model,
+                    messages=[{"role": "system", "content": system_prompt.split("OUTPUT:")[0]},
+                              {"role": "user", "content": user_prompt}],
+                    actions=candidate_actions, extra_body=self.extra_body,
+                    event_logger=self._log_event,
+                )
 
+            treasure_candidates = self._clean_list(
+                parsed.get("treasure_candidates") or parsed.get("carried_treasures"), 30
+            )
             report = {
                 "location": current_location,
                 "inventory_items": self._clean_list(parsed.get("inventory_items"), 50),
-                "carried_treasures": self._clean_list(parsed.get("carried_treasures"), 30),
+                "treasure_candidates": treasure_candidates,
+                "carried_treasures": self._clean_list(
+                    parsed.get("carried_treasures", treasure_candidates), 30
+                ) or treasure_candidates,
+                "ordinary_items": self._clean_list(parsed.get("ordinary_items"), 40),
+                "useful_items": self._clean_list(parsed.get("useful_items"), 40),
+                "uncertain_items": self._clean_list(parsed.get("uncertain_items"), 40),
                 "puzzle_clues": self._clean_list(parsed.get("puzzle_clues"), 12),
                 "state_note": str(parsed.get("state_note", ""))[:500],
             }
+            decision_rationale = str(
+                parsed.get("decision_rationale")
+                or parsed.get("rationale")
+                or parsed.get("reasoning_summary")
+                or ""
+            ).strip()[:1800]
+            # Preserve a concise explanation that the model explicitly emitted.
+            # Hidden/internal reasoning fields are intentionally not requested
+            # or accessed; the raw assistant response is already captured by
+            # the regular chat transcript.
+            self._log_event("actor_decision_rationale", {
+                "model": self.model,
+                "location": str(current_location),
+                "current_score": current_score,
+                "goal_kind": goal.get("kind"),
+                "goal_description": goal.get("description"),
+                "navigation_context": navigation_context,
+                # Keep the model-emitted field faithful: empty means the model
+                # did not provide an explicit rationale. The explanatory note
+                # is separate and must not be mistaken for model-generated text.
+                "rationale": decision_rationale,
+                "rationale_note": (
+                    "No explicit rationale returned by the model."
+                    if not decision_rationale else ""
+                ),
+                "base_action": action,
+                "candidate_actions": candidate_actions,
+                "raw_response": answer,
+                "base_logits": policy["base_logits"] if policy else None,
+                "logit_source": policy["source"] if policy else "rank_prior",
+                "rationale_source": "model_emitted_json_field" if decision_rationale else "not_provided",
+            })
             return {
                 "action": action,
                 "candidate_actions": candidate_actions,
                 "report": report,
+                "decision_rationale": decision_rationale,
                 "raw_response": answer,
+                "base_logits": policy["base_logits"] if policy else None,
+                "logit_source": policy["source"] if policy else "rank_prior",
             }
         except Exception as exc:
             self._log_event("error", {
@@ -344,14 +414,29 @@ and any new puzzle clue in the required JSON object.
                 "error": str(exc),
             })
             print(f"LLM request failed or returned invalid JSON: {exc}")
+            if self.policy_mode == "logprobs":
+                raise
 
         # Deterministic fallback; no model response means do not invent reports.
         fallback = next((item for item in preferred_actions if item in valid_actions), None)
         if fallback is None:
-            fallback = random.choice(valid_actions)
+            fallback = self.rng.choice(valid_actions)
         self._log_event("fallback", {
             "selected_action": fallback,
             "reason": "The model request failed or did not return a valid action.",
+        })
+        self._log_event("actor_decision_rationale", {
+            "model": self.model,
+            "location": str(current_location),
+            "current_score": current_score,
+            "goal_kind": goal.get("kind"),
+            "goal_description": goal.get("description"),
+            "navigation_context": navigation_context,
+            "rationale": "No model rationale is available because the LLM call or response parsing failed.",
+            "base_action": fallback,
+            "candidate_actions": [fallback],
+            "raw_response": "",
+            "rationale_source": "fallback_no_model_rationale",
         })
         return {
             "action": fallback,
@@ -359,10 +444,15 @@ and any new puzzle clue in the required JSON object.
             "report": {
                 "location": current_location,
                 "inventory_items": [],
+                "treasure_candidates": [],
                 "carried_treasures": [],
+                "ordinary_items": [],
+                "useful_items": [],
+                "uncertain_items": [],
                 "puzzle_clues": [],
                 "state_note": "Actor fallback selected after request/parse failure.",
             },
+            "decision_rationale": "",
             "raw_response": "",
         }
 

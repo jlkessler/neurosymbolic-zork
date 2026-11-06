@@ -43,16 +43,20 @@ class EpisodeLogger:
         stem = f"episode_{self.episode_number:04d}"
         self.output_path = self.run_directory / f"{stem}.txt"
         self.chat_path = self.run_directory / f"{stem}_chat.txt"
+        self.reasoning_path = self.run_directory / f"{stem}_reasoning.txt"
         self.review_path = self.run_directory / f"{stem}_review.txt"
         self.lessons_snapshot_path = self.run_directory / f"{stem}_lessons.txt"
         self.experience_path = self.run_directory / f"{stem}_experience.jsonl"
         self._output_file = None
         self._chat_file = None
+        self._reasoning_file = None
         self._redirects = contextlib.ExitStack()
+        self.api_requests = 0
 
     def __enter__(self):
         self._output_file = self.output_path.open("w", encoding="utf-8", buffering=1)
         self._chat_file = self.chat_path.open("w", encoding="utf-8", buffering=1)
+        self._reasoning_file = self.reasoning_path.open("w", encoding="utf-8", buffering=1)
         self._redirects.enter_context(
             contextlib.redirect_stdout(_Tee(sys.stdout, self._output_file))
         )
@@ -61,10 +65,94 @@ class EpisodeLogger:
         )
         print(f"Episode {self.episode_number} log: {self.output_path}")
         print(f"Episode {self.episode_number} chat log: {self.chat_path}")
+        print(f"Episode {self.episode_number} decision-rationale log: {self.reasoning_path}")
         return self
+
+    def _write_decision_trace(self, event: str, payload: Any):
+        """Write concise, model-emitted decision explanations to a focused file.
+
+        The full prompts and raw responses remain in *_chat.txt. This file is
+        an index of the Actor's declared rationale and final selection. It does
+        not attempt to capture hidden model reasoning unavailable through the
+        API.
+        """
+        if self._reasoning_file is None:
+            return
+        payload = payload if isinstance(payload, dict) else {"payload": str(payload)}
+        timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
+        self._reasoning_file.write(f"\n{'=' * 20} {event.upper()} {'=' * 20}\n")
+        self._reasoning_file.write(f"Timestamp: {timestamp}\n")
+
+        if event == "actor_decision_rationale":
+            self._reasoning_file.write(f"Model: {payload.get('model', 'unknown')}\n")
+            self._reasoning_file.write(f"Location: {payload.get('location', 'unknown')}\n")
+            self._reasoning_file.write(f"Score: {payload.get('current_score', 'unknown')}\n")
+            self._reasoning_file.write(f"Goal: {payload.get('goal_description', 'unknown')}\n")
+            self._reasoning_file.write(
+                f"Rationale source: {payload.get('rationale_source', 'unknown')}\n"
+            )
+            self._reasoning_file.write("Model-emitted decision rationale:\n")
+            rationale = str(payload.get("rationale", "") or "").strip()
+            if rationale:
+                self._reasoning_file.write(rationale + "\n")
+            else:
+                self._reasoning_file.write("[No explicit rationale emitted by the model.]\n")
+                note = str(payload.get("rationale_note", "") or "").strip()
+                if note:
+                    self._reasoning_file.write(f"Logging note: {note}\n")
+            self._reasoning_file.write(
+                f"Base action: {payload.get('base_action', 'unknown')}\n"
+            )
+            self._reasoning_file.write(
+                "Candidate actions: "
+                + json.dumps(payload.get("candidate_actions", []), ensure_ascii=False)
+                + "\n"
+            )
+            self._reasoning_file.write(
+                "Navigation context:\n"
+                + str(payload.get("navigation_context", "not supplied"))
+                + "\n"
+            )
+            raw_response = str(payload.get("raw_response", "") or "").strip()
+            if raw_response:
+                self._reasoning_file.write(
+                    "Raw assistant response (model-emitted content; also preserved in chat log):\n"
+                    + raw_response
+                    + "\n"
+                )
+        elif event == "actor_final_selection":
+            self._reasoning_file.write(
+                f"Base model action: {payload.get('base_model_action', 'unknown')}\n"
+            )
+            self._reasoning_file.write(
+                f"Final action after Actor RL: {payload.get('final_action_after_rl', 'unknown')}\n"
+            )
+            self._reasoning_file.write(
+                "RL selection details:\n"
+                + json.dumps(payload.get("selection", {}), indent=2, ensure_ascii=False, default=str)
+                + "\n"
+            )
+        elif event == "non_llm_action_selection":
+            self._reasoning_file.write(
+                "No LLM rationale: this command was selected by a deterministic component.\n"
+            )
+            self._reasoning_file.write(
+                f"Action source: {payload.get('action_source', 'unknown')}\n"
+            )
+            self._reasoning_file.write(
+                f"Selected action: {payload.get('selected_action', 'unknown')}\n"
+            )
+            self._reasoning_file.write(
+                "Navigation context:\n"
+                + str(payload.get("navigation_context", "not supplied"))
+                + "\n"
+            )
+        self._reasoning_file.flush()
 
     def log_chat_event(self, event: str, payload: Any):
         """Append one structured event to the episode's chat transcript."""
+        if event == "request" or event.endswith("_request"):
+            self.api_requests += 1
         if self._chat_file is None:
             return
         timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
@@ -78,6 +166,12 @@ class EpisodeLogger:
             self._chat_file.write(str(payload))
         self._chat_file.write("\n")
         self._chat_file.flush()
+        if event in {
+            "actor_decision_rationale",
+            "actor_final_selection",
+            "non_llm_action_selection",
+        }:
+            self._write_decision_trace(event, payload)
 
     @staticmethod
     def _format_lessons(lessons: dict) -> str:
@@ -158,6 +252,9 @@ class EpisodeLogger:
             if self._chat_file is not None:
                 self._chat_file.flush()
                 self._chat_file.close()
+            if self._reasoning_file is not None:
+                self._reasoning_file.flush()
+                self._reasoning_file.close()
         return False
 
 
@@ -188,7 +285,9 @@ class TrialLogger:
     def write_metadata(self, metadata: dict):
         """Write run configuration, excluding secrets such as API keys."""
         safe_metadata = dict(metadata)
-        safe_metadata.pop("api_key", None)
+        for key in list(safe_metadata):
+            if "api_key" in key.lower() or "secret" in key.lower():
+                safe_metadata.pop(key)
         path = self.run_directory / "trial_metadata.txt"
         with path.open("w", encoding="utf-8") as file:
             file.write("Zork trial configuration\n")

@@ -29,24 +29,24 @@ class SmartAgent:
         event_logger=None,
         client=None,
     ):
-        self.model = model or os.getenv("LLM_MODEL", "google/gemini-2.5-flash")
+        self.model = model or os.getenv("ACTOR_MODEL", "google/gemini-2.5-flash")
         self.base_url = base_url or os.getenv(
-            "OPENAI_BASE_URL", "https://openrouter.ai/api/v1"
+            "ACTOR_BASE_URL", "https://openrouter.ai/api/v1"
         )
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        self.api_key = api_key or os.getenv("ACTOR_API_KEY")
         self.extra_body = extra_body
         if client is not None:
             self.client = client
         else:
-            if not self.api_key:
-                if self.base_url.rstrip("/").endswith("/v1"):
-                    self.api_key = "ollama"
-                else:
-                    raise RuntimeError(
-                        "Set OPENAI_API_KEY to your Open WebUI/API key before starting."
-                    )
-            if OpenAI is None:
-                raise RuntimeError("Install the OpenAI Python package: pip install openai")
+            # if not self.api_key:
+            #     if self.base_url.rstrip("/").endswith("/v1"):
+            #         self.api_key = "ollama"
+            #     else:
+            #         raise RuntimeError(
+            #             "Set ACTOR_API_KEY to your Open WebUI/API key before starting."
+            #         )
+            # if OpenAI is None:
+            #     raise RuntimeError("Install the OpenAI Python package: pip install openai")
             self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
         self.history_length = int(history_length)

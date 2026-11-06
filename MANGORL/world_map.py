@@ -1,4 +1,5 @@
 import json
+import inspect
 from pathlib import Path
 
 import networkx as nx
@@ -53,7 +54,9 @@ class WorldMap:
         with self.save_path.open("r", encoding="utf-8") as file:
             data = json.load(file)
 
-        self.graph = nx.node_link_graph(data)
+        edge_field = "edges" if "edges" in data else "links"
+        parameter = "edges" if "edges" in inspect.signature(nx.node_link_graph).parameters else "link"
+        self.graph = nx.node_link_graph(data, **{parameter: edge_field})
 
         # Removing legacy maze nodes is destructive, so it is opt-in.
         if discard_legacy_maze_nodes:
@@ -79,10 +82,13 @@ class WorldMap:
     def save(self):
         """Persist the current graph as JSON."""
         self.save_path.parent.mkdir(parents=True, exist_ok=True)
-        data = nx.node_link_data(self.graph)
+        parameter = "edges" if "edges" in inspect.signature(nx.node_link_data).parameters else "link"
+        data = nx.node_link_data(self.graph, **{parameter: "edges"})
 
-        with self.save_path.open("w", encoding="utf-8") as file:
+        temporary = self.save_path.with_suffix(self.save_path.suffix + ".tmp")
+        with temporary.open("w", encoding="utf-8") as file:
             json.dump(data, file, indent=4)
+        temporary.replace(self.save_path)
 
         print(f"World map saved to {self.save_path}")
 

@@ -66,7 +66,7 @@ def _jaccard(left: Iterable[str], right: Iterable[str]) -> float:
 class ActorExperienceMemory:
     """Collect, persist, and retrieve Actor action/return experiences."""
 
-    SCHEMA_VERSION = 1
+    SCHEMA_VERSION = 2
 
     def __init__(
         self,
@@ -75,11 +75,13 @@ class ActorExperienceMemory:
         max_records: int = 20_000,
         environment_reward_weight: float = 0.0,
         no_progress_penalty: float = 0.0,
+        state_encoder=None,
     ):
         self.path = Path(path).expanduser()
         self.max_records = max(100, int(max_records))
         self.environment_reward_weight = float(environment_reward_weight)
         self.no_progress_penalty = float(no_progress_penalty)
+        self.state_encoder = state_encoder
         self.experiences: list[dict[str, Any]] = []
         self.episode_id: str | None = None
         self._episode_steps: list[dict[str, Any]] = []
@@ -129,6 +131,9 @@ class ActorExperienceMemory:
             "location": str(state.get("location", "") or "")[:160],
             "observation": " ".join(str(state.get("observation", "") or "").split())[:700],
             "inventory_items": _clean_strings(state.get("inventory_items", []), 50),
+            "treasure_candidates": _clean_strings(state.get("treasure_candidates", []), 30),
+            "ordinary_items": _clean_strings(state.get("ordinary_items", []), 30),
+            "useful_items": _clean_strings(state.get("useful_items", []), 30),
             "puzzle_clues": _clean_strings(state.get("puzzle_clues", []), 20),
             "goal_kind": str(state.get("goal_kind", "unknown") or "unknown"),
             "goal_description": " ".join(
@@ -152,6 +157,8 @@ class ActorExperienceMemory:
         selection_info: dict[str, Any] | None = None,
         action_logprob: float | None = None,
         no_progress: bool = False,
+        terminal: bool = False,
+        truncated: bool = False,
     ) -> dict[str, Any]:
         """Append one environment transition to the active episode trajectory.
 
@@ -179,6 +186,8 @@ class ActorExperienceMemory:
                 _number(action_logprob) if action_logprob is not None else None
             ),
             "no_progress": bool(no_progress),
+            "terminal": bool(terminal),
+            "truncated": bool(truncated),
         }
         self._episode_steps.append(record)
         return record
@@ -192,12 +201,17 @@ class ActorExperienceMemory:
             reward += self.no_progress_penalty
         return reward
 
+    def step_reward(self, step):
+        """The same reward definition is used by the Actor and Historian critic."""
+        return self._step_reward(step)
+
     def finish_episode(
         self,
         *,
         gamma: float = 0.995,
         termination_reason: str = "unknown",
         final_score: float | int | None = None,
+        bootstrap_value: float = 0.0,
     ) -> dict[str, Any]:
         """Compute discounted returns and append Actor decisions to JSONL."""
         if self.episode_id is None:
@@ -206,11 +220,13 @@ class ActorExperienceMemory:
         if not 0.0 <= gamma <= 1.0:
             raise ValueError("gamma must be between 0 and 1 inclusive.")
 
-        running_return = 0.0
+        running_return = _number(bootstrap_value)
         completed = list(self._episode_steps)
         # Monte-Carlo returns include rewards on subsequent symbolic-navigation
         # steps; those steps are not themselves stored as Actor policy samples.
         for step in reversed(completed):
+            if step.get("terminal"):
+                running_return = 0.0
             running_return = self._step_reward(step) + gamma * running_return
             step["discounted_return"] = running_return
             step["training_reward"] = self._step_reward(step)
@@ -235,6 +251,10 @@ class ActorExperienceMemory:
                 "discounted_return": step["discounted_return"],
                 "selection_info": step["selection_info"],
                 "action_logprob": step["action_logprob"],
+                "terminal": step.get("terminal", False),
+                "truncated": step.get("truncated", False),
+                "termination_reason": termination_reason,
+                "bootstrap_value": _number(bootstrap_value),
             }
             actor_records.append(record)
 
@@ -259,6 +279,7 @@ class ActorExperienceMemory:
             "termination_reason": termination_reason,
             "final_score": _number(final_score, default=None),
             "memory_path": str(self.path),
+            "bootstrap_value": _number(bootstrap_value),
         }
         self.last_finish_summary = summary
         self.episode_id = None
@@ -328,11 +349,19 @@ class ActorExperienceMemory:
         exclude_episode_id: str | None = None,
     ) -> list[dict[str, Any]]:
         """Return the most similar historical Actor decisions."""
+        records = self.experiences
+        if self.state_encoder is not None:
+            # Avoid encoding an entire persistent replay buffer on every turn.
+            # Lexical prefiltering bounds neural work and is part of this
+            # approximate retrieval method, not an exact vector search.
+            eligible = [row for row in records if not exclude_episode_id or row.get("episode_id") != exclude_episode_id]
+            records = sorted(eligible, key=lambda row: self.state_similarity(state, row.get("state", {})),
+                             reverse=True)[:min(512, max(64, int(top_k) * 4))]
         matches = []
-        for record in self.experiences:
+        for record in records:
             if exclude_episode_id and record.get("episode_id") == exclude_episode_id:
                 continue
-            similarity = self.state_similarity(state, record.get("state", {}))
+            similarity = self.similarity(state, record.get("state", {}))
             if similarity < min_similarity:
                 continue
             item = dict(record)
@@ -340,6 +369,14 @@ class ActorExperienceMemory:
             matches.append(item)
         matches.sort(key=lambda item: (item["similarity"], item.get("step", -1)), reverse=True)
         return matches[: max(1, int(top_k))]
+
+    def similarity(self, left, right):
+        lexical = self.state_similarity(left, right)
+        if self.state_encoder is None:
+            return lexical
+        # Neural semantics do not erase concrete inventory/location evidence.
+        neural = self.state_encoder.similarity(self.normalize_state(left), self.normalize_state(right))
+        return 0.5 * lexical + 0.5 * neural
 
     def estimate_action_values(
         self,

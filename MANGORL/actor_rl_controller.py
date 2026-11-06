@@ -1,18 +1,15 @@
-"""Experience-based Actor policy adaptation for Zork.
+"""Frozen Actor policy: model logits + retrieved advantage + symbolic evidence.
 
-The first implementation is intentionally model-agnostic. For remote
-OpenAI-compatible inference, it combines the Actor's ordered candidate list
-with empirical action advantages retrieved from ActorExperienceMemory. This
-is a *candidate-rank adjustment*, not access to the LLM's native token logits.
-
-The controller also exposes ``adjust_logits`` for a future local inference
-backend that can supply genuine candidate logits/log-probabilities.
+The legacy rank-prior controller remains available for controlled ablations.
 """
 from __future__ import annotations
 
 import math
 import statistics
+import random
 from typing import Any, Iterable
+
+from .nsi import NeuroSymbolicInference, softmax, logsumexp
 
 
 class ActorRLController:
@@ -28,6 +25,7 @@ class ActorRLController:
         min_similarity: float = 0.20,
         max_abs_advantage: float = 2.0,
         value_controller=None,
+        seed: int = 0,
     ):
         self.experience_memory = experience_memory
         self.enabled = bool(enabled)
@@ -38,6 +36,7 @@ class ActorRLController:
         self.min_similarity = max(0.0, min(1.0, float(min_similarity)))
         self.max_abs_advantage = max(0.1, float(max_abs_advantage))
         self.value_controller = value_controller
+        self.rng = random.Random(seed)
 
     @staticmethod
     def _deduplicate(actions: Iterable[str]) -> list[str]:
@@ -51,29 +50,28 @@ class ActorRLController:
         return result
 
     def estimate(self, state: dict[str, Any], candidate_actions: Iterable[str]) -> dict[str, Any]:
+        candidate_actions = list(candidate_actions)
         estimates = self.experience_memory.estimate_action_values(
             state,
             candidate_actions,
             top_k=self.top_k,
             min_similarity=self.min_similarity,
         )
-        # Optional Historian critic baseline. The critic remains entirely
-        # inactive unless explicitly enabled; when enabled, it estimates V(s)
-        # while ActorExperienceMemory supplies empirical action-return Q(s,a).
         if self.value_controller is not None and getattr(self.value_controller, "enabled", False):
-            critic_value = float(self.value_controller.value(state))
-            estimates["critic_state_value"] = critic_value
-            estimates["state_value"] = critic_value
-            for item in estimates.get("actions", {}).values():
-                q_value = item.get("q_value")
-                if q_value is None:
-                    item["raw_advantage"] = 0.0
-                    item["advantage"] = 0.0
-                    continue
-                raw_advantage = float(q_value) - critic_value
-                confidence = float(item.get("confidence", 0.0))
-                item["raw_advantage"] = raw_advantage
-                item["advantage"] = raw_advantage * confidence
+            # Online TD evidence is action-conditioned. A common V(s) offset
+            # alone cancels under softmax and cannot change relative preference.
+            td = self.value_controller.action_advantages(
+                state, candidate_actions, top_k=self.top_k, min_similarity=self.min_similarity)
+            for key, item in td.items():
+                previous = estimates.setdefault("actions", {}).get(key, {})
+                if item["sample_count"]:
+                    combined = {**previous, **item}
+                    if previous.get("sample_count", 0):
+                        combined["advantage"] = 0.5 * previous["advantage"] + 0.5 * item["advantage"]
+                        combined["source"] = "equal_mixture_mc_and_td"
+                    estimates["actions"][key] = combined
+            estimates["critic_state_value"] = self.value_controller.value(state)
+            return estimates
         return estimates
 
     def build_guidance(
@@ -244,5 +242,45 @@ class ActorRLController:
         candidate_actions: Iterable[str],
         *,
         base_action: str | None = None,
+        base_logits=None,
+        feasibility=None,
+        sample: bool = True,
     ) -> dict[str, Any]:
-        return self.rerank_candidates(state, candidate_actions, base_action=base_action)
+        actions = list(candidate_actions)
+        if len(actions) != len(self._deduplicate(actions)) or not actions:
+            raise ValueError("Policy candidates must be distinct and nonempty.")
+        if base_logits is None and feasibility is None:
+            return self.rerank_candidates(state, actions, base_action=base_action)
+        native = base_logits is not None
+        logits = list(base_logits) if native else [-self.rank_penalty * i for i in range(len(actions))]
+        if len(logits) != len(actions) or not all(math.isfinite(x) for x in logits):
+            raise ValueError("Each candidate requires a finite model logit.")
+        estimates = self.estimate(state, actions) if self.enabled else {"actions": {}}
+        advantages = self._normalized_advantages(estimates) if self.enabled else {}
+        corrections = []
+        for action in actions:
+            item = estimates.get("actions", {}).get(action.casefold(), {})
+            bonus = self.exploration_coefficient / math.sqrt(item.get("sample_count", 0) + 1) if self.enabled else 0.0
+            corrections.append(self.beta * advantages.get(action.casefold(), 0.0) + bonus)
+        adjusted = [z + correction for z, correction in zip(logits, corrections)]
+        posterior = NeuroSymbolicInference().condition_actions(
+            adjusted, feasibility if feasibility is not None else [1.0] * len(actions)
+        )
+        probs = posterior["probabilities"]
+        index = self.rng.choices(range(len(actions)), weights=probs, k=1)[0] if sample else max(range(len(actions)), key=probs.__getitem__)
+        prior = softmax(logits)
+        return {
+            "action": actions[index], "candidates": actions,
+            "base_logits": logits, "adjusted_logits": adjusted,
+            "conditioned_logits": [z if math.isfinite(z) else None for z in posterior["logits"]],
+            "probabilities": probs, "base_probabilities": prior,
+            "advantages": advantages, "corrections": corrections,
+            "feasibility": list(feasibility) if feasibility is not None else [1.0] * len(actions),
+            "satisfaction_mass": posterior["satisfaction_mass"],
+            "log_satisfaction_mass": posterior["log_satisfaction_mass"],
+            "action_logprob": math.log(probs[index]) if sample else 0.0,
+            "selection_mode": "sample" if sample else "greedy",
+            "kl_to_base": sum(p * (math.log(p) - z + logsumexp(logits)) for p, z in zip(probs, logits) if p > 0),
+            "method": "model_label_logits_plus_advantage_nsi" if native else "rank_prior_plus_advantage_nsi",
+            "critic": estimates,
+        }

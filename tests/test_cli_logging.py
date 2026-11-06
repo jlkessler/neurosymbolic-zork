@@ -185,7 +185,7 @@ def test_historian_reviews_episode_and_updates_next_prompt_lessons(tmp_path):
     assert "Use score increases to identify actions worth pursuing." in guidance
 
 
-def test_historian_uses_three_by_three_fallback_without_review_client(tmp_path):
+def test_historian_rejects_missing_review_client_without_inventing_lessons(tmp_path):
     historian = Historian(tmp_path / "historian.json")
     historian.start_episode("A", "Room A", initial_score=0)
     historian.observe_step(
@@ -195,13 +195,11 @@ def test_historian_uses_three_by_three_fallback_without_review_client(tmp_path):
     )
     finished = historian.finish_episode(final_score=0, moves=1, termination_reason="step_limit")
 
-    review = historian.review_episode(
-        finished, client=None, model="unused-model"
-    )
-    assert review["review_source"] == "deterministic_fallback"
-    assert len(review["positives"]) == 3
-    assert len(review["negatives"]) == 3
-    assert len(review["report"].split("\n\n")) == 2
+    previous = dict(historian.trial_lessons)
+    with pytest.raises(RuntimeError, match="No Historian review client"):
+        historian.review_episode(finished, client=None, model="unused-model")
+    assert historian.trial_lessons == previous
+    assert finished["historian_review_error"]["fallback_used"] is False
 
 
 
@@ -277,7 +275,7 @@ def test_historian_generates_configured_number_of_lessons_and_updates_prompt(tmp
         assert lesson in next_prompt_guidance
 
 
-def test_historian_fallback_respects_configured_lesson_count(tmp_path):
+def test_historian_failed_review_preserves_configured_lessons(tmp_path):
     lesson_count = 7
     historian = Historian(
         tmp_path / "historian.json",
@@ -288,15 +286,12 @@ def test_historian_fallback_respects_configured_lesson_count(tmp_path):
         final_score=0, moves=1, termination_reason="step_limit"
     )
 
-    review = historian.review_episode(
-        finished, client=None, model="unused-model"
-    )
-
-    assert review["review_source"] == "deterministic_fallback"
-    assert len(review["lessons"]["positives"]) == lesson_count
-    assert len(review["lessons"]["negatives"]) == lesson_count
-    assert len(set(review["lessons"]["positives"])) == lesson_count
-    assert len(set(review["lessons"]["negatives"])) == lesson_count
+    historian.trial_lessons = {"positives": [f"Retain {i}" for i in range(lesson_count)],
+                               "negatives": [f"Avoid {i}" for i in range(lesson_count)]}
+    previous = dict(historian.trial_lessons)
+    with pytest.raises(RuntimeError, match="No Historian review client"):
+        historian.review_episode(finished, client=None, model="unused-model")
+    assert historian.trial_lessons == previous
 
 def test_smart_agent_logs_full_request_and_response_and_resets_history():
     events = []
@@ -346,7 +341,7 @@ def test_smart_agent_logs_full_request_and_response_and_resets_history():
     assert [event for event, _ in events] == ["request","response","actor_decision_rationale"]
     rationale_event = events[2][1]
     assert rationale_event["rationale"] == decision["decision_rationale"]
-    assert rationale_event["rationale_source"] == "model_emitted_json_field"
+    assert rationale_event["rationale_source"] == "not_provided"
     assert rationale_event["base_action"] == "look"
     request = events[0][1]
     assert request["model"] == "unit-test-model"

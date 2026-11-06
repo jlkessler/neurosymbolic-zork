@@ -9,19 +9,22 @@ blocked edge sets are transient; the learned WorldMap is never erased on failure
 from __future__ import annotations
 
 from typing import Any
+import math
 
 import networkx as nx
 
 
 class NavigationController:
-    def __init__(self, world_map):
+    def __init__(self, world_map, *, risk_weight=0.0):
         self.world_map = world_map
+        self.risk_weight = max(0.0, float(risk_weight))
         # Failed edges are blocked for the current episode only. A route can be
         # retried in a later episode because doors/inventory/state may differ.
         self.confirmed_edges: set[tuple[Any, Any, Any]] = set()
         self.blocked_edges: set[tuple[Any, Any, Any]] = set()
         self.active_plan: dict | None = None
         self.last_status = "idle"
+        self.last_plan_summary: dict | None = None
 
     @staticmethod
     def _normalize_action(action: str) -> str:
@@ -42,6 +45,7 @@ class NavigationController:
         self.blocked_edges.clear()
         self.active_plan = None
         self.last_status = "idle"
+        self.last_plan_summary = None
 
     def _resolve_node(self, location, location_id=None):
         if location in self.world_map.graph:
@@ -73,9 +77,16 @@ class NavigationController:
             elif require_confirmed and edge not in self.confirmed_edges:
                 graph.remove_edge(source, destination, key)
 
+        for source, destination, key, data in graph.edges(keys=True, data=True):
+            p = self.world_map.edge_probability(
+                (source, destination, key), confirmed=self.confirmed_edges,
+                blocked=self.blocked_edges if exclude_blocked else (),
+            ) if hasattr(self.world_map, "edge_probability") else 1.0
+            data["planning_cost"] = data.get("cost", 1) - self.risk_weight * math.log(max(p, 1e-12))
+
         try:
             total_cost, node_path = nx.single_source_dijkstra(
-                graph, source=start_node, target=target_node, weight="cost"
+                graph, source=start_node, target=target_node, weight="planning_cost"
             )
         except (nx.NetworkXNoPath, nx.NodeNotFound):
             return None
@@ -89,7 +100,7 @@ class NavigationController:
             edge_key, data = min(
                 parallel.items(),
                 key=lambda item: (
-                    item[1].get("cost", len(item[1].get("actions", []))),
+                    item[1].get("planning_cost", len(item[1].get("actions", []))),
                     len(item[1].get("actions", [])),
                 ),
             )
@@ -105,16 +116,29 @@ class NavigationController:
             })
             all_actions.extend(actions)
 
-        return {
+        route = {
             "start": start_node,
             "start_label": self.world_map.display_location(start_node),
             "destination": target_node,
             "destination_label": self.world_map.display_location(target_node),
             "total_cost": total_cost,
+            "action_count": len(all_actions),
             "nodes": node_path,
             "transitions": transitions,
             "actions": all_actions,
         }
+        if hasattr(self.world_map, "route_probability"):
+            route["success_probability"] = self.world_map.route_probability(
+                route, confirmed=self.confirmed_edges,
+                blocked=self.blocked_edges if exclude_blocked else (),
+            )
+        return route
+
+    def invalidate_local_evidence(self, node):
+        """A verified object-state change may open or close a local passage."""
+        self.confirmed_edges = {edge for edge in self.confirmed_edges if edge[0] != node}
+        self.blocked_edges = {edge for edge in self.blocked_edges if edge[0] != node}
+        self.cancel_plan("local_world_state_changed")
 
     def plan_to(self, destination, destination_id=None, *, require_confirmed=True):
         """Plan a route, requiring current-episode confirmation by default."""
@@ -266,8 +290,38 @@ class NavigationController:
         return matches
 
     def cancel_plan(self, reason="cancelled"):
+        if self.active_plan is not None:
+            plan = self.active_plan
+            self.last_plan_summary = {
+                "destination": plan.get("destination_label", plan.get("destination")),
+                "start": plan.get("start_label", plan.get("start")),
+                "remaining_actions": self.remaining_actions(),
+                "transition_index": plan.get("transition_index", 0),
+                "transition_count": len(plan.get("transitions", [])),
+                "route_type": (
+                    "historical candidate"
+                    if not plan.get("require_confirmed", True)
+                    else "episode-confirmed route"
+                ),
+                "result": str(reason),
+            }
+        elif reason and reason != "actor_or_puzzle_decision":
+            self.last_plan_summary = {
+                "destination": None,
+                "start": self.world_map.display_location(self.world_map.current_location)
+                if self.world_map.current_location is not None else None,
+                "remaining_actions": [],
+                "transition_index": 0,
+                "transition_count": 0,
+                "route_type": "none",
+                "result": str(reason),
+            }
         self.active_plan = None
-        self.last_status = reason
+        # The main loop routinely hands control to the Actor even when no
+        # plan was active. Do not overwrite a more informative status such as
+        # home_route_blocked or planned_action_unavailable in that case.
+        if reason != "actor_or_puzzle_decision" or self.last_status in {"idle", "active", "complete"}:
+            self.last_status = reason
 
     def next_action(self, valid_actions=None):
         """Return the next route command, mapped to an available action string.
@@ -354,6 +408,7 @@ class NavigationController:
             )
             for edge in matched:
                 self.confirmed_edges.add(edge)
+                self.blocked_edges.discard(edge)
             result["confirmed_edges"] = matched
             if matched and not self.active_plan:
                 self.last_status = "transition_confirmed"
@@ -449,10 +504,57 @@ class NavigationController:
         return actions
 
     def navigation_context(self):
-        """Compact, prompt-friendly description of the active route."""
-        if not self.active_plan or self.active_plan.get("status") != "active":
-            return "No active symbolic navigation plan."
-        return (
-            f"Active destination: {self.active_plan['destination_label']}\n"
-            f"Remaining directions: {' -> '.join(self.remaining_actions())}"
+        """Describe active or recently abandoned routing evidence for the Actor.
+
+        The main loop can hand control back to the Actor after a route is
+        unavailable or blocked. Keeping the last plan summary lets the Actor
+        see what the navigator tried instead of losing that context when the
+        active plan is cancelled.
+        """
+        if self.active_plan and self.active_plan.get("status") == "active":
+            plan = self.active_plan
+            route_type = (
+                "historical candidate; not yet verified in this episode"
+                if not plan.get("require_confirmed", True)
+                else "confirmed during this episode"
+            )
+            remaining = self.remaining_actions()
+            return (
+                f"ACTIVE SYMBOLIC ROUTE\n"
+                f"Destination: {plan['destination_label']}\n"
+                f"Route type: {route_type}\n"
+                f"Progress: transition {plan.get('transition_index', 0) + 1} "
+                f"of {len(plan.get('transitions', []))}\n"
+                f"Remaining commands: {' -> '.join(remaining) or 'none'}\n"
+                "The navigator executes only the next command and validates its result."
+            )
+
+        summary = self.last_plan_summary or {}
+        blocked_descriptions = []
+        for source, destination, key in list(self.blocked_edges)[-5:]:
+            edge_data = self.world_map.graph.get_edge_data(source, destination, key) or {}
+            edge_actions = edge_data.get("actions", [])
+            blocked_descriptions.append(
+                f"{self.world_map.display_location(source)} --"
+                f"[{', '.join(edge_actions)}]--> "
+                f"{self.world_map.display_location(destination)}"
+            )
+
+        lines = [
+            "NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.",
+            f"Last navigation status: {summary.get('result', self.last_status)}.",
+        ]
+        if summary.get("destination"):
+            lines.extend([
+                f"Last route destination: {summary['destination']}.",
+                f"Last route type: {summary.get('route_type', 'unknown')}.",
+                f"Unexecuted route commands at handoff: "
+                f"{' -> '.join(summary.get('remaining_actions', [])) or 'none'}.",
+            ])
+        if blocked_descriptions:
+            lines.append("Edges blocked during this episode: " + "; ".join(blocked_descriptions))
+        lines.append(
+            "Use this information as evidence, not as a guarantee that a historical "
+            "passage is currently open. Investigate blocked prerequisites or an alternate route."
         )
+        return "\n".join(lines)

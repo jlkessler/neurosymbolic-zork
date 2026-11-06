@@ -541,7 +541,7 @@ def test_smart_agent_returns_action_and_state_report():
     assert "narrow keyhole" in decision["report"]["puzzle_clues"][0]
 
     prompt = completions.request["messages"][0]["content"]
-    assert "greater than 75" in prompt
+    assert "configured score target of 76" in prompt
     assert "score feedback" in prompt
     # The Actor is not supplied the guide's named puzzle solution.
     assert "Odysseus" not in prompt

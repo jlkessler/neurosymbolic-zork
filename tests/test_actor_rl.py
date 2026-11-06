@@ -181,11 +181,13 @@ def test_historian_critic_learns_and_persists_state_values(tmp_path):
     assert loaded.episodes_trained == 1
 
 
-def test_cli_exposes_actor_rl_and_disabled_historian_critic_defaults():
+def test_cli_enables_both_agents_and_native_logits_by_default():
     args = parse_args([])
     assert args.actor_rl is True
     assert args.actor_rl_gamma == pytest.approx(0.995)
-    assert args.historian_critic is False
+    assert args.historian_critic is True
+    assert args.actor_policy_mode == "logprobs"
+    assert args.evolve and args.nsi
     assert args.actor_experience_path.endswith("actor_experiences.jsonl")
 
     configured = parse_args([
