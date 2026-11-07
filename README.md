@@ -53,8 +53,30 @@ pip install -r requirements-semantic.txt
 Copy `.env.example` to `.env` if setting up a new checkout. Existing `.env`
 settings are preserved. Configuration precedence is CLI, shell environment,
 project `.env`, then application defaults. The active Actor uses `ACTOR_MODEL`,
-`ACTOR_BASE_URL` and `ACTOR_API_KEY`. `HISTORIAN_MODEL` may select a different
-model on the same compatible endpoint. No credentials belong in source control.
+`ACTOR_BASE_URL` and `ACTOR_API_KEY`. The Historian has its own independent
+connection. Configure both roles explicitly:
+
+| Setting | Actor | Historian |
+| --- | --- | --- |
+| API key | `ACTOR_API_KEY` | `HISTORIAN_API_KEY` |
+| Endpoint | `ACTOR_BASE_URL` | `HISTORIAN_BASE_URL` |
+| Model | `ACTOR_MODEL` | `HISTORIAN_MODEL` |
+| Calls | Game decisions and label scoring | Episode reviews and configuration evolution |
+
+The Historian never inherits the Actor API key or endpoint. Set its endpoint
+and key whenever reviews or evolution are enabled; missing settings produce a
+startup error. For a local service without authentication, provide an explicit
+placeholder key. To deliberately use the same provider for both roles, set
+both sets of variables. No credentials belong in source control.
+
+CLI equivalents are `--actor-api-key`, `--actor-base-url`, `--actor-model`,
+and `--historian-api-key`, `--historian-base-url`, `--historian-model`.
+The older `--api-key`, `--base-url`, and `--model` remain Actor-only aliases.
+Prefer environment variables for keys so secrets do not enter shell history.
+If `HISTORIAN_MODEL` is omitted, its model name defaults to the Actor model
+name; the connection and credentials remain independent. The Historian's
+Open WebUI compatibility flag is `--historian-openwebui-parent-id-null`
+or `HISTORIAN_OPENWEBUI_PARENT_ID_NULL`.
 
 ## Run the hybrid
 

@@ -8,9 +8,12 @@ from .evolution import ConfigurationArchive, default_configuration, propose_conf
 
 
 class AdaptiveSystem:
-    def __init__(self, args, *, actor, historian, critic, policy, navigator, output_dir):
+    def __init__(self, args, *, actor, historian, critic, policy, navigator, output_dir,
+                 historian_client=None, historian_extra_body=None):
         self.args = args
         self.actor, self.historian = actor, historian
+        self.historian_client = historian_client
+        self.historian_extra_body = historian_extra_body
         self.critic, self.policy, self.navigator = critic, policy, navigator
         self.output_dir = Path(output_dir)
         self.scores = []
@@ -67,9 +70,9 @@ class AdaptiveSystem:
         self.archive.observe(score, score_scale=self.args.score_scale)
         try:
             child, rationale = propose_configuration(
-                client=self.actor.client, model=self.args.historian_model or self.args.model,
+                client=self.historian_client, model=self.args.historian_model or self.args.model,
                 parent=self.configuration, episode=self.historian._review_payload(episode),
-                extra_body=self.actor.extra_body, event_logger=event_logger,
+                extra_body=self.historian_extra_body, event_logger=event_logger,
             )
             child_id = self.archive.add(child, parent_id=self.configuration_id)
             self.archive.save()

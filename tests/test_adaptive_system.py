@@ -18,6 +18,12 @@ from MANGORL.smart_agent import SmartAgent
 import main
 
 
+@pytest.fixture(autouse=True)
+def independent_mock_historian_connection(monkeypatch):
+    # Integration tests use a separate mock provider rather than real credentials.
+    monkeypatch.setattr(main, "create_historian_connection", lambda args: (GameClient(), None))
+
+
 def test_nsi_matches_hand_calculated_integral_and_shared_atoms():
     nsi = NeuroSymbolicInference()
     # P(A or B) = .4 + .5 - .4*.5, not a sum of overlapping proof masses.

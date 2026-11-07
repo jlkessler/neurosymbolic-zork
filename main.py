@@ -23,6 +23,7 @@ from MANGORL.cognitive_map import CognitiveMap
 from MANGORL.adaptive_system import AdaptiveSystem
 from MANGORL.semantic_memory import FrozenStateEncoder
 from MANGORL.policy_logits import LogitsUnavailable
+from MANGORL.llm_connections import create_historian_connection
 
 DEFAULT_BASE_URL = "http://cs-steverw.umflint.edu:8080/api"
 
@@ -48,17 +49,17 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Actor implementation to use (only 'smart' is currently implemented).",
     )
     parser.add_argument(
-        "--model", default=os.getenv("ACTOR_MODEL", "gemma4:31b"),
+        "--actor-model", "--model", dest="model", default=os.getenv("ACTOR_MODEL", "gemma4:31b"),
         help="LLM model identifier passed to the OpenAI-compatible endpoint.",
     )
     parser.add_argument(
-        "--base-url", default=os.getenv("ACTOR_BASE_URL", DEFAULT_BASE_URL),
-        help="OpenAI-compatible API base URL.",
+        "--actor-base-url", "--base-url", dest="base_url", default=os.getenv("ACTOR_BASE_URL", DEFAULT_BASE_URL),
+        help="Actor-only OpenAI-compatible API base URL (ACTOR_BASE_URL).",
     )
     parser.add_argument(
-        "--api-key", default=None,
+        "--actor-api-key", "--api-key", dest="api_key", default=None,
         help=(
-            "API key (prefer ACTOR_API_KEY; command-line values may be visible "
+            "Actor-only API key (prefer ACTOR_API_KEY; command-line values may be visible "
             "in shell history and process listings)."
         ),
     )
@@ -123,6 +124,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--historian-model", default=os.getenv("HISTORIAN_MODEL"),
         help="Model used for episode reviews (defaults to --model).",
     )
+    parser.add_argument("--historian-base-url", default=os.getenv("HISTORIAN_BASE_URL"),
+                        help="Historian-only endpoint for reviews and evolution (HISTORIAN_BASE_URL).")
+    parser.add_argument("--historian-api-key", default=None,
+                        help="Historian-only API key; prefer HISTORIAN_API_KEY. Never inherits ACTOR_API_KEY.")
+    parser.add_argument("--historian-openwebui-parent-id-null", action=argparse.BooleanOptionalAction,
+                        default=os.getenv("HISTORIAN_OPENWEBUI_PARENT_ID_NULL", "0") == "1",
+                        help="Historian-only Open WebUI compatibility setting.")
     parser.add_argument(
         "--historian-lessons-per-category", "--historian-lesson-count", "--historian-lessons",
         dest="historian_lessons_per_category",
@@ -354,6 +362,7 @@ def run_episode(
     args, episode_number, world_map, historian, navigator, agent,
     episode_logger, actor_experience, actor_rl_controller,
     historian_rl_controller, trial_id, map_initialized=False, adaptive_system=None,
+    historian_client=None, historian_extra_body=None,
 ):
     """Run one fresh Jericho episode while preserving trial-level memory."""
     # Import lazily so CLI help and parser tests work without Jericho installed.
@@ -613,7 +622,7 @@ def run_episode(
             world_before = state_hash() if callable(state_hash) else None
             observation, reward, done, next_info = env.step(action)
             info = next_info
-            world_changed = world_before is not None and world_before != state_hash()
+            world_changed = world_before is not None and world_before != state_hash() # type: ignore
             next_room = env.get_player_location()
             if next_room is None and not done:
                 raise RuntimeError("Jericho did not provide the room after the action.")
@@ -769,7 +778,7 @@ def run_episode(
                 gamma=args.actor_rl_gamma,
                 termination_reason=termination_reason,
                 final_score=final_score,
-                bootstrap_value=(historian_rl_controller.value(next_rl_state)
+                bootstrap_value=(historian_rl_controller.value(next_rl_state) # type: ignore
                                  if termination_reason == "step_limit" and "next_rl_state" in locals() else 0.0),
             )
             critic_summary = historian_rl_controller.finish_episode(
@@ -787,12 +796,12 @@ def run_episode(
                 try:
                     review = historian.review_episode(
                         finished_episode,
-                        client=getattr(agent, "client", None),
+                        client=historian_client,
                         model=args.historian_model or args.model,
                         temperature=args.historian_temperature,
                         max_tokens=args.historian_max_tokens,
                         event_logger=episode_logger.log_chat_event,
-                        extra_body=getattr(agent, "extra_body", None),
+                        extra_body=historian_extra_body,
                         trial_episode_number=episode_number,
                     )
                     episode_logger.write_historian_review(review)
@@ -818,6 +827,9 @@ def run_episode(
 
 def main(argv=None):
     args = parse_args(argv)
+    historian_client, historian_extra_body = (
+        create_historian_connection(args) if args.historian_review or args.evolve else (None, None)
+    )
     logger = TrialLogger(args.output_dir, args.trial_name)
     if args.fresh_memory:
         directory = logger.run_directory / "memory"
@@ -877,7 +889,8 @@ def main(argv=None):
                 agent = create_agent(args, event_logger=episode_logger.log_chat_event)
                 adaptive_system = AdaptiveSystem(args, actor=agent, historian=historian,
                     critic=historian_critic, policy=actor_rl_controller, navigator=navigator,
-                    output_dir=logger.run_directory)
+                    output_dir=logger.run_directory, historian_client=historian_client,
+                    historian_extra_body=historian_extra_body)
             try:
                 _, _ = run_episode(
                     args=args,
@@ -893,6 +906,8 @@ def main(argv=None):
                     trial_id=logger.run_directory.name,
                     map_initialized=map_initialized,
                     adaptive_system=adaptive_system,
+                    historian_client=historian_client,
+                    historian_extra_body=historian_extra_body,
                 )
                 map_initialized = True
             except Exception as exc:

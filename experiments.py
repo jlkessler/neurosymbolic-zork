@@ -45,9 +45,9 @@ def main(argv=None):
             # JSON preserves Windows argument boundaries and avoids shell quoting.
             displayed = list(command)
             for index, value in enumerate(displayed):
-                if value in {"--api-key", "--historian-api-key"} and index + 1 < len(displayed):
+                if value in {"--api-key", "--actor-api-key", "--historian-api-key"} and index + 1 < len(displayed):
                     displayed[index + 1] = "<redacted>"
-                elif value.startswith(("--api-key=", "--historian-api-key=")):
+                elif value.startswith(("--api-key=", "--actor-api-key=", "--historian-api-key=")):
                     displayed[index] = value.split("=", 1)[0] + "=<redacted>"
             print(json.dumps(displayed))
             if not args.dry_run:
