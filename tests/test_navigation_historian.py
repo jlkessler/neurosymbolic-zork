@@ -375,7 +375,7 @@ def test_historian_goal_is_to_exceed_75_not_optimize_speed(tmp_path):
     assert historian.target_score == 76
     guidance = historian.build_guidance("A", "A", current_score=75)
     assert "exceed 75 points" in guidance
-    assert "Do not optimize for fewest moves" in guidance
+    assert "Use the remaining command budget" in guidance
 
 
 def test_historian_stops_when_score_is_greater_than_75(tmp_path):

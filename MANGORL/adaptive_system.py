@@ -40,15 +40,16 @@ class AdaptiveSystem:
         self.navigator.risk_weight = cfg["route_risk_weight"] if self.args.nsi else 0.0
         event_logger("active_configuration", {"id": self.configuration_id, "configuration": cfg})
 
-    def finish_episode(self, episode, *, info, reason, event_logger, api_requests=None):
+    def finish_episode(self, episode, *, info, reason, event_logger, api_requests=None, episode_number=None):
         # A failed API call is not an evaluated configuration, and must not
         # trigger a second paid LLM call or enter the score benchmark.
-        if reason in {"episode_exception", "initialization_failed"}:
+        if reason in {"episode_exception", "initialization_failed", "interrupted", "no_safe_actions", "no_valid_actions"}:
             event_logger("configuration_evaluation_skipped", {"reason": reason})
             return
         score = float(info.get("score", 0))
         self.scores.append(score)
-        metric = {"episode": len(self.scores), "score": score, "moves": info.get("moves"),
+        metric = {"episode": episode_number if episode_number is not None else len(self.scores),
+                  "evaluated_episode": len(self.scores), "score": score, "moves": info.get("moves"),
                   "steps": episode.get("steps"), "termination_reason": reason,
                   "configuration_id": self.configuration_id, "seed": self.args.seed,
                   "api_requests_before_evolution": api_requests,
@@ -73,6 +74,7 @@ class AdaptiveSystem:
                 client=self.historian_client, model=self.args.historian_model or self.args.model,
                 parent=self.configuration, episode=self.historian._review_payload(episode),
                 extra_body=self.historian_extra_body, event_logger=event_logger,
+                max_tokens=getattr(self.args, "evolution_max_tokens", 4096),
             )
             child_id = self.archive.add(child, parent_id=self.configuration_id)
             self.archive.save()

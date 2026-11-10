@@ -152,6 +152,44 @@ def test_selector_does_not_strip_whitespace_or_accept_sentinel():
             LabelLogprobScorer().score(client=client, model="test", messages=[], actions=["look"])
 
 
+def test_luna_scoring_disables_reasoning_and_requires_logprob_route():
+    requests = []
+
+    def create(**request):
+        requests.append(request)
+        return fake_response({"A": -.2, "B": -2})
+
+    client = NS(base_url="https://openrouter.ai/api/v1",
+                chat=NS(completions=NS(create=create)))
+    result = LabelLogprobScorer().score(
+        client=client, model="openai/gpt-6-luna", messages=[], actions=["look", "north"],
+        extra_body={"provider": {"allow_fallbacks": False}},
+    )
+    request, = requests
+    assert request["reasoning_effort"] == "none"
+    assert request["max_completion_tokens"] == 16
+    assert "max_tokens" not in request
+    assert request["logprobs"] is True
+    assert request["extra_body"]["provider"] == {
+        "allow_fallbacks": False, "require_parameters": True,
+    }
+    assert result["base_logits"] == [-.2, -2]
+
+
+def test_selector_surfaces_upstream_parameter_error():
+    def create(**_):
+        error = RuntimeError("400 - Provider returned error")
+        error.body = {"metadata": {
+            "provider_name": "OpenAI",
+            "raw": '{"error":{"param":"logprobs","message":"Reasoning must be disabled"}}',
+        }}
+        raise error
+
+    client = NS(chat=NS(completions=NS(create=create)))
+    with pytest.raises(LogitsUnavailable, match="OpenAI.*logprobs.*Reasoning must be disabled"):
+        LabelLogprobScorer().score(client=client, model="test", messages=[], actions=["look"])
+
+
 def test_evolution_archive_retains_parent_and_uses_observed_fitness(tmp_path):
     archive = ConfigurationArchive(tmp_path / "configs.json", exploration=.1)
     parent_id, parent = archive.select()
@@ -259,7 +297,136 @@ def test_evolved_actor_reorders_sections_and_rewrites_strategy():
     actor.choose_decision(observation="A room", current_location="A", valid_actions=["look"])
     request = client.requests[0]
     assert cfg["actor_strategy"] in request["messages"][0]["content"]
+    assert "Follow through on promising local interactions" in request["messages"][0]["content"]
+    assert "ADDITIONAL LEARNED STRATEGY" in request["messages"][0]["content"]
     assert request["messages"][1]["content"].startswith("AVAILABLE ACTIONS:")
+
+
+@pytest.mark.parametrize("first,finish,issue", [
+    ('{"action":"open window"}', "stop", "action_outside_menu"),
+    ('{"action":"north",', "length", "response_truncated"),
+    ('this is not JSON', "stop", "malformed_json"),
+])
+def test_actor_repairs_response_before_requesting_native_scores(first, finish, issue):
+    client = GameClient()
+    normal_create = client.create
+    calls = []
+
+    def create(**request):
+        calls.append(request)
+        if len(calls) == 1:
+            return NS(choices=[NS(message=NS(content=first), finish_reason=finish)])
+        return normal_create(**request)
+
+    client.create = create
+    events = []
+    actor = SmartAgent(client=client, policy_mode="logprobs",
+                       event_logger=lambda event, payload: events.append((event, payload)))
+    decision = actor.choose_decision(
+        observation="A room.", current_location="Atrium", valid_actions=["north", "look"],
+    )
+    assert decision["action"] == "north"
+    assert decision["base_logits"] == [-.4, -1.2]
+    assert len(calls) == 3  # Rejected response, repair, genuine scoring.
+    rejection = next(payload for event, payload in events if event == "actor_response_rejected")
+    assert rejection["issue"] == issue
+    assert rejection["valid_actions"] == ["north", "look"]
+    assert issue in calls[1]["messages"][-1]["content"]
+    if finish == "length":
+        assert calls[1]["max_tokens"] > calls[0]["max_tokens"]
+
+
+def test_episode_survives_exhausted_actor_repairs_with_genuine_scores(tmp_path, monkeypatch):
+    monkeypatch.setitem(sys.modules, "jericho", NS(FrotzEnv=TinyGame))
+    client = GameClient()
+    normal_create = client.create
+    failures = []
+
+    def create(**request):
+        if request.get("logprobs"):
+            return normal_create(**request)
+        failures.append(request)
+        return NS(choices=[NS(message=NS(content='{"action":"unavailable"}'), finish_reason="stop")])
+
+    client.create = create
+    monkeypatch.setattr(main, "create_agent", lambda args, event_logger: SmartAgent(
+        client=client, policy_mode="logprobs", event_logger=event_logger))
+    run = main.main(["--episodes", "1", "--max-steps", "2", "--fresh-memory",
+                     "--no-historian-review", "--no-evolve", "--output-dir", str(tmp_path)])
+    records = [json.loads(line) for line in (run / "memory/actor_experiences.jsonl").read_text().splitlines()]
+    assert len(failures) == 6  # Three attempts per turn, then score the legal menu.
+    assert [row["action"] for row in records] == ["north", "look"]
+    assert all(row["selection_info"]["method"] == "model_label_logits_plus_advantage_nsi"
+               for row in records)
+    assert json.loads((run / "metrics_summary.json").read_text())["final_score"] == 4
+
+
+def test_snapshot_context_restores_game_even_when_query_fails():
+    class SnapshotGame:
+        moves = 7
+
+        def get_state(self):
+            return self.moves
+
+        def set_state(self, state):
+            self.moves = state
+
+        def step(self, action):
+            self.moves += 1
+            if action == "inventory" and self.fail_inventory:
+                raise RuntimeError("query failed")
+            return action + " text", 0, False, {"moves": self.moves}
+
+    game = SnapshotGame()
+    game.fail_inventory = False
+    text = main.current_environment_context(game, "last result")
+    assert "look text" in text and "inventory text" in text and "last result" in text
+    assert game.moves == 7
+    game.fail_inventory = True
+    with pytest.raises(RuntimeError, match="query failed"):
+        main.current_environment_context(game, "last result")
+    assert game.moves == 7
+
+
+def test_terminal_relocation_is_not_learned_as_a_route(tmp_path, monkeypatch):
+    class DeathGame(TinyGame):
+        def step(self, action):
+            self.step_count += 1
+            return "You have died and reappeared elsewhere.", -10, True, {"score": -10, "moves": 1}
+
+    monkeypatch.setitem(sys.modules, "jericho", NS(FrotzEnv=DeathGame))
+    monkeypatch.setattr(main, "create_agent", lambda args, event_logger: SmartAgent(
+        client=GameClient(), event_logger=event_logger, policy_mode="logprobs"))
+    run = main.main(["--episodes", "1", "--max-steps", "2", "--fresh-memory",
+                     "--no-evolve", "--no-historian-review", "--output-dir", str(tmp_path)])
+    world = CognitiveMap(run / "memory/world_map.json")
+    world.load()
+    assert world.graph.number_of_edges() == 0
+    records = [json.loads(line) for line in (run / "memory/actor_experiences.jsonl").read_text().splitlines()]
+    assert records[0]["terminal"] and records[0]["score_delta"] == -10
+    assert records[0]["next_state"]["location"] == "Gallery"
+
+
+def test_actor_grounds_directions_and_preserves_proposal_for_scoring():
+    client = GameClient()
+    actor = SmartAgent(client=client, policy_mode="logprobs")
+    actor.choose_decision(
+        observation="The passage opened.", current_location="Courtyard",
+        valid_actions=["west", "east"],
+        known_routes=[{"actions": ["W"], "destination": "Hall", "destination_label": "Hall",
+                       "total_cost": 1}],
+    )
+    assert "west: historically led to Hall" in client.requests[0]["messages"][1]["content"]
+    score_request = next(request for request in client.requests if request.get("logprobs"))
+    assert '"action": "west"' in score_request["messages"][1]["content"]
+    assert "ONLY as its menu letter" in score_request["messages"][0]["content"]
+
+
+def test_action_oracle_failure_does_not_fabricate_movement_only_menu():
+    def fail(**kwargs):
+        raise RuntimeError("oracle failed")
+    with pytest.raises(RuntimeError, match="command menu is unknown"):
+        main.get_valid_actions(NS(get_valid_actions=fail))
 
 
 @pytest.mark.parametrize("option,value", [("--actor-rl-beta", "nan"), ("--score-scale", "inf"),
@@ -284,7 +451,7 @@ def test_all_learning_switches_off_leave_no_critic_or_archive(tmp_path, monkeypa
     assert records and all(row["selection_info"]["corrections"] == [0.0] * len(row["candidate_actions"]) for row in records)
 
 
-def test_logprob_failure_stops_without_review_evolution_or_fitness(tmp_path, monkeypatch):
+def test_fail_fast_logprob_failure_stops_without_review_evolution_or_fitness(tmp_path, monkeypatch):
     monkeypatch.setitem(sys.modules, "jericho", NS(FrotzEnv=TinyGame))
     client = GameClient()
     original_create = client.create
@@ -296,7 +463,8 @@ def test_logprob_failure_stops_without_review_evolution_or_fitness(tmp_path, mon
     monkeypatch.setattr(main, "create_agent", lambda args, event_logger: SmartAgent(
         client=client, policy_mode="logprobs", event_logger=event_logger))
     with pytest.raises(LogitsUnavailable):
-        main.main(["--episodes", "2", "--max-steps", "2", "--fresh-memory", "--output-dir", str(tmp_path)])
+        main.main(["--episodes", "2", "--max-steps", "2", "--fresh-memory", "--fail-fast",
+                   "--output-dir", str(tmp_path)])
     run = next(tmp_path.iterdir())
     assert not (run / "metrics.jsonl").exists()
     assert not (run / "memory/configurations.json").exists()

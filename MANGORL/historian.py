@@ -11,6 +11,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from .llm_connections import complete_historian_validated
+
 
 class Historian:
     def __init__(
@@ -29,6 +31,10 @@ class Historian:
         self.memory = self._empty_memory()
         self.episode = None
         self._recent_attempts = []
+        self._navigation_attempts = []
+        self._room_snapshots = {}
+        self._inventory_snapshot = None
+        self._last_progress_step = 0
         self._completed_score_tasks = set()
         self._attempted_score_tasks = set()
         self.agent_state = self._empty_agent_state()
@@ -151,6 +157,10 @@ class Historian:
             "home_return_step": None,
         }
         self._recent_attempts = []
+        self._navigation_attempts = []
+        self._room_snapshots = {}
+        self._inventory_snapshot = None
+        self._last_progress_step = 0
         self._completed_score_tasks = set()
         self._attempted_score_tasks = set()
         # Inventory resets with a fresh Jericho episode. Cross-episode lessons
@@ -461,6 +471,7 @@ class Historian:
         action_source=None,
         actor_report=None,
         home_node=None,
+        inventory_snapshot=None,
     ):
         if self.episode is None:
             raise RuntimeError("Call start_episode() before observe_step().")
@@ -541,7 +552,9 @@ class Historian:
             blocked[normalized] = blocked.get(normalized, 0) + 1
 
         self._recent_attempts.append({
-            "node": before_key, "action": normalized, "no_progress": no_progress
+            "node": before_key, "action": normalized, "no_progress": no_progress,
+            "after_node": after_key, "observation": after_text,
+            "score_delta": score_delta,
         })
         self._recent_attempts = self._recent_attempts[-12:]
         repeated = [
@@ -623,6 +636,23 @@ class Historian:
             self._attempted_score_tasks.add(profile_key)
 
         self._update_inventory_from_action_result(normalized, observation, score_delta)
+
+        new_room = moved and after_key not in self.episode["visited_nodes"]
+        inventory_signature = (tuple(sorted(str(item).casefold().strip() for item in inventory_snapshot))
+                               if inventory_snapshot is not None else None)
+        inventory_changed = (inventory_signature is not None and self._inventory_snapshot is not None
+                             and inventory_signature != self._inventory_snapshot)
+        if inventory_signature is not None:
+            self._inventory_snapshot = inventory_signature
+        if new_room or inventory_changed or (score_delta is not None and score_delta != 0):
+            self._navigation_attempts.clear()
+            self._last_progress_step = self.episode["steps"] + 1
+        elif moved:
+            self._navigation_attempts.append({
+                "node": before_key, "action": normalized, "after_node": after_key,
+                "observation": after_text,
+            })
+            self._navigation_attempts = self._navigation_attempts[-40:]
 
         if moved and after_key not in self.episode["visited_nodes"]:
             self.episode["visited_nodes"].append(after_key)
@@ -774,7 +804,7 @@ class Historian:
         client,
         model,
         temperature=0.2,
-        max_tokens=900,
+        max_tokens=4096,
         event_logger=None,
         extra_body=None,
         trial_episode_number=None,
@@ -812,14 +842,14 @@ class Historian:
             {
                 "role": "user",
                 "content": (
-                    "Write a concise 1-2 paragraph review of how the Actor performed. "
+                    "Write a review of how the Actor performed in at most 150 words. "
                     "Discuss its strongest decisions, missed opportunities, ineffective "
                     "behavior, and actionable advice for its next episode. Assess the "
                     "Actor separately from symbolic-navigation actions where the evidence "
                     "allows. Do not claim an action caused a score increase unless the "
                     "recorded score event supports that conclusion.\n\n"
                     f"Then update the cross-episode lessons. Return exactly {self.lessons_per_category} "
-                    "concise, actionable positives to repeat and exactly "
+                    "concise, actionable positives to repeat (at most 25 words each) and exactly "
                     f"{self.lessons_per_category} negatives to avoid. Treat previous lessons "
                     "as candidates: retain useful ones, revise or replace them when this "
                     "episode provides better evidence. The lessons will be included in "
@@ -844,32 +874,20 @@ class Historian:
         if extra_body is not None:
             request["extra_body"] = extra_body
 
-        if event_logger:
-            event_logger("historian_review_request", request)
-
-        raw_response = ""
-        try:
-            if client is None:
-                raise RuntimeError(
-                    "No Historian review client is configured; the LLM review was not called."
-                )
-
-            response = client.chat.completions.create(**request)
-            raw_response = response.choices[0].message.content or ""
-            if event_logger:
-                event_logger("historian_review_response", {
-                    "model": model,
-                    "content": raw_response,
-                    "finish_reason": getattr(response.choices[0], "finish_reason", None),
-                })
-
-            parsed = self._parse_review_json(raw_response)
+        def validate_review(raw):
+            parsed = self._parse_review_json(raw)
+            if not isinstance(parsed.get("report"), str):
+                raise ValueError("Historian response 'report' must be a string.")
             report = "\n\n".join(
                 part.strip()
-                for part in str(parsed.get("report", "")).split("\n\n")
+                for part in parsed["report"].split("\n\n")
                 if part.strip()
             )
             requested_count = self.lessons_per_category
+            for category in ("positives", "negatives"):
+                lessons = parsed.get(category)
+                if not isinstance(lessons, list) or not all(isinstance(item, str) for item in lessons):
+                    raise ValueError(f"Historian response '{category}' must be an array of strings.")
             positives = self._clean_strings(
                 parsed.get("positives", []), limit=max(20, requested_count)
             )
@@ -891,17 +909,30 @@ class Historian:
                     f"{requested_count} distinct negative lessons; received {len(negatives)}."
                 )
 
-            result = {
+            return {
                 "report": report,
                 "positives": positives,
                 "negatives": negatives,
                 "review_source": "llm",
             }
+
+        raw_response = ""
+        try:
+            if client is None:
+                raise RuntimeError(
+                    "No Historian review client is configured; the LLM review was not called."
+                )
+            result, raw_response, _ = complete_historian_validated(
+                client, request, validate=validate_review, event_prefix="historian_review",
+                event_logger=event_logger,
+            )
         except Exception as exc:
             error_payload = {
                 "error_type": type(exc).__name__,
                 "error": str(exc),
-                "raw_response": raw_response,
+                "raw_response": getattr(exc, "raw_response", raw_response),
+                "finish_reason": getattr(exc, "finish_reason", None),
+                "attempts": getattr(exc, "attempts", None),
                 "fallback_used": False,
             }
             episode["historian_review_error"] = error_payload
@@ -954,6 +985,51 @@ class Historian:
                 repeated.append(record.get("action"))
         return sorted(set(blocked) | set(repeated))
 
+    def cycle_recovery(self, current_node, valid_actions, known_routes=(), *, state_context=None, protected_actions=()):
+        """Temporarily exclude repeated transitions only while alternatives exist.
+
+        A third identical transition without score/inventory/new-room progress
+        is evidence of a cycle, including A->B->A. Actual per-room snapshots
+        reset this evidence when a puzzle state changes. No persistent map edge
+        is banned, and an only exit remains available for necessary backtracking.
+        """
+        current_key = str(current_node)
+        if state_context and "CURRENT ROOM (look):\n" in str(state_context):
+            snapshot = str(state_context).split("CURRENT ROOM (look):\n", 1)[1]
+            snapshot = " ".join(snapshot.split())
+            previous = self._room_snapshots.get(current_key)
+            if previous is not None and previous != snapshot:
+                self._navigation_attempts.clear()
+                self._last_progress_step = (self.episode or {}).get("steps", 0)
+            self._room_snapshots[current_key] = snapshot
+        counts = {}
+        for attempt in self._navigation_attempts:
+            if attempt["node"] == current_key:
+                key = (attempt["action"], attempt["after_node"], attempt["observation"])
+                counts[key] = counts.get(key, 0) + 1
+        repeated = [{"action": action, "destination": destination, "count": count}
+                    for (action, destination, _), count in counts.items() if count >= 3]
+        protected = {self.normalize_action(action) for action in protected_actions}
+        stale = {item["action"] for item in repeated} - protected
+        alternatives = [action for action in valid_actions
+                        if self.normalize_action(action) not in stale | {"look", "inventory", "wait", "z"}]
+        blocked = [action for action in valid_actions if self.normalize_action(action) in stale] if alternatives else []
+        visited = set((self.episode or {}).get("visited_nodes", []))
+        unvisited = {self.normalize_action(route["actions"][0]) for route in known_routes
+                     if route.get("actions") and str(route.get("destination")) not in visited}
+        attempted = {attempt["action"] for attempt in self._navigation_attempts if attempt["node"] == current_key}
+        preferred = [action for action in alternatives
+                     if self.normalize_action(action) in unvisited
+                     or (self._is_direction(action) and self.normalize_action(action) not in attempted)]
+        if blocked and self.episode is not None:
+            evidence = {"node": current_key, "kind": "movement_cycle", "actions": repeated}
+            records = self.episode["repeated_actions"]
+            if not records or records[-1] != evidence:
+                records.append(evidence)
+        return {"blocked_actions": blocked, "preferred_actions": preferred or alternatives,
+                "repeated_transitions": repeated,
+                "reason": "Repeated transitions without observed progress; try an available alternative." if blocked else ""}
+
     def build_guidance(self, current_node, current_location, current_score=None):
         """Build a strategic prompt from reward, inventory, route, and lesson evidence."""
         score = self._as_number(current_score)
@@ -963,7 +1039,7 @@ class Historian:
         )
         lines = [
             f"Primary objective: exceed 75 points and reach the configured target of {self.target_score} (current score {score if score is not None else 'unknown'}; approximately {remaining} additional point(s) needed).",
-            "Do not optimize for fewest moves. Pursue a sequence of meaningful objectives: establish a reliable way home, exploit proven score opportunities, secure valuables, and continue exploring productive areas.",
+            "Use the remaining command budget to complete meaningful objectives. Follow through on newly opened opportunities before revisiting already tested interactions.",
             "Treat previous score increases as empirical evidence. Prefer repeating a previously successful interaction when you are at the same room with comparable inventory and puzzle state; use the persistent map to cautiously revisit rooms where those interactions worked.",
             "A historical route is a candidate, not a guarantee. Follow it one transition at a time and switch back to puzzle reasoning if a passage is blocked or unavailable.",
         ]
@@ -998,6 +1074,19 @@ class Historian:
             lines.append(
                 f"At {current_location}, these actions repeatedly failed to make progress: {', '.join(avoid)}. Do not retry without new evidence."
             )
+        repetitions = {}
+        for attempt in self._recent_attempts:
+            if attempt["node"] == str(current_node) and (attempt.get("score_delta") or 0) <= 0:
+                effect = (attempt["action"], attempt.get("after_node"), attempt.get("observation"))
+                repetitions[effect] = repetitions.get(effect, 0) + 1
+        for (action, destination, result), count in repetitions.items():
+            if count >= self.repeat_threshold:
+                lines.append(
+                    f"Recent cycle evidence: '{action}' produced the same result {count} times "
+                    f"without a score increase (destination {destination}; result {result}). "
+                    "Consider a different interaction or follow through on the changed state. "
+                    "Retry only when current evidence supports a purpose."
+                )
 
         positive = sorted(
             self.memory.get("score_profiles", {}).values(),
@@ -1039,7 +1128,16 @@ class Historian:
             )
 
         episode = self.episode or {}
-        if episode.get("underground_reached") and not episode.get("home_return_verified"):
+        if episode.get("home_discovered") is False:
+            lines.append(
+                "The home room has not been identified in the map yet. Continue discovery while preserving valuables; no known return destination is available to navigate toward."
+            )
+        elif (episode.get("underground_reached") and not episode.get("home_return_verified")
+              and episode.get("steps", 0) - self._last_progress_step >= 12):
+            lines.append(
+                "The return route remains unverified and the search has stalled. Preserve useful items and investigate new exits or local prerequisites; repeatedly retracing the same rooms does not verify a route."
+            )
+        elif episode.get("underground_reached") and not episode.get("home_return_verified"):
             lines.append(
                 "EARLY UNDERGROUND PRIORITY: establish and test at least one route back to the Living Room before committing to a long underground treasure expedition. Once that return is verified, continue exploring and use it as a recovery route."
             )
@@ -1051,7 +1149,7 @@ class Historian:
         clues = self.memory.get("puzzle_clues", [])[-7:]
         if clues:
             lines.append(
-                "Previously reported environmental clues: "
+                "Historical model-reported clues (may be stale; current observation and command menu take precedence): "
                 + " | ".join(
                     f"{c.get('location', 'unknown')}: {c.get('clue', '')}"
                     for c in clues
@@ -1186,6 +1284,7 @@ class Historian:
         current_key = str(current_node)
         home_key = str(home_node) if home_node is not None else None
         episode = self.episode or {}
+        episode["home_discovered"] = home_key is not None
         if self._is_underground_location(current_location):
             episode["underground_reached"] = True
             episode.setdefault("first_underground_location", str(current_location))
@@ -1201,6 +1300,43 @@ class Historian:
         ordinary = list(self.agent_state.get("ordinary_items", []))
         useful = list(self.agent_state.get("useful_items", []))
         treasure_priority = bool(carried)
+
+        return_needed = treasure_priority or (episode.get("underground_reached") and not episode.get("home_return_verified"))
+        if return_needed and home_key is None:
+            recovery = self.cycle_recovery(current_node, valid_actions, known_routes)
+            return {
+                "kind": "solve_return_route", "route_status": "home_undiscovered",
+                "description": (
+                    f"Discover {home_label}: it has not yet been identified from an observed room title. "
+                    "Preserve carried valuables and explore new exits or local clues to locate it. "
+                    "There is no known home destination to route toward yet; continuing discovery is necessary."
+                ),
+                "target_node": None, "target_label": home_label, "route_available": False,
+                "carried_treasures": carried, "ordinary_items": ordinary, "useful_items": useful,
+                "preferred_actions": recovery["preferred_actions"], "sequence": [],
+                "source": "home_discovery",
+            }
+
+        # Return-route reasoning is a bounded subgoal, not an instruction to
+        # retrace the same rooms for the rest of the episode. Keep valuables
+        # while investigating new evidence that might also unlock the return.
+        stagnant_steps = episode.get("steps", 0) - self._last_progress_step
+        if (return_needed and current_key != home_key and stagnant_steps >= 12
+                and home_route_status not in {"confirmed", "historical_unconfirmed"}):
+            recovery = self.cycle_recovery(current_node, valid_actions, known_routes)
+            return {
+                "kind": "explore_alternative", "route_status": home_route_status,
+                "description": (
+                    f"The return-route search has made no observed progress for {stagnant_steps} commands. "
+                    "Keep carried valuables and investigate an untried exit or local puzzle prerequisite. "
+                    "Pursue new evidence instead of retracing the same room cycle; resume the return goal "
+                    "when inventory, room state, map knowledge, or score changes."
+                ),
+                "target_node": None, "target_label": None, "route_available": False,
+                "carried_treasures": carried, "ordinary_items": ordinary, "useful_items": useful,
+                "preferred_actions": recovery["preferred_actions"], "sequence": [],
+                "source": "stagnant_return_goal_recovery",
+            }
 
         # Goal sequence A: recover and bank score-relevant valuables before
         # pursuing optional exploration. Ordinary tools/information objects are
@@ -1220,23 +1356,6 @@ class Historian:
                     "details": "Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities."
                 },
             )
-            if home_key is None:
-                return {
-                    "kind": "solve_return_route",
-                    "description": (
-                        f"Return the carried treasure candidates ({', '.join(carried)}) to {home_label}. "
-                        "The home room is not yet identified in the current map. Preserve the items, inspect route clues, "
-                        "and discover a way back before attempting further optional exploration."
-                    ),
-                    "target_node": None,
-                    "target_label": home_label,
-                    "carried_treasures": carried,
-                    "ordinary_items": ordinary,
-                    "useful_items": useful,
-                    "sequence": follow_on,
-                    "route_available": False,
-                    "source": "actor_inventory_and_reward_evidence",
-                }
             if current_key == home_key:
                 return {
                     "kind": "deposit_treasure",
@@ -1378,17 +1497,25 @@ class Historian:
             action for action, count in blocked_at_node.items()
             if count >= self.repeat_threshold
         }
+        visited = set(self.episode.get("visited_nodes", [])) if self.episode else {current_key}
+        unvisited_route_actions = {
+            self.normalize_action(route["actions"][0])
+            for route in (known_routes or [])
+            if len(route.get("actions", [])) == 1
+            and str(route.get("destination")) not in visited
+        }
         frontier = [
             action for action in valid_actions
             if self._is_direction(action)
-            and self.normalize_action(action) not in known
+            and (self.normalize_action(action) not in known
+                 or self.normalize_action(action) in unvisited_route_actions)
             and self.normalize_action(action) not in blocked
         ]
         if frontier:
             return {
                 "kind": "explore_frontier",
                 "description": (
-                    "Explore an unmapped exit, but do so deliberately: inspect the current room and available objects, "
+                    "Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, "
                     "record the resulting transition, and look for score-producing interactions. If you enter the "
                     "underground, make establishing a return route your next milestone before extensive exploration."
                 ),

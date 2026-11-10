@@ -8,6 +8,7 @@ import argparse
 import os
 import hashlib
 import math
+import json
 from pathlib import Path
 from multiprocessing import freeze_support
 
@@ -22,8 +23,10 @@ from MANGORL.world_map import WorldMap
 from MANGORL.cognitive_map import CognitiveMap
 from MANGORL.adaptive_system import AdaptiveSystem
 from MANGORL.semantic_memory import FrozenStateEncoder
-from MANGORL.policy_logits import LogitsUnavailable
-from MANGORL.llm_connections import create_historian_connection
+from MANGORL.policy_logits import LogitsUnavailable, prepare_model
+from MANGORL.llm_connections import AnthropicHistorian, create_historian_connection
+from MANGORL.action_guards import guard_actions, ground_inventory, inventory_from_text, snapshot_sections
+from MANGORL.run_recovery import recoverable_episode_error
 
 DEFAULT_BASE_URL = "http://cs-steverw.umflint.edu:8080/api"
 
@@ -143,11 +146,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--historian-temperature", type=float, default=0.2,
-        help="Sampling temperature for the Historian's episode-review request.",
+        help="Sampling temperature for OpenAI-compatible Historian episode reviews.",
     )
     parser.add_argument(
-        "--historian-max-tokens", type=int, default=900,
-        help="Maximum completion tokens for each Historian review.",
+        "--historian-max-tokens", type=int, default=4096,
+        help="Initial Historian review token budget; a truncated response may retry once with twice this budget.",
     )
     parser.add_argument(
         "--actor-rl", action=argparse.BooleanOptionalAction, default=True,
@@ -211,13 +214,20 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--actor-policy-mode", choices=("logprobs", "rank"), default="logprobs",
                         help="Actual model label probabilities, or explicit rank-prior ablation.")
-    parser.add_argument("--sample-actions", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--sample-actions", action=argparse.BooleanOptionalAction, default=False,
+                        help="Sample the corrected policy instead of choosing its highest-probability command.")
     parser.add_argument("--nsi", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--route-risk-weight", type=float, default=2.0)
     parser.add_argument("--evolve", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--evolution-path", default="memory/configurations.json")
+    parser.add_argument("--evolution-max-tokens", type=int, default=4096,
+                        help="Initial evolution token budget; a truncated response may retry once with twice this budget.")
     parser.add_argument("--fresh-memory", action="store_true",
                         help="Use empty memories inside this trial directory; keep existing memory files intact.")
+    parser.add_argument("--fail-fast", action="store_true",
+                        help="Stop on the first exhausted recoverable episode error, instead of saving it and continuing.")
+    parser.add_argument("--max-consecutive-episode-failures", type=int, default=3,
+                        help="Stop after this many consecutive recoverable episode failures; no rank fallback is used.")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--memory-embedding-model", default=None,
                         help="Optional frozen SentenceTransformer model/path; omitted means lexical retrieval.")
@@ -237,12 +247,16 @@ def parse_args(argv=None):
         raise SystemExit("--target-score cannot be negative")
     if args.episodes <= 0:
         raise SystemExit("--episodes must be greater than zero")
+    if args.max_consecutive_episode_failures <= 0:
+        raise SystemExit("--max-consecutive-episode-failures must be greater than zero")
     if args.history_length <= 0:
         raise SystemExit("--history-length must be greater than zero")
     if args.max_tokens <= 0:
         raise SystemExit("--max-tokens must be greater than zero")
     if args.historian_max_tokens <= 0:
         raise SystemExit("--historian-max-tokens must be greater than zero")
+    if args.evolution_max_tokens <= 0:
+        raise SystemExit("--evolution-max-tokens must be greater than zero")
     if not 1 <= args.historian_lessons_per_category <= 10:
         raise SystemExit("--historian-lessons-per-category must be between 1 and 10")
     if args.temperature < 0:
@@ -274,15 +288,25 @@ def get_valid_actions(env):
     """Get Jericho parser actions without invoking multiprocessing."""
     try:
         actions = env.get_valid_actions(use_parallel=False)
-        if actions:
-            return actions
+        return list(dict.fromkeys(actions or []))
     except Exception as exc:
-        print(f"Jericho action generation failed: {exc}")
+        raise RuntimeError("Jericho action generation failed; the available command menu is unknown.") from exc
 
-    return [
-        "north", "south", "east", "west", "northeast", "northwest",
-        "southeast", "southwest", "up", "down", "look", "inventory", "pray",
-    ]
+
+def current_environment_context(env, observation):
+    """Read room/inventory text from a snapshot without advancing the game."""
+    if not callable(getattr(env, "get_state", None)) or not callable(getattr(env, "set_state", None)):
+        return observation
+    snapshot = env.get_state()
+    try:
+        room_text, _, _, _ = env.step("look")
+        env.set_state(snapshot)
+        inventory_text, _, _, _ = env.step("inventory")
+    finally:
+        env.set_state(snapshot)
+    return (f"LAST ACTION RESULT:\n{observation}\n\n"
+            f"CURRENT ROOM (look):\n{room_text}\n\n"
+            f"CURRENT INVENTORY:\n{inventory_text}")
 
 
 def get_known_outgoing_actions(world_map, current_node):
@@ -314,6 +338,10 @@ def _match_action(candidate, valid_actions):
 def create_agent(args, event_logger=None):
     """Construct the selected Actor implementation."""
     if args.agent_type == "smart":
+        if args.actor_policy_mode == "logprobs":
+            readiness = prepare_model(args.model)
+            if event_logger:
+                event_logger("actor_logprob_recovery_readiness", readiness)
         base_url = args.base_url
         extra_body = (
             {"parent_id": None}
@@ -375,6 +403,7 @@ def run_episode(
 
     env = FrotzEnv(args.rom_path, seed=args.seed)
     info = {}
+    last_recorded_state = None
     episode_started = False
     termination_reason = "initialization_failed"
 
@@ -433,6 +462,23 @@ def run_episode(
             if not valid_actions:
                 termination_reason = "no_valid_actions"
                 break
+            decision_observation = current_environment_context(env, observation)
+            world_map.observe_room_title(current_node, decision_observation)
+            current_label = world_map.display_location(current_node)
+            _, inventory_text = snapshot_sections(decision_observation)
+            observed_inventory = inventory_from_text(inventory_text)
+            ground_inventory(historian, observed_inventory)
+            episode_logger.log_chat_event("actor_environment_context", {
+                "location": current_label, "valid_actions": valid_actions,
+                "observation": decision_observation, "steps_remaining": args.max_steps - step,
+            })
+            valid_actions, unsafe_actions = guard_actions(valid_actions, decision_observation)
+            if unsafe_actions:
+                episode_logger.log_chat_event("action_guard", {"rejected": unsafe_actions,
+                                                               "permitted": valid_actions})
+            if not valid_actions:
+                termination_reason = "no_safe_actions"
+                break
 
             known_routes = world_map.get_reachable_routes(
                 start=current_node,
@@ -442,9 +488,11 @@ def run_episode(
             home_node = find_living_room_node(world_map)
             home_route_status = (
                 navigator.route_status(home_node)
-                if home_node is not None else "unknown"
+                if home_node is not None else "home_undiscovered"
             )
 
+            # Refresh progress evidence before deciding whether a goal is stale.
+            historian.cycle_recovery(current_node, valid_actions, state_context=decision_observation)
             goal = historian.choose_goal(
                 current_node=current_node,
                 current_location=current_label,
@@ -465,7 +513,7 @@ def run_episode(
             actor_rl_state = build_actor_rl_state(
                 current_node=current_node,
                 current_label=current_label,
-                observation=observation,
+                observation=decision_observation,
                 current_score=current_score,
                 historian=historian,
                 goal=goal,
@@ -480,12 +528,9 @@ def run_episode(
             action = None
             action_source = "smart_actor"
 
-            if goal.get("kind") == "score_action":
-                action = _match_action(goal.get("suggested_action"), valid_actions)
-                if action:
-                    action_source = "historian_observed_score"
-
-            elif goal.get("kind") in {
+            # A historical score event has no verified precondition contract.
+            # The Actor must reassess it against the current room and inventory.
+            if goal.get("kind") in {
                 "navigate_to_home", "establish_return_route", "navigate_score_goal"
             }:
                 target_node = goal.get("target_node")
@@ -504,6 +549,19 @@ def run_episode(
                         if action:
                             action_source = "symbolic_navigation"
 
+            recovery = historian.cycle_recovery(
+                current_node, valid_actions, known_routes=known_routes,
+                state_context=decision_observation,
+                protected_actions=[action] if action is not None else [],
+            )
+            if recovery["blocked_actions"]:
+                blocked = set(recovery["blocked_actions"])
+                valid_actions = [a for a in valid_actions if a not in blocked]
+                avoid_actions = list(dict.fromkeys([*avoid_actions, *recovery["blocked_actions"]]))
+                guidance += "\n" + recovery["reason"]
+                goal["preferred_actions"] = recovery["preferred_actions"]
+                episode_logger.log_chat_event("cycle_recovery", recovery)
+
             if action is not None and args.nsi and not world_map.action_feasibility(
                 actor_rl_state, [action], navigator, valid_actions
             )[0]:
@@ -514,7 +572,7 @@ def run_episode(
             if action is None:
                 navigator.cancel_plan("actor_or_puzzle_decision")
                 decision = agent.choose_decision(
-                    observation=observation,
+                    observation=decision_observation,
                     current_location=current_label,
                     valid_actions=valid_actions,
                     current_score=current_score,
@@ -527,6 +585,7 @@ def run_episode(
                     preferred_actions=goal.get("preferred_actions", []),
                     navigation_context=navigator.navigation_context(),
                     rl_guidance=rl_guidance,
+                    steps_remaining=args.max_steps - step,
                 )
                 base_action = decision["action"]
                 candidates = decision.get("candidate_actions", [base_action])
@@ -541,12 +600,19 @@ def run_episode(
                     permitted = [a for a, p in zip(valid_actions, world_map.action_feasibility(
                         actor_rl_state, valid_actions, navigator, valid_actions)) if p > 0]
                     if not permitted:
-                        raise RuntimeError("NSI found no consistent available command.")
+                        termination_reason = "no_safe_actions"
+                        episode_logger.log_chat_event("episode_no_feasible_action", {
+                            "location": current_label, "valid_actions": valid_actions,
+                            "reason": "NSI found no consistent available command.",
+                        })
+                        print("No feasible action remains; saving an incomplete episode.")
+                        break
                     decision = agent.choose_decision(
-                        observation=observation, current_location=current_label,
+                        observation=decision_observation, current_location=current_label,
                         valid_actions=permitted, current_score=current_score, target_score=args.target_score,
                         goal=goal, historian_guidance=guidance, rl_guidance=rl_guidance,
                         navigation_context=navigator.navigation_context(),
+                        steps_remaining=args.max_steps - step,
                     )
                     base_action = decision["action"]
                     candidates = decision["candidate_actions"]
@@ -579,12 +645,13 @@ def run_episode(
                     "selection": rl_selection,
                 })
                 historian.record_agent_report(decision.get("report", {}))
+                ground_inventory(historian, observed_inventory)
             else:
                 decision = {
                     "action": action,
                     "report": {},
                     "decision_rationale": "",
-                    "raw_response": "symbolic navigation or Historian-observed score action",
+                    "raw_response": "symbolic navigation",
                 }
                 episode_logger.log_chat_event("non_llm_action_selection", {
                     "location": current_label,
@@ -592,7 +659,7 @@ def run_episode(
                     "action_source": action_source,
                     "selected_action": action,
                     "navigation_context": navigator.navigation_context(),
-                    "note": "No LLM rationale exists because this command was selected by the symbolic navigator or deterministic Historian score policy.",
+                    "note": "No LLM rationale exists because this command was selected by the symbolic navigator.",
                 })
 
             print(f"Location: {current_label}")
@@ -622,16 +689,18 @@ def run_episode(
             world_before = state_hash() if callable(state_hash) else None
             observation, reward, done, next_info = env.step(action)
             info = next_info
-            world_changed = world_before is not None and world_before != state_hash() # type: ignore
+            world_changed = world_before is not None and world_before != state_hash()
             next_room = env.get_player_location()
             if next_room is None and not done:
                 raise RuntimeError("Jericho did not provide the room after the action.")
-            if next_room is None:
-                # A terminal observation may have no player object. Preserve
-                # the last known room without inventing a failed map edge.
-                navigator.cancel_plan("terminal_location_unavailable")
+            if done:
+                # Death/terminal relocation must not become a navigable route.
+                if next_room is not None:
+                    world_map.current_location = world_map.add_standard_location(next_room.name, next_room.num)
+                    world_map.current_location_name = next_room.name
+                navigator.cancel_plan("terminal_transition")
                 navigation_result = {"recorded_transition": False, "before_node": before_node,
-                                     "after_node": before_node, "plan_status": "terminal_location_unavailable",
+                                     "after_node": world_map.current_location, "plan_status": "terminal_transition",
                                      "deviation": False, "failed_edge": None, "confirmed_edges": []}
             else:
                 navigation_result = navigator.observe_action_result(
@@ -651,6 +720,9 @@ def run_episode(
                 and isinstance(score_after, (int, float))
                 else None
             )
+            next_context = observation if done else current_environment_context(env, observation)
+            _, next_inventory_text = snapshot_sections(next_context)
+            next_inventory = inventory_from_text(next_inventory_text)
 
             agent.add_history(
                 observation=observation,
@@ -674,15 +746,17 @@ def run_episode(
                 action_source=action_source,
                 actor_report=decision.get("report", {}),
                 home_node=home_node,
+                inventory_snapshot=next_inventory,
             )
+            ground_inventory(historian, next_inventory)
 
             next_rl_state = {
                 **actor_rl_state,
                 "location_id": str(after_node),
                 "location": str(after_label),
-                "observation": str(observation or ""),
+                "observation": str(next_context or ""),
                 "score": score_after,
-                "home_route_status": navigator.route_status(home_node) if home_node is not None else "unknown",
+                "home_route_status": navigator.route_status(home_node) if home_node is not None else "home_undiscovered",
                 "inventory_items": list(
                     historian.agent_state.get("inventory_items", [])
                 ),
@@ -725,6 +799,7 @@ def run_episode(
                 terminal=step_terminal,
                 truncated=(step + 1 == args.max_steps and not step_terminal),
             )
+            last_recorded_state = next_rl_state
             critic_reward = actor_experience.step_reward(recorded_step)
             td_update = historian_rl_controller.observe_transition(
                 state=actor_rl_state,
@@ -761,6 +836,9 @@ def run_episode(
         )
         return info, termination_reason
 
+    except KeyboardInterrupt:
+        termination_reason = "interrupted"
+        raise
     except Exception:
         termination_reason = "episode_exception"
         raise
@@ -778,8 +856,10 @@ def run_episode(
                 gamma=args.actor_rl_gamma,
                 termination_reason=termination_reason,
                 final_score=final_score,
-                bootstrap_value=(historian_rl_controller.value(next_rl_state) # type: ignore
-                                 if termination_reason == "step_limit" and "next_rl_state" in locals() else 0.0),
+                bootstrap_value=(historian_rl_controller.value(last_recorded_state)
+                                 if termination_reason in {"step_limit", "episode_exception", "interrupted",
+                                                           "no_valid_actions", "no_safe_actions"}
+                                 and last_recorded_state is not None and historian_rl_controller.enabled else None),
             )
             critic_summary = historian_rl_controller.finish_episode(
                 gamma=args.actor_rl_gamma,
@@ -792,7 +872,7 @@ def run_episode(
             )
             episode_logger.log_chat_event("actor_experience_episode_finalized", actor_rl_summary)
             episode_logger.log_chat_event("historian_critic_episode_finalized", critic_summary)
-            if args.historian_review and finished_episode is not None and termination_reason != "episode_exception":
+            if args.historian_review and finished_episode is not None and termination_reason not in {"episode_exception", "interrupted"}:
                 try:
                     review = historian.review_episode(
                         finished_episode,
@@ -816,7 +896,8 @@ def run_episode(
             if adaptive_system is not None and finished_episode is not None:
                 adaptive_system.finish_episode(finished_episode, info=info, reason=termination_reason,
                                                event_logger=episode_logger.log_chat_event,
-                                               api_requests=episode_logger.api_requests)
+                                               api_requests=episode_logger.api_requests,
+                                               episode_number=episode_number)
         if map_initialized or world_map.current_location is not None:
             world_map.save()
         try:
@@ -830,6 +911,8 @@ def main(argv=None):
     historian_client, historian_extra_body = (
         create_historian_connection(args) if args.historian_review or args.evolve else (None, None)
     )
+    if isinstance(historian_client, AnthropicHistorian):
+        historian_client.validate_model(args.historian_model)
     logger = TrialLogger(args.output_dir, args.trial_name)
     if args.fresh_memory:
         directory = logger.run_directory / "memory"
@@ -841,9 +924,13 @@ def main(argv=None):
     metadata = vars(args).copy()
     metadata["api_key"] = "<redacted>" if args.api_key else None
     metadata["effective_historian_model"] = args.historian_model or args.model
+    metadata["historian_transport"] = ("anthropic_messages" if isinstance(historian_client, AnthropicHistorian)
+                                      else "openai_chat" if historian_client is not None else "disabled")
     rom = Path(args.rom_path)
     metadata["rom_sha256"] = hashlib.sha256(rom.read_bytes()).hexdigest() if rom.exists() else None
-    metadata["observation_access"] = "Jericho room IDs, world-change hashes and valid-action oracle; not text-only play"
+    metadata["observation_access"] = "Jericho room IDs, world-change hashes, valid-action oracle, snapshot look and inventory"
+    metadata["action_guards"] = "preserve sole active carried light; restore light in observed darkness; temporary cycle exclusions"
+    metadata["score_replay"] = "Actor reassesses historical score opportunities using current observations"
     logger.write_metadata(metadata)
 
     print(f"Trial output directory: {logger.run_directory}")
@@ -882,17 +969,32 @@ def main(argv=None):
     agent = None
     map_initialized = False
     adaptive_system = None
+    outcomes = []
+    consecutive_failures = 0
+
+    def record_outcome(episode_number, status, **details):
+        outcome = {"episode": episode_number, "status": status, **details}
+        outcomes.append(outcome)
+        with (logger.run_directory / "episode_outcomes.jsonl").open("a", encoding="utf-8") as file:
+            file.write(json.dumps(outcome) + "\n")
+        completed = sum(item["status"] == "completed" for item in outcomes)
+        (logger.run_directory / "run_status.json").write_text(json.dumps({
+            "requested_episodes": args.episodes, "attempted_episodes": len(outcomes),
+            "completed_episodes": completed, "incomplete_episodes": len(outcomes) - completed,
+            "all_episodes_completed": completed == args.episodes,
+            "outcomes": outcomes,
+        }, indent=2), encoding="utf-8")
 
     for episode_number in range(1, args.episodes + 1):
         with logger.episode(episode_number) as episode_logger:
-            if agent is None:
-                agent = create_agent(args, event_logger=episode_logger.log_chat_event)
-                adaptive_system = AdaptiveSystem(args, actor=agent, historian=historian,
-                    critic=historian_critic, policy=actor_rl_controller, navigator=navigator,
-                    output_dir=logger.run_directory, historian_client=historian_client,
-                    historian_extra_body=historian_extra_body)
             try:
-                _, _ = run_episode(
+                if agent is None:
+                    agent = create_agent(args, event_logger=episode_logger.log_chat_event)
+                    adaptive_system = AdaptiveSystem(args, actor=agent, historian=historian,
+                        critic=historian_critic, policy=actor_rl_controller, navigator=navigator,
+                        output_dir=logger.run_directory, historian_client=historian_client,
+                        historian_extra_body=historian_extra_body)
+                result, reason = run_episode(
                     args=args,
                     episode_number=episode_number,
                     world_map=world_map,
@@ -910,11 +1012,35 @@ def main(argv=None):
                     historian_extra_body=historian_extra_body,
                 )
                 map_initialized = True
+                consecutive_failures = 0
+                record_outcome(episode_number,
+                               "incomplete" if reason in {"no_safe_actions", "no_valid_actions"} else "completed",
+                               termination_reason=reason, score=result.get("score"))
+            except KeyboardInterrupt:
+                record_outcome(episode_number, "interrupted", termination_reason="interrupted")
+                raise
             except Exception as exc:
                 print(f"Episode {episode_number} failed: {type(exc).__name__}: {exc}")
-                raise
+                consecutive_failures += 1
+                recoverable = recoverable_episode_error(exc)
+                can_continue = (recoverable and not args.fail_fast and
+                                consecutive_failures < args.max_consecutive_episode_failures)
+                details = {"termination_reason": "episode_exception", "error_type": type(exc).__name__,
+                           "error": str(exc), "recoverable": recoverable,
+                           "continuing": can_continue and episode_number < args.episodes}
+                record_outcome(episode_number, "failed", **details)
+                episode_logger.log_chat_event("episode_failure", details)
+                if not can_continue:
+                    raise
+                # run_episode saved observed transitions before propagating.
+                # Keep the in-memory graph; loading again would lose episode state.
+                map_initialized = world_map.current_location is not None
+                print("Incomplete episode saved and excluded from score metrics. "
+                      + ("Continuing with the next episode." if details["continuing"] else "No episodes remain."))
 
-    print(f"Trial complete. Logs saved in: {logger.run_directory}")
+    completed = sum(item["status"] == "completed" for item in outcomes)
+    print(f"Trial finished: {completed}/{args.episodes} completed episodes; "
+          f"{len(outcomes) - completed} incomplete. Logs saved in: {logger.run_directory}")
     return logger.run_directory
 
 

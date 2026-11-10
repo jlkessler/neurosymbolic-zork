@@ -78,6 +78,23 @@ name; the connection and credentials remain independent. The Historian's
 Open WebUI compatibility flag is `--historian-openwebui-parent-id-null`
 or `HISTORIAN_OPENWEBUI_PARENT_ID_NULL`.
 
+For direct Anthropic billing, use these Historian settings in your local `.env`.
+Keep your OpenRouter key in `ACTOR_API_KEY` and use
+`ACTOR_BASE_URL=https://openrouter.ai/api/v1` for the Actor.
+
+```dotenv
+HISTORIAN_BASE_URL=https://api.anthropic.com
+HISTORIAN_API_KEY=your-anthropic-api-key
+HISTORIAN_MODEL=claude-sonnet-5-5
+```
+
+The Anthropic host selects the native Messages API for both reviews and prompt
+evolution. Direct Claude requests use the model's sampling defaults.
+Before starting a trial, direct Anthropic connections verify the configured
+model with the Models API. A missing model or access error stops the run before
+any game episodes. Shell environment values take precedence over the local
+`.env`; check both if the reported model differs from your intended setting.
+
 ## Run the hybrid
 
 ```bash
@@ -100,8 +117,58 @@ as a rank prior, not native model-logit adaptation.
 
 The selected policy is over up to five labelled commands, not every possible
 command string or the model's full vocabulary. The remote model's internal
-weights and token tensors are not modified. `--no-sample-actions` selects the
-largest posterior probability; otherwise sampling uses `--seed`.
+weights and token tensors are not modified. The default selects the largest
+posterior probability. `--sample-actions` enables sampling using `--seed`.
+
+The Actor gets current room and inventory text through snapshot queries that
+restore the emulator state, plus the remaining command budget. These queries
+are part of this runner's privileged Jericho access and should be disclosed in
+benchmark comparisons. Learned strategy augments the base strategy.
+
+Malformed, truncated, or out-of-menu Actor responses receive up to two repair
+requests. If repair fails, the scorer evaluates a menu of up to five available
+commands, prioritizing the current goal's preferred commands. This recovery
+provides no inventory report. Native-logprob mode still requires actual model
+probabilities. Chat logs record the full responses, rejection reasons,
+available commands, recovery menus, and the final action selection.
+
+When a label is missing from the API's top-20 list, native scoring retries with
+equal positive token bias on every menu label (20, then 80). Equal additive bias
+preserves pairwise logit differences when the provider honors it. `tiktoken`
+verifies the model's exact label IDs; unknown tokenizers are never guessed.
+Each retry must return the entire distribution in one response. Raw token
+diagnostics and the applied bias are logged. Missing scores are never replaced
+by invented values or a silent rank prior. See the
+[Chat Completions parameter reference](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create).
+
+Historian reviews and configuration evolution each start with 4096 output
+tokens, configured separately with `--historian-max-tokens` and
+`--evolution-max-tokens`. Invalid output receives one repair attempt;
+truncation doubles that attempt's budget. Both attempts log their stop reason.
+If they still fail, previous lessons/configurations survive.
+
+The runner learns full room-title aliases from snapshot observations while
+retaining Jericho room IDs. It temporarily excludes repeated movement cycles
+when alternatives exist, and revisits stalled return goals. Current inventory
+grounds the Historian's item classifications. A historical score-positive
+command must be reassessed by the Actor against the present state. Observation
+guards preserve the sole active carried light and prioritize restoring it in
+observed darkness; these are heuristics, not a guarantee of survival.
+
+Exhausted transient API errors or incomplete native label scores save an
+incomplete episode and allow the next scheduled episode to run. Three
+consecutive recoverable failures stop the trial; change this with
+`--max-consecutive-episode-failures`. `--fail-fast` stops at the first failure.
+Authentication, endpoint, unsupported-scoring, and unexpected code errors stop
+immediately. This does not guarantee remote-service availability.
+
+`episode_outcomes.jsonl` and `run_status.json` record every attempted episode,
+including failures. `metrics.jsonl` retains actual episode numbers and excludes
+incomplete episodes; inspect the completion count alongside score averages.
+Interrupted experience is bootstrapped at the last recorded state when the
+critic is enabled, otherwise excluded from return-based learning. Existing
+interrupted records without a valid bootstrap remain on disk but are not
+retrieved for training.
 
 ## Controlled comparisons
 

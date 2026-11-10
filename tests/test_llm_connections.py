@@ -1,11 +1,65 @@
 import json
+import sys
 from types import SimpleNamespace as NS
 
 import pytest
 
 from main import parse_args, build_arg_parser
-from MANGORL.llm_connections import create_historian_connection
+from MANGORL.llm_connections import AnthropicHistorian, complete_historian, create_historian_connection
 from MANGORL.trial_logger import TrialLogger
+
+
+def test_native_model_check_fails_before_trial_starts(monkeypatch, tmp_path):
+    import main
+
+    def missing(model):
+        assert model == "unavailable-model"
+        raise RuntimeError("404 model not found")
+
+    client = AnthropicHistorian(NS(models=NS(retrieve=missing)))
+    monkeypatch.setattr(main, "create_historian_connection", lambda args: (client, None))
+    with pytest.raises(RuntimeError, match="Historian startup check.*unavailable-model"):
+        main.main(["--historian-model", "unavailable-model", "--output-dir", str(tmp_path)])
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_historian_error_identifies_transport_model_and_operation():
+    def fail(**kwargs):
+        raise RuntimeError("404")
+
+    client = AnthropicHistorian(NS(messages=NS(create=fail)))
+    with pytest.raises(RuntimeError, match="model='claude-test'.*anthropic.com/v1/messages.*404"):
+        complete_historian(client, {"model": "claude-test", "messages": [], "max_tokens": 100})
+
+
+def test_native_historian_uses_anthropic_messages(monkeypatch):
+    monkeypatch.setenv("ACTOR_API_KEY", "router-key")
+    monkeypatch.setenv("HISTORIAN_API_KEY", "claude-key")
+    constructor_calls, message_calls = [], []
+
+    def create(**kwargs):
+        message_calls.append(kwargs)
+        return NS(content=[NS(type="thinking"), NS(type="text", text="{}")],
+                  stop_reason="end_turn")
+
+    def anthropic(**kwargs):
+        constructor_calls.append(kwargs)
+        return NS(messages=NS(create=create))
+
+    monkeypatch.setitem(sys.modules, "anthropic", NS(Anthropic=anthropic))
+    args = parse_args(["--historian-base-url", "https://api.anthropic.com/v1/messages",
+                       "--historian-model", "claude-sonnet-5-5"])
+    client, extra_body = create_historian_connection(args)
+    conversation = [{"role": "user", "content": "Review this episode."}]
+    assert complete_historian(client, {
+        "model": args.historian_model,
+        "messages": [{"role": "system", "content": "Return JSON."}, *conversation],
+        "max_tokens": 900, "temperature": 0.2,
+    }) == ("{}", "end_turn")
+    assert constructor_calls == [{"api_key": "claude-key", "base_url": "https://api.anthropic.com"}]
+    assert extra_body is None
+    assert message_calls == [{"model": "claude-sonnet-5-5", "system": "Return JSON.",
+                              "messages": conversation, "max_tokens": 900}]
 
 
 def test_historian_uses_only_its_own_credentials_and_endpoint(monkeypatch):

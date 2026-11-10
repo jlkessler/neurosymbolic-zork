@@ -11,6 +11,8 @@ import json
 import math
 from pathlib import Path
 
+from .llm_connections import complete_historian_validated
+
 
 SECTION_NAMES = ("state", "goal", "guidance", "experience", "navigation", "map", "history", "actions")
 DEFAULT_STRATEGY = """Use the current goal and score feedback to choose one valid command.
@@ -133,10 +135,11 @@ class ConfigurationArchive:
         temporary.replace(self.path)
 
 
-def propose_configuration(*, client, model, parent, episode, extra_body=None, event_logger=None):
+def propose_configuration(*, client, model, parent, episode, extra_body=None, event_logger=None,
+                          max_tokens=4096):
     """Historian acts as Evolver; the response is validated before any mutation."""
     request = {
-        "model": model, "temperature": 0.3, "max_tokens": 2400,
+        "model": model, "temperature": 0.3, "max_tokens": int(max_tokens),
         "messages": [
             {"role": "system", "content": (
                 "You are the Historian/Evolver of a frozen-model Zork agent. "
@@ -145,6 +148,7 @@ def propose_configuration(*, client, model, parent, episode, extra_body=None, ev
                 "facts. Rewrite strategy and section order when evidence supports it; adjust memory "
                 "retrieval, temperature, logit strength or route caution as needed. Return only JSON "
                 "with keys configuration (a complete object) and rationale (a short string). "
+                "Keep each strategy under 1200 characters and the rationale under 300 characters. "
                 "The configuration must have exactly the parent's keys. Preserve all section names. "
                 "Limits: strategy strings 20-6000 characters; temperature 0-2; history_length integer "
                 "1-30; retrieval_top_k integer 1-100; retrieval_min_similarity 0-1; actor_beta 0-3; "
@@ -156,14 +160,17 @@ def propose_configuration(*, client, model, parent, episode, extra_body=None, ev
     }
     if extra_body is not None:
         request["extra_body"] = extra_body
-    if event_logger:
-        event_logger("configuration_evolution_request", request)
-    response = client.chat.completions.create(**request)
-    raw = response.choices[0].message.content or ""
-    if event_logger:
-        event_logger("configuration_evolution_response", {"content": raw})
-    parsed = json.loads(raw)
-    configuration = validate_configuration(parsed["configuration"])
-    if not isinstance(parsed.get("rationale"), str) or not parsed["rationale"].strip():
-        raise ValueError("Evolution proposal requires an evidence-based rationale.")
-    return configuration, parsed["rationale"][:2000]
+    def validate(raw):
+        parsed = json.loads(raw)
+        if not isinstance(parsed, dict):
+            raise ValueError("Evolution proposal must be a JSON object.")
+        configuration = validate_configuration(parsed["configuration"])
+        if not isinstance(parsed.get("rationale"), str) or not parsed["rationale"].strip():
+            raise ValueError("Evolution proposal requires an evidence-based rationale.")
+        return configuration, parsed["rationale"][:2000]
+
+    result, _, _ = complete_historian_validated(
+        client, request, validate=validate, event_prefix="configuration_evolution",
+        event_logger=event_logger,
+    )
+    return result

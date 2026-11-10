@@ -163,12 +163,7 @@ class WorldMap:
         if location in self.graph:
             return location
 
-        matches = [
-            node
-            for node, attributes in self.graph.nodes(data=True)
-            if attributes.get("node_type") == "location"
-            and attributes.get("label") == location
-        ]
+        matches = self.find_nodes_by_label(location)
         return matches[0] if len(matches) == 1 else None
 
     def display_location(self, node):
@@ -177,12 +172,12 @@ class WorldMap:
             return str(node)
 
         attributes = self.graph.nodes[node]
-        label = attributes.get("label", str(node))
+        label = attributes.get("observed_title") or attributes.get("label", str(node))
         matches = [
             other
             for other, data in self.graph.nodes(data=True)
             if data.get("node_type") == "location"
-            and data.get("label", str(other)) == label
+            and (data.get("observed_title") or data.get("label", str(other))) == label
         ]
 
         if len(matches) <= 1:
@@ -194,12 +189,45 @@ class WorldMap:
 
     def find_nodes_by_label(self, label):
         """Return canonical nodes whose readable room label matches."""
-        wanted = str(label).casefold()
+        wanted = " ".join(str(label).casefold().split())
         return [
             node for node, attributes in self.graph.nodes(data=True)
             if attributes.get("node_type") == "location"
-            and str(attributes.get("label", node)).casefold() == wanted
+            and wanted in {
+                " ".join(str(name).casefold().split()) for name in
+                [attributes.get("label", node), attributes.get("observed_title", ""),
+                 *attributes.get("aliases", [])]
+            }
         ]
+
+    def observe_room_title(self, node, state_context):
+        """Learn a room's printed title from a restored-state ``look`` snapshot.
+
+        Jericho object short names can be truncated (e.g. ``Living ``). Keep
+        the object's identity/key and original label; add the observed full
+        title as an alias instead of merging rooms by a guessed name prefix.
+        Raw action responses are not accepted as room snapshots.
+        """
+        if node not in self.graph or "CURRENT ROOM (look):\n" not in str(state_context):
+            return False
+        room_text = str(state_context).split("CURRENT ROOM (look):\n", 1)[1]
+        room_text = room_text.split("\n\nCURRENT INVENTORY:", 1)[0]
+        lines = [line.strip() for line in room_text.splitlines() if line.strip()]
+        if not lines:
+            return False
+        title = lines[0]
+        attributes = self.graph.nodes[node]
+        short_name = " ".join(str(attributes.get("label", node)).casefold().split())
+        normalized = " ".join(title.casefold().split())
+        # A descriptive first line (especially darkness) is not a room title.
+        if (not short_name or len(title) > 100 or any(c in title for c in ".!?:")
+                or not (normalized == short_name or normalized.startswith(short_name + " "))):
+            return False
+        aliases = attributes.setdefault("aliases", [])
+        if title not in aliases:
+            aliases.append(title)
+        attributes["observed_title"] = title
+        return True
 
     def get_known_locations(self):
         """Return human-readable labels for all known ordinary room nodes."""

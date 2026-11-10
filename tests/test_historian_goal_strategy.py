@@ -4,6 +4,41 @@ from MANGORL.historian import Historian
 from MANGORL.smart_agent import SmartAgent
 
 
+def test_historical_map_does_not_hide_unvisited_episode_frontier(tmp_path):
+    historian = Historian(tmp_path / "historian.json")
+    historian.start_episode("Courtyard", "Courtyard", initial_score=0)
+    historian.episode["visited_nodes"].append("Garden")
+    goal = historian.choose_goal(
+        current_node="Courtyard", current_location="Courtyard",
+        valid_actions=["west", "east", "close gate"],
+        known_outgoing_actions=["W", "E"],
+        known_routes=[
+            {"destination": "Hall", "actions": ["W"]},
+            {"destination": "Garden", "actions": ["E"]},
+        ],
+        current_score=0,
+    )
+    assert goal["kind"] == "explore_frontier"
+    assert goal["preferred_actions"] == ["west"]
+
+
+def test_reversible_interactions_generate_cycle_guidance(tmp_path):
+    historian = Historian(tmp_path / "historian.json")
+    historian.start_episode("A", "A", initial_score=0)
+    for action, before, after in [
+        ("open gate", "Closed.", "Opened."),
+        ("close gate", "Opened.", "Closed."),
+        ("open gate", "Closed.", "Opened."),
+    ]:
+        historian.observe_step(
+            before_node="A", before_location="A", action=action,
+            after_node="A", after_location="A", score_before=0, score_after=0,
+            observation_before=before, observation=after,
+        )
+    assert "Recent cycle evidence: 'open gate'" in historian.build_guidance("A", "A", 0)
+    assert "open gate" not in historian.get_avoid_actions("A")  # Warning, not a hard ban.
+
+
 def _record_score_event(historian, *, node, location, action, before=0, after=5):
     historian.start_episode(node, location, initial_score=before)
     historian.observe_step(

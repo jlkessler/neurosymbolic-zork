@@ -41,7 +41,7 @@ def main(argv=None):
                        "--episodes", str(args.episodes), "--max-steps", str(args.max_steps),
                        "--target-score", "350", "--score-scale", "350", "--seed", str(seed),
                        "--output-dir", args.output_dir, "--trial-name", f"{condition}_seed{seed}",
-                       "--fresh-memory", *CONDITIONS[condition]]
+                       "--fresh-memory", "--fail-fast", *CONDITIONS[condition]]
             # JSON preserves Windows argument boundaries and avoids shell quoting.
             displayed = list(command)
             for index, value in enumerate(displayed):

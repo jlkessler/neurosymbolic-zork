@@ -15,6 +15,7 @@ import re
 
 from .evolution import SECTION_NAMES, validate_configuration
 from .policy_logits import LabelLogprobScorer
+from .navigation_controller import NavigationController
 
 try:
     from openai import OpenAI
@@ -140,6 +141,64 @@ class SmartAgent:
                 break
         return result
 
+    @staticmethod
+    def _match_available(action, valid_actions):
+        if not isinstance(action, str):
+            return None
+        normalized = " ".join(action.strip().strip("`\"' ").split()).casefold()
+        return next((item for item in valid_actions
+                     if " ".join(item.split()).casefold() == normalized), None)
+
+    def _request_decision(self, request, valid_actions, preferred_actions):
+        """Repair response-format/menu errors without consuming game moves."""
+        request = {**request, "messages": list(request["messages"])}
+        for attempt in range(3):
+            self._log_event("request", {**request, "attempt": attempt + 1})
+            response = self.client.chat.completions.create(**request)
+            choice = response.choices[0]
+            answer = choice.message.content or ""
+            finish = getattr(choice, "finish_reason", None)
+            self._log_event("response", {
+                "model": self.model, "content": answer, "finish_reason": finish,
+                "attempt": attempt + 1,
+            })
+            parsed = self._parse_json_response(answer)
+            action = self._match_available(parsed.get("action"), valid_actions)
+            if action and finish != "length":
+                parsed["action"] = action
+                return parsed, answer, False
+            issue = ("response_truncated" if finish == "length" else
+                     "malformed_json" if not parsed else "action_outside_menu")
+            self._log_event("actor_response_rejected", {
+                "issue": issue, "proposed_action": parsed.get("action"),
+                "valid_actions": valid_actions, "attempt": attempt + 1,
+                "finish_reason": finish,
+            })
+            if finish == "length":
+                request["max_tokens"] = min(4096, max(900, request["max_tokens"] * 2))
+            request["messages"] = [
+                *request["messages"][:2],
+                {"role": "user", "content": (
+                    f"Your previous response was rejected ({issue}). "
+                    f"Proposed command: {parsed.get('action')!r}. "
+                    "Return a complete, compact JSON object. Copy action and candidate_actions "
+                    "EXACTLY from this current menu, including its object names. "
+                    "Use a one-sentence decision_rationale and short lists.\n" +
+                    json.dumps(valid_actions)
+                )},
+            ]
+        # Model output errors can be recovered while still requesting genuine
+        # label probabilities. Empty reports preserve the Historian's beliefs.
+        menu = []
+        for candidate in [*preferred_actions, *valid_actions]:
+            matched = self._match_available(candidate, valid_actions)
+            if matched and matched not in menu:
+                menu.append(matched)
+        self._log_event("actor_response_recovery", {
+            "reason": "response_repair_exhausted", "candidate_actions": menu[:5],
+        })
+        return {"action": menu[0], "candidate_actions": menu[:5]}, answer, True
+
     def choose_decision(
         self,
         *,
@@ -156,6 +215,7 @@ class SmartAgent:
         preferred_actions=None,
         navigation_context="No active symbolic navigation plan.",
         rl_guidance="",
+        steps_remaining=None,
     ):
         """Return action plus Actor's compact inventory/clue report."""
         if not valid_actions:
@@ -168,13 +228,25 @@ class SmartAgent:
         goal = goal or {"kind": "explore", "description": "Explore the world."}
 
         route_lines = []
+        direct_destinations = []
+        available_by_normalized = {
+            NavigationController._normalize_action(action): action for action in valid_actions
+        }
         for route in known_routes[:15]:
+            route_actions = [NavigationController._normalize_action(a) for a in route.get("actions", [])]
+            destination = route.get("destination_label", route.get("destination"))
             route_lines.append(
-                f"- {route.get('destination_label', route.get('destination'))} "
+                f"- {destination} "
                 f"({route.get('total_cost', '?')} movement commands): "
-                f"{' -> '.join(route.get('actions', []))}"
+                f"{' -> '.join(route_actions)}"
             )
+            if len(route_actions) == 1 and route_actions[0] in available_by_normalized:
+                direct_destinations.append(
+                    f"- {available_by_normalized[route_actions[0]]}: historically led to {destination}")
         navigation_text = "\n".join(route_lines) or "No known routes are available."
+        if direct_destinations:
+            navigation_context += ("\nAVAILABLE COMMAND DESTINATIONS (historical, verify after execution):\n" +
+                                   "\n".join(direct_destinations))
 
         system_prompt = f"""You are the reasoning Actor in a neuro-symbolic agent playing Zork I.
 
@@ -191,8 +263,9 @@ The list length may vary by experiment; evaluate each lesson on its relevance
 rather than assuming every item applies to every situation.
 
 STRATEGY:
-- Explore thoroughly and pursue likely score-producing opportunities. Do not
-  optimize for speed; episodes may last hundreds of commands.
+- Pursue score-producing opportunities within the remaining command budget.
+  Follow through on promising local interactions before wandering away.
+  When an interaction changes an obstacle, check newly available commands.
 - Pay attention to unique objects, descriptions, treasure-like items, and
   interactions that may produce score. Learn from actual score increases and
   from previously successful actions/locations listed in Historian guidance.
@@ -223,6 +296,11 @@ STRATEGY:
   relevant objects, keys, dialogue, special actions, environmental mechanisms,
   and alternate routes. Try plausible actions, observe the response, and adapt.
 - Do not assume an obstacle is solved until the environment confirms it.
+- Current room text, inventory, and the available command menu override old
+  clues about an object's state. When the environment reports an obstacle has
+  opened, investigate the newly available route before undoing that progress.
+- Ground movement commands in the map's command-to-destination associations.
+  Check that your chosen direction actually corresponds to your stated goal.
 - Avoid repeating an action when the location, score, and observation do not
   meaningfully change. Repeated-failure warnings are evidence, not absolute
   bans if new clues appear.
@@ -233,9 +311,9 @@ STRATEGY:
 OUTPUT:
 Return one JSON object only, with this schema:
 {{
-  "decision_rationale": "1-3 concise sentences summarizing the key evidence, goal, and why the selected command is appropriate; do not provide hidden/private chain-of-thought or lengthy internal deliberation",
   "action": "<your single best command from AVAILABLE ACTIONS>",
   "candidate_actions": ["best candidate first", "other plausible candidates"],
+  "decision_rationale": "One concise sentence summarizing the decisive evidence and goal",
   "inventory_items": ["all items you currently believe are carried"],
   "treasure_candidates": ["only carried items plausibly worth depositing in the trophy case"],
   "carried_treasures": ["same treasure candidates, retained for compatibility"],
@@ -248,17 +326,16 @@ Return one JSON object only, with this schema:
 candidate_actions should contain up to five distinct commands from AVAILABLE
 ACTIONS, ordered from your most preferred to least preferred. Put action first.
 If only one command is reasonable, return a one-item list. Do not invent
-commands. Put the concise decision_rationale field first in the JSON, followed
-by the action and state report. The rationale should summarize the decisive
+commands. Put action and candidate_actions first, then a concise
+decision_rationale and state report. The rationale should summarize the decisive
 considerations, not expose private step-by-step chain-of-thought. Do not include
 markdown fences or prose outside the JSON.
 """
 
         if self.configuration is not None:
-            start = system_prompt.index("STRATEGY:")
-            end = system_prompt.index("OUTPUT:", start)
-            system_prompt = (system_prompt[:start] + "STRATEGY:\n" +
-                             self.configuration["actor_strategy"] + "\n\n" + system_prompt[end:])
+            system_prompt = system_prompt.replace(
+                "OUTPUT:", "ADDITIONAL LEARNED STRATEGY:\n" +
+                self.configuration["actor_strategy"] + "\n\nOUTPUT:", 1)
 
         goal_text = (
             f"Type: {goal.get('kind')}\n"
@@ -275,7 +352,7 @@ markdown fences or prose outside the JSON.
         )
         actions_text = "\n".join(f"- {action}" for action in valid_actions)
         sections = {
-            "state": f"CURRENT LOCATION:\n{current_location}\nCURRENT SCORE:\n{current_score}\nCURRENT OBSERVATION:\n{observation}",
+            "state": f"CURRENT LOCATION:\n{current_location}\nCURRENT SCORE:\n{current_score}\nCOMMANDS REMAINING:\n{steps_remaining}\nCURRENT OBSERVATION:\n{observation}",
             "goal": f"HISTORIAN GOAL:\n{goal_text}",
             "guidance": f"HISTORIAN GUIDANCE:\n{historian_guidance or 'No persistent lessons yet.'}\nACTIONS TO AVOID REPEATING WITHOUT NEW EVIDENCE:\n{', '.join(avoid_actions)}",
             "experience": f"ACTOR REINFORCEMENT-LEARNING GUIDANCE:\n{rl_guidance}",
@@ -299,39 +376,13 @@ markdown fences or prose outside the JSON.
         if self.extra_body is not None:
             request["extra_body"] = self.extra_body
 
-        self._log_event("request", {
-            "model": request["model"],
-            "temperature": request["temperature"],
-            "max_tokens": request["max_tokens"],
-            "messages": request["messages"],
-        })
-
         try:
-            response = self.client.chat.completions.create(**request)
-            answer = response.choices[0].message.content or ""
-            self._log_event("response", {
-                "model": self.model,
-                "content": answer,
-                "finish_reason": getattr(response.choices[0], "finish_reason", None),
-            })
-            parsed = self._parse_json_response(answer)
-            action = str(parsed.get("action", "")).strip().strip("`\"' ")
-            if action not in valid_actions:
-                # Permit exact case-insensitive action match.
-                action = next(
-                    (candidate for candidate in valid_actions
-                     if candidate.casefold() == action.casefold()),
-                    "",
-                )
-            if not action:
-                raise ValueError(f"Actor returned invalid action: {answer[:500]!r}")
+            parsed, answer, recovered = self._request_decision(request, valid_actions, preferred_actions)
+            action = parsed["action"]
 
             candidate_actions = []
             for candidate in self._clean_list(parsed.get("candidate_actions", []), 12):
-                matched = next(
-                    (item for item in valid_actions if item.casefold() == candidate.casefold()),
-                    None,
-                )
+                matched = self._match_available(candidate, valid_actions)
                 if matched and matched not in candidate_actions:
                     candidate_actions.append(matched)
             # Keep the Actor's selected action as the highest-ranked base-policy
@@ -344,8 +395,11 @@ markdown fences or prose outside the JSON.
             if self.policy_mode == "logprobs":
                 policy = LabelLogprobScorer().score(
                     client=self.client, model=self.model,
-                    messages=[{"role": "system", "content": system_prompt.split("OUTPUT:")[0]},
-                              {"role": "user", "content": user_prompt}],
+                    messages=[{"role": "system", "content": system_prompt.split("OUTPUT:")[0] +
+                               "\nFor this scoring call, express your selected command ONLY as its menu letter."},
+                              {"role": "user", "content": user_prompt +
+                               "\nPREVIOUS PROPOSAL (reconsider only if the evidence warrants it):\n" +
+                               json.dumps({"action": action, "rationale": parsed.get("decision_rationale", "")})}],
                     actions=candidate_actions, extra_body=self.extra_body,
                     event_logger=self._log_event,
                 )
@@ -366,6 +420,8 @@ markdown fences or prose outside the JSON.
                 "puzzle_clues": self._clean_list(parsed.get("puzzle_clues"), 12),
                 "state_note": str(parsed.get("state_note", ""))[:500],
             }
+            if recovered:
+                report = {}
             decision_rationale = str(
                 parsed.get("decision_rationale")
                 or parsed.get("rationale")
@@ -413,7 +469,7 @@ markdown fences or prose outside the JSON.
                 "error_type": type(exc).__name__,
                 "error": str(exc),
             })
-            print(f"LLM request failed or returned invalid JSON: {exc}")
+            print(f"Actor request or policy scoring failed: {type(exc).__name__}: {exc}")
             if self.policy_mode == "logprobs":
                 raise
 

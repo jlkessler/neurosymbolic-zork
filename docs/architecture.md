@@ -76,14 +76,35 @@ the critic and contribute to delayed returns. Only Actor-selected commands
 enter Actor policy experience. Terminal transitions suppress bootstrap;
 time-limit truncations may bootstrap from the external critic. Failed episodes
 are labelled in experience and excluded from configuration fitness/metrics.
+Interrupted trajectories bootstrap only at the last recorded state. Without
+an enabled critic their partial returns are retained for audit but excluded
+from retrieval, as are legacy interrupted records without a valid bootstrap.
+`episode_outcomes.jsonl` and `run_status.json` report incomplete attempts
+separately; evaluated metrics keep their original trial episode numbers.
 
-The numerical policy samples its posterior by default. `--no-sample-actions`
-uses greedy selection and records its deterministic behavior probability
-separately from the posterior distribution. A local seed controls this sampling
+Top-k censoring receives at most two recovery calls, with equal additive bias
+on every exact menu-label token. Known model tokenizers are resolved through
+`tiktoken`; raw top-token diagnostics are logged. Each accepted distribution
+comes from a single response. No unknown probabilities are filled in, and
+no automatic switch to the rank-prior ablation occurs. After exhausted scoring
+or transient API failures the runner can proceed to the next episode, stopping
+at three consecutive failures by default. Configuration errors still stop;
+the ablation harness uses `--fail-fast`.
+
+The numerical policy uses greedy selection by default and records its
+deterministic behavior probability separately from the posterior distribution.
+`--sample-actions` enables sampling. A local seed controls this sampling
 and Jericho's reset seed. It does not guarantee reproducibility of remote LLM
 generation.
 
 ## Slow loop: evolve the actual prompt structure
+
+Historian reviews and evolution use a dedicated client configured by
+`HISTORIAN_API_KEY` and `HISTORIAN_BASE_URL`. Actor decisions and logprob
+scoring use `ACTOR_API_KEY` and `ACTOR_BASE_URL`. Neither Historian call path
+reuses the Actor's credentials or endpoint. Each role also has independent
+model and Open WebUI request settings. Historian credentials are required
+when reviews or evolution are enabled; the numerical TD critic makes no API calls.
 
 `evolution.py` stores bounded, versioned configurations with content hashes,
 parent IDs, measured episode scores and visit counts. UCB selects one complete
@@ -92,8 +113,11 @@ from the parent and a bounded, explicitly marked episode transcript. Invalid
 mutations leave the archive unchanged; a proposed child has no measured reward
 until it actually runs. Measured parents remain candidates, subject to a bounded
 archive that preserves the original and active parent.
+Reviews and evolution have separate 4096-token initial budgets. Both validate
+complete artifacts before publishing and retry malformed output once; a token
+limit doubles the retry budget. Stop reasons and rejected output are logged.
 
-Mutable fields include Actor strategy text, Historian review strategy, ordering
+Mutable fields include additional Actor strategy text, Historian review strategy, ordering
 of eight required Actor prompt sections, temperature, history length, retrieval
 size/threshold, memory guidance, logit strength, exploration, critic step size,
 and route risk weight. This changes both prompt content and structure. Memory

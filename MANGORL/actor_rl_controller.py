@@ -271,6 +271,8 @@ class ActorRLController:
         prior = softmax(logits)
         return {
             "action": actions[index], "candidates": actions,
+            "scorer_preferred_action": actions[max(range(len(actions)), key=logits.__getitem__)],
+            "corrected_preferred_action": actions[max(range(len(actions)), key=probs.__getitem__)],
             "base_logits": logits, "adjusted_logits": adjusted,
             "conditioned_logits": [z if math.isfinite(z) else None for z in posterior["logits"]],
             "probabilities": probs, "base_probabilities": prior,

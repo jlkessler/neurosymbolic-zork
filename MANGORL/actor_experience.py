@@ -110,9 +110,19 @@ class ActorExperienceMemory:
                     and isinstance(record.get("state"), dict)
                     and record.get("action")
                 ):
-                    self.experiences.append(record)
+                    if self._training_eligible(record):
+                        self.experiences.append(record)
         self.experiences = self.experiences[-self.max_records :]
         return len(self.experiences)
+
+    @staticmethod
+    def _training_eligible(record):
+        if record.get("training_eligible") is False:
+            return False
+        # Older interrupted runs were incorrectly zero-bootstrapped. Preserve
+        # their log files but do not retrieve those partial returns as outcomes.
+        return not (record.get("termination_reason") in {"episode_exception", "interrupted"}
+                    and record.get("return_estimator") != "bootstrapped")
 
     def start_episode(self, episode_id: str | int) -> None:
         """Begin collecting a new game trajectory."""
@@ -211,7 +221,7 @@ class ActorExperienceMemory:
         gamma: float = 0.995,
         termination_reason: str = "unknown",
         final_score: float | int | None = None,
-        bootstrap_value: float = 0.0,
+        bootstrap_value: float | None = None,
     ) -> dict[str, Any]:
         """Compute discounted returns and append Actor decisions to JSONL."""
         if self.episode_id is None:
@@ -222,6 +232,14 @@ class ActorExperienceMemory:
 
         running_return = _number(bootstrap_value)
         completed = list(self._episode_steps)
+        truncated = bool(completed and not completed[-1].get("terminal") and termination_reason in {
+            "step_limit", "episode_exception", "interrupted", "no_valid_actions", "no_safe_actions",
+        })
+        if truncated:
+            completed[-1]["truncated"] = True
+        training_eligible = not truncated or bootstrap_value is not None
+        estimator = ("bootstrapped" if truncated and bootstrap_value is not None else
+                     "partial_untrained" if truncated else "monte_carlo")
         # Monte-Carlo returns include rewards on subsequent symbolic-navigation
         # steps; those steps are not themselves stored as Actor policy samples.
         for step in reversed(completed):
@@ -254,6 +272,9 @@ class ActorExperienceMemory:
                 "terminal": step.get("terminal", False),
                 "truncated": step.get("truncated", False),
                 "termination_reason": termination_reason,
+                "episode_truncated": truncated,
+                "training_eligible": training_eligible,
+                "return_estimator": estimator,
                 "bootstrap_value": _number(bootstrap_value),
             }
             actor_records.append(record)
@@ -266,7 +287,7 @@ class ActorExperienceMemory:
                     file.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
                 file.flush()
 
-        self.experiences.extend(actor_records)
+        self.experiences.extend(record for record in actor_records if self._training_eligible(record))
         self.experiences = self.experiences[-self.max_records :]
         summary = {
             "episode_id": self.episode_id,
@@ -280,6 +301,9 @@ class ActorExperienceMemory:
             "final_score": _number(final_score, default=None),
             "memory_path": str(self.path),
             "bootstrap_value": _number(bootstrap_value),
+            "episode_truncated": truncated,
+            "training_eligible": training_eligible,
+            "return_estimator": estimator,
         }
         self.last_finish_summary = summary
         self.episode_id = None
@@ -349,7 +373,7 @@ class ActorExperienceMemory:
         exclude_episode_id: str | None = None,
     ) -> list[dict[str, Any]]:
         """Return the most similar historical Actor decisions."""
-        records = self.experiences
+        records = [record for record in self.experiences if self._training_eligible(record)]
         if self.state_encoder is not None:
             # Avoid encoding an entire persistent replay buffer on every turn.
             # Lexical prefiltering bounds neural work and is part of this
