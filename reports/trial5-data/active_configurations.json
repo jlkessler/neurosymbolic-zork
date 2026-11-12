@@ -1,0 +1,1352 @@
+[
+  {
+    "episode": 1,
+    "id": "2063f12abce8d232",
+    "configuration": {
+      "actor_strategy": "Use the current goal and score feedback to choose one valid command.\nExplore new interactions when observations do not support a known productive action.\nTest return routes early and preserve useful tools. Inspect uncertain objects.\nTreat old routes and model-reported inventory as hypotheses until confirmed.\nUse repeated failures to investigate a prerequisite or alternative rather than looping.\nKeep observations, hypotheses, inventory categories, and score evidence distinct.",
+      "historian_strategy": "Learn from recorded outcomes, distinguish causal evidence from guesses, and revise ineffective advice.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "experience",
+        "navigation",
+        "map",
+        "history",
+        "actions"
+      ],
+      "temperature": 0.25,
+      "history_length": 10,
+      "retrieval_top_k": 40,
+      "retrieval_min_similarity": 0.65,
+      "actor_beta": 0.35,
+      "exploration": 0.08,
+      "critic_learning_rate": 0.025,
+      "route_risk_weight": 2.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 2,
+    "id": "e645602589737486",
+    "configuration": {
+      "actor_strategy": "Use score feedback to pick one valid command. Treat inventory and routes as hypotheses until confirmed.\nIn mazes or loops: after 2 visits to the same room with no score change, stop repeating the same moves and nest/bottle interactions. Try an unused exit, or leave toward a known route.\nLamp is a limited resource: when it dims, stop dithering and head back toward the Living Room. Never wander in the dark; grues kill.\nStop after 3 non-scoring repeats of any action or action pair (open/close, put/shake). Take score-producing steps instead: deposit treasures in the trophy case, then explore new areas.\nInspect objects before manipulating them. Keep observations, inventory, and score evidence separate.",
+      "historian_strategy": "Identify which actions caused score gains and which loops wasted moves (here ~300 steps of maze looping and nest toggling ended in a grue death). Write advice that triggers loop-breaking, lamp and light caution, and retreat from mazes, and that preserves proven scoring sequences.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "history",
+        "experience",
+        "map",
+        "actions"
+      ],
+      "temperature": 0.4,
+      "history_length": 14,
+      "retrieval_top_k": 30,
+      "retrieval_min_similarity": 0.6,
+      "actor_beta": 0.3,
+      "exploration": 0.15,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 3.5,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 3,
+    "id": "6887bd606a6d9432",
+    "configuration": {
+      "actor_strategy": "Pick one valid command per turn, guided by score feedback. Treat routes and inventory as hypotheses until confirmed.\nProven scores (this game): take egg (Up a Tree), enter Kitchen via Behind House window, put egg in trophy case, go down into the Cellar, take painting in Gallery. Repeat these only where they apply.\nLoop breaker: track per-room tried exits. If a room pair has been revisited twice with no score or new info, do NOT shuttle again. Try an untried command instead: look, inventory, examine the room's objects, up/down/other compass directions, or open/read/take unseen items. Never repeat open/close sack. Never type jump or other risky moves at a chasm or edge; that cost -10 and ended the game.\nThe trap door shut behind you, so the Cellar has no confirmed way back. Examine the troll and try a plausible way past it only if you carry a suitable item. Otherwise test every unexplored exit in the Studio, Gallery, and East Chasm, one at a time.\nKeep the lamp in mind; avoid dark rooms.",
+      "historian_strategy": "Summarize which actions gave score (egg 5, Kitchen entry 10, case deposit 5, trapdoor down 25, painting 4). Flag the pure movement cycle among Cellar, East Chasm, Gallery, and Studio, plus the sack open/close toggling, as ~200 wasted steps. Note that the trap door shut, leaving the Cellar with no known return, and that jump at the East Chasm caused a death with -10. Record untried exits and actions per room so the Actor can break loops. Warn against irreversible descents without a plan.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "history",
+        "experience",
+        "map",
+        "actions"
+      ],
+      "temperature": 0.6,
+      "history_length": 20,
+      "retrieval_top_k": 20,
+      "retrieval_min_similarity": 0.6,
+      "actor_beta": 0.3,
+      "exploration": 0.3,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 5.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 4,
+    "id": "0a7fa2a2881b50fc",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Confirmed scores: take egg (Up a Tree), open window then west into Kitchen, put egg in case, take lantern and sword, push rug, open trap, down (+25), kill troll with sword (repeat hit), take coins in Maze #167 (+10). Never throw the lantern or let it go out: darkness meant death by grue (-10). Turn lantern on underground and keep it. Don't take the skeleton key or skeleton (ghost curse). The maze rooms 67-70, 63-64, 52 and 167 are a loop; after 2 revisits with no gain stop. Instead go through the troll room's other exits (east, south) and untried directions. Bring coins back to the case when a route is known. Use look, inventory and examine before moving.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, case 5, trapdoor 25, coins 10. Flag the 70+ step maze loop (rooms 67/68/69/70/167/64/63/52) with no gain, and repeated drop/take of sword and axe. Death cause: throwing the lantern in the dark, then walking into a grue. Note the trapdoor is shut, the troll is dead, so the troll room's other exits are untried. Flag the ghost curse after taking the skeleton. List untried exits per room.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "history",
+        "experience",
+        "map",
+        "actions"
+      ],
+      "temperature": 0.7,
+      "history_length": 24,
+      "retrieval_top_k": 20,
+      "retrieval_min_similarity": 0.6,
+      "actor_beta": 0.3,
+      "exploration": 0.35,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 6.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 5,
+    "id": "ad33e13fd9e10223",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Known scoring: take egg (Up a Tree), open window then west into Kitchen, put egg in case, push rug, open trap, down (+25). BEFORE going down, take BOTH lantern and sword from the Living Room, check inventory, and turn the lantern on. Never enter the Troll room unarmed: the unarmed run was killed there (-10). With the sword, kill troll and repeat hits. Don't oscillate Cellar/Troll/East Chasm/Gallery/Studio: after 2 revisits with no gain try an untried exit or action. In the Gallery, take art once, keep it and bank it in the case. Don't take the skeleton or its key. Use look, inventory and examine first.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, case 5, trapdoor 25, painting 4. Flag death cause: the troll killed the unarmed player; sword was left in the Living Room. Flag the 80+ step loop between Cellar, Troll room, East Chasm, Gallery and Studio, and repeated drop/take of art. Note the trapdoor shut behind the player and the way back is unverified. Record the troll as alive until killed. List untried exits per room.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "experience",
+        "map",
+        "actions"
+      ],
+      "temperature": 0.5,
+      "history_length": 28,
+      "retrieval_top_k": 20,
+      "retrieval_min_similarity": 0.6,
+      "actor_beta": 0.3,
+      "exploration": 0.3,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 7.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 6,
+    "id": "c4b0628dcd1a7f2d",
+    "configuration": {
+      "actor_strategy": "One valid command per turn; never use 'look around X' (use look or examine X). Known scoring: take egg (Up a Tree), open window, west into Kitchen, put egg in case, take lantern and sword, turn lantern on, push rug, open trap, down (+25). Armed with the sword, hit troll; it was knocked out, then killed with the axe. Maze room #167 has coins (+10). After taking coins, STOP wandering the maze. Do not fight the thief; he killed the run (-10). Leave maze rooms on sight of him. Don't take the skeleton key or knife. Never repeat a 2-room cycle (64/167, 67/68) more than twice; try an untried exit or go back toward the Troll room. Return to the Living Room is unverified: test the Kitchen chimney (down), Troll room exits and other untried exits one step at a time. Bank treasure in the case.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, case 5, trapdoor 25, coins 10. Flag the death cause: the thief in the maze, -10 when the run ended. Flag the 60+ step loop among Maze rooms 64/167 and 67/68/69/70 and Dead End after the coins. Note the troll was knocked out by the sword and killed by the axe. The trapdoor shut and the return route is unverified. List untried exits per room, especially the Troll room, and record routes between the Troll room and the maze rooms. Note invalid 'look around X' commands wasted turns.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "map",
+        "history",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.45,
+      "history_length": 28,
+      "retrieval_top_k": 20,
+      "retrieval_min_similarity": 0.6,
+      "actor_beta": 0.3,
+      "exploration": 0.4,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 7.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 7,
+    "id": "e1f4d3b5798834ef",
+    "configuration": {
+      "actor_strategy": "One valid command per turn; never 'look around X'. Scoring route: take egg (Up a Tree), open window, west into Kitchen, put egg in case, take lantern and sword, turn lantern on, push rug, open trap, down (+25). Hit troll with sword (knocked out), then axe kills it. Maze #167 has coins (+10); after taking them, leave. NEVER turn the lantern off: the run ended in darkness (grue), not by the thief. If a room is pitch black, turn lantern on before moving. Don't take the skeleton (ghost curse) or the knife. If the thief appears, leave on a lit, known exit. No 2-room cycles more than twice. Head back the way you came toward the Troll room, then try its other exits and the Cellar crawlway one step at a time. Bank treasure in the case.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, case 5, trapdoor 25, coins 10, death -10. Flag the real cause of death: lantern switched off ('put out light') in the maze, then moving in darkness into a grue. The thief only appeared as a distraction. Flag ~20 wasted light off/on toggles and the 60+ step maze loop (64/167, 67/68/69/70). Note the skeleton triggered a ghost curse. Record verified maze transitions as a route back to the Troll room. List untried exits per room (Troll room, Cellar). Note invalid 'look around X' commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.35,
+      "history_length": 30,
+      "retrieval_top_k": 20,
+      "retrieval_min_similarity": 0.6,
+      "actor_beta": 0.3,
+      "exploration": 0.4,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 8.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 8,
+    "id": "bb7b55a656133319",
+    "configuration": {
+      "actor_strategy": "One valid command per turn; never 'look around X'. Route: take egg (Up a Tree), open window, west to Kitchen, west to Living Room, put egg in case (open case first), take lantern AND sword, push rug, open trap, down (+25). Turn lantern on in the Cellar. NEVER turn the lantern off. Before entering the Troll room, hold the sword. If the troll is present, attack it with the sword; if the sword is not held, retreat south and do not stay. In the Troll room do no side actions (no open sack, no take garlic). Do not go east/west in Kitchen-Living Room more than twice. Ignore stale hints about maze coins unless you are actually there. Skip the skeleton and knife. Bank treasure in the case.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, case 5, trapdoor 25, death -10. Flag the real cause of death: in the Troll room without the sword, repeated north/south Cellar-Troll oscillation (6x), then 'open sack' and 'take garlic' while the troll attacked. Flag 8 wasted Kitchen-Living Room cycles. Note the sword was never taken, though the lantern was. Note that the trap door shuts behind you and the Cellar exit leads to the Troll room. Mark 'take coins'/maze goals as stale when far from the maze. Record untried exits and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.3,
+      "history_length": 30,
+      "retrieval_top_k": 20,
+      "retrieval_min_similarity": 0.6,
+      "actor_beta": 0.3,
+      "exploration": 0.3,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 8.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 9,
+    "id": "bb7b55a656133319",
+    "configuration": {
+      "actor_strategy": "One valid command per turn; never 'look around X'. Route: take egg (Up a Tree), open window, west to Kitchen, west to Living Room, put egg in case (open case first), take lantern AND sword, push rug, open trap, down (+25). Turn lantern on in the Cellar. NEVER turn the lantern off. Before entering the Troll room, hold the sword. If the troll is present, attack it with the sword; if the sword is not held, retreat south and do not stay. In the Troll room do no side actions (no open sack, no take garlic). Do not go east/west in Kitchen-Living Room more than twice. Ignore stale hints about maze coins unless you are actually there. Skip the skeleton and knife. Bank treasure in the case.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, case 5, trapdoor 25, death -10. Flag the real cause of death: in the Troll room without the sword, repeated north/south Cellar-Troll oscillation (6x), then 'open sack' and 'take garlic' while the troll attacked. Flag 8 wasted Kitchen-Living Room cycles. Note the sword was never taken, though the lantern was. Note that the trap door shuts behind you and the Cellar exit leads to the Troll room. Mark 'take coins'/maze goals as stale when far from the maze. Record untried exits and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.3,
+      "history_length": 30,
+      "retrieval_top_k": 20,
+      "retrieval_min_similarity": 0.6,
+      "actor_beta": 0.3,
+      "exploration": 0.3,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 8.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 10,
+    "id": "1fe004bccc5496b9",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Route: (Up a Tree, if the egg is still there) take egg; Behind House open window; west x2 to Living Room; open case; put egg in case; NEVER take it out again (take egg = -5). Take lantern AND sword; check inventory and confirm both are held. Push rug, open trap, down (+25), turn lantern on. NEVER descend or go north without the sword. Cellar has an armed enemy: do not linger; north leads to the Troll room. With the sword in hand, attack the troll; with no sword, go south once, never oscillate. No side actions with the troll present. Skip mailbox, leaflet, North House loops, Attic, and Kitchen-Living Room cycles. Ignore 'take coins'/maze goals unless actually in the maze.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, case 5, trapdoor 25, death -10. Flag the cause of death: the sword was never taken, though the lantern was. The Cellar enemy stabbed the player, then the player oscillated Cellar-Troll and was killed. Flag the put/take egg loop (net 0) and the wasted mailbox, North House, Attic and Kitchen cycles. Mark maze 'take coins' goals as stale while far from the maze. Note the trap door shuts behind the player. Record untried exits and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.2,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.2,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 11,
+    "id": "0abab32dac70db61",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Route: if at Up a Tree and the egg is there, take egg; Behind House, open window, west x2 to Living Room; open case; put egg in case; never take it out. Take lantern AND sword; check inventory. Push rug, open trap, down (+25), turn lantern on. Never go north past the Cellar without the sword. Cellar: do not oscillate north/south. If no sword, avoid the Troll room and East Chasm. Never use 'look around <npc>'. 'take art' in the Gallery gave +4; carry it home, don't drop it. Avoid thief.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, case 5, trapdoor 25, art 4, death -10. Flag: the sword was never taken, though the lantern was. Flag the Cellar-Troll north/south oscillation (7 cycles) and the art drop/take loop. Flag that 'look around thief' at East Chasm coincided with death (-10) and that the thief is dangerous. Mark maze 'take coins' goals as stale. Note the trap door shuts behind the player. Record untried exits and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.2,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.2,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 12,
+    "id": "e7ffbad33d01f2fd",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: take egg at Up a Tree, go to Behind House, open window, west x2 to Living Room, open case, put egg in case (keep it there). In the Living Room take the lantern AND the sword, then check inventory. Push rug, open trap, down (+25), turn lantern on. NEVER type 'jump' at East Chasm; it killed the agent (-10). The trap door shuts behind you, so look for other exits and do not assume a way back. Never go north to the Troll room without the sword, and never oscillate Cellar/Troll or East Chasm/Gallery. With the sword in hand, fight the troll cautiously. Take art in the Gallery (+4) once and keep it; do not drop and retake it. Ignore 'take coins' maze goals. Avoid the thief. Try untried exits instead of repeating moves.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, case 5, trapdoor 25, art 4, death -10. Correct the record: the death came from 'jump' at East Chasm, not from the thief. Flag that the sword was never taken, though the lantern was. Flag the Cellar/Troll north-south oscillation, the East Chasm/Gallery loops, and the art drop/take loop. Mark maze 'take coins' goals stale, since the maze was never reached. Note that the trap door shuts behind the player and no return route to the Living Room was found. Record untried exits and invalid commands. Flag any dangerous verbs as banned.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.3,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.3,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 13,
+    "id": "363a5f7f089a7476",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: go to Up a Tree, take egg, then Behind House, open window, west x2 to Living Room. Open case, put egg in case (not 'put down'). Take the lantern AND the sword, check inventory. Push rug, open trap, down (+25), then IMMEDIATELY turn lantern on. NEVER move while it is pitch black: a grue killed the agent in the dark at East Chasm (-10). If the room is dark and the lantern is off or missing, light it or do not move. The trap door shuts behind you, so find other exits. Never go north to the Troll room without the sword. Do not oscillate between Cellar/Troll or East Chasm/Gallery. Take art in the Gallery (+4) once and keep it. Ignore 'take coins' maze goals. Avoid the thief. Try untried exits.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, trapdoor 25, art 4, death -10. Correct the record: death came from a grue after moving 'north' from East Chasm in darkness with no lantern, not from 'jump' or the thief. Flag that the egg was dropped on the Living Room floor, never put in the case, and that neither lantern nor sword was taken. Flag every dark-room move as dangerous. Mark maze 'take coins' goals stale, since the maze was never reached. Note the trap door shuts behind the player and no return route was found. Record untried exits and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.25,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.25,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 14,
+    "id": "b72d26a933abf4b9",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: Up a Tree, take egg, Behind House, open window, west x2 to Living Room. Open case, put egg in case (+5). Take lantern AND sword (the sword was skipped last time), check inventory, push rug, open trap, down (+25), turn lantern on. NEVER enter the Troll room without the sword: repeated north/south trips there ended in a knockout death (-10). Visit it at most once, and only armed. Do not oscillate Cellar/Troll or East Chasm/Gallery. Take art in the Gallery (+4) and KEEP it; never drop it. Don't chase 'take coins' maze goals. Try untried exits: East Chasm north passage, other Gallery exits.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, egg in case 5, trapdoor 25, art 4, death -10. Correct the record: the last death came from repeated Cellar<->Troll trips, with the troll knocking the agent out; no sword was ever taken. Flag that the art was dropped in the Gallery, not banked. Mark 'take coins' maze goals stale (maze never reached). Note the trap door shuts behind the player and no return route is verified. Flag oscillation loops, untried exits and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.3,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.3,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 15,
+    "id": "b72d26a933abf4b9",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: Up a Tree, take egg, Behind House, open window, west x2 to Living Room. Open case, put egg in case (+5). Take lantern AND sword (the sword was skipped last time), check inventory, push rug, open trap, down (+25), turn lantern on. NEVER enter the Troll room without the sword: repeated north/south trips there ended in a knockout death (-10). Visit it at most once, and only armed. Do not oscillate Cellar/Troll or East Chasm/Gallery. Take art in the Gallery (+4) and KEEP it; never drop it. Don't chase 'take coins' maze goals. Try untried exits: East Chasm north passage, other Gallery exits.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, egg in case 5, trapdoor 25, art 4, death -10. Correct the record: the last death came from repeated Cellar<->Troll trips, with the troll knocking the agent out; no sword was ever taken. Flag that the art was dropped in the Gallery, not banked. Mark 'take coins' maze goals stale (maze never reached). Note the trap door shuts behind the player and no return route is verified. Flag oscillation loops, untried exits and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.3,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.3,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 16,
+    "id": "36f2081222721e2d",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: Up a Tree, take egg, down, Behind House, open window, west x2 to Living Room. Open case, put egg in case (+5). Take lantern AND sword, check inventory, push rug, open trap, down (+25). The trap door shuts behind you and it is pitch black: turn lantern on IMMEDIATELY, before any move. Never move in the dark; the last death was a grue in the dark Cellar/Troll room (-10). Don't enter the Troll room without light and the sword; visit at most once. No oscillation. Ignore 'take coins' maze goals. Try untried exits once lit.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, egg in case 5, trapdoor 25, death -10. Correct the record: the last death was a grue in the dark after the trap door shut; the lantern was never taken or lit and the sword was skipped. Flag moving in darkness as the top risk. Mark 'take coins' maze goals stale (maze never reached). Note no return route from the Cellar is verified. Flag oscillation, untried exits and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.3,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.25,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 17,
+    "id": "36f2081222721e2d",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: Up a Tree, take egg, down, Behind House, open window, west x2 to Living Room. Open case, put egg in case (+5). Take lantern AND sword, check inventory, push rug, open trap, down (+25). The trap door shuts behind you and it is pitch black: turn lantern on IMMEDIATELY, before any move. Never move in the dark; the last death was a grue in the dark Cellar/Troll room (-10). Don't enter the Troll room without light and the sword; visit at most once. No oscillation. Ignore 'take coins' maze goals. Try untried exits once lit.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, egg in case 5, trapdoor 25, death -10. Correct the record: the last death was a grue in the dark after the trap door shut; the lantern was never taken or lit and the sword was skipped. Flag moving in darkness as the top risk. Mark 'take coins' maze goals stale (maze never reached). Note no return route from the Cellar is verified. Flag oscillation, untried exits and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.3,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.25,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 18,
+    "id": "c662ebcbb20e1ab0",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: open window route is known: Behind House, open window, west x2 to Living Room (egg from Up a Tree +5, Kitchen +10). Open case, put egg IN case (not 'put down'). Take lantern AND sword, turn lantern on, check inventory, push rug, open trap, down (+25). The trap door shuts behind you; verify the lantern is lit and held before going down. If you see 'pitch black', turn on lantern first; never move in the dark. The last death: moving north then south in the dark Cellar/Troll room (grue, -10). Ignore stale 'take coins' maze goals. No oscillation; try untried exits only when lit.",
+      "historian_strategy": "Record score actions: egg 5, Kitchen 10, trapdoor 25, death -10. Correct the record: the egg was dropped in the Living Room instead of put in the case; the lantern was turned on in the Living Room yet never taken (it was not in inventory), the sword was skipped, and the death followed moving in the dark. Flag 'put down' versus 'put in case' and unlit moves as top risks. Mark 'take coins' stale. Note no verified return from the Cellar. Flag oscillation and invalid commands.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.3,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.2,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 19,
+    "id": "277fb5e008c20ce9",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Known +35 route: get egg from Up a Tree (+5), open window at Behind House, west to Kitchen (+10), west to Living Room, open case, 'put egg in case' (+5). Avoid North/West House oscillation. BEFORE the trapdoor: 'take lantern' (and sword), turn lantern on, run 'inventory' and confirm the lantern is HELD and lit; lit-in-room does not count. Then push rug, open trap, down (+25). The trapdoor locks behind you. The last death: descended without the lantern, then moved in the dark Cellar (grue, -10). If 'pitch black', do not move; use only light actions. Ignore stale 'take coins' maze goals. Do not repeat failed commands.",
+      "historian_strategy": "Record verified scores: egg 5, Kitchen 10, case deposit 5, trapdoor 25, death -10 (35 final). Correct the record: 'put egg in case' worked this time. The lantern was turned on in the Living Room but never taken, so the Cellar was dark; the sword was skipped; death followed moving south in the dark. Top risks: descending without a held lantern, moving in the dark, oscillating West/North House, and stale 'take coins' goals. Cellar return unverified.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.2,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.15,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.0,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 20,
+    "id": "d77b50488a51a9e3",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Verified route (+35): take egg at Up a Tree, open window at Behind House, west to Kitchen, west to Living Room, open case, 'put egg in case'. Then take lantern, turn it on, push rug, open trap, down (+25); inventory check optional. Cellar: Gallery art (+4) is south, east, take art; then bring it up to the case only if a route exists. The Troll Room north blocks exits and killed us; NEVER go north twice or fight unarmed. Take the sword before descending. Do not shuffle between Cellar, Troll and Chasm. Ignore stale 'take coins' goals.",
+      "historian_strategy": "Record verified scores: egg 5, Kitchen 10, case 5, trapdoor 25, Gallery art 4 (39 peak), death -10 from the troll. Lesson: lantern was carried this time, but the sword was skipped and the actor entered Troll Room repeatedly, then died. Art was dropped, not banked. Cellar return stays unverified (trapdoor barred). Risks: Troll Room, shuffling loops, and stale 'take coins' goals.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.2,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.1,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.5,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 21,
+    "id": "64a971f50a2a842a",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Verified opening (+55 total): take egg at Up a Tree, go down, around forest, west to Behind House, open window, west to Kitchen (+10), west to Living Room, open case, 'put egg in case'. Take lantern, turn it on, push rug, open trap, down (+25). Cellar: south, east to Gallery, take art (+4). VERIFIED RETURN: Gallery north to Studio, up to Kitchen, west to Living Room, then 'put painting in case' (+6). NEVER 'jump' at East Chasm (death, -10). Ignore stale 'take coins' goals. Never alternate north/south between Cellar and East Chasm. After banking, explore only unvisited exits or items: Attic items, Studio, Troll Room only if armed. Look at the room before moving.",
+      "historian_strategy": "Record verified scores: egg 5, Kitchen 10, case 5, trapdoor 25, art 4, painting banked 6 (peak 55); death by 'jump' at East Chasm cost -10 for a final 45. Verified return: Gallery, Studio, up to Kitchen, west to Living Room. Flag the Cellar-East Chasm shuffle (about 60 steps wasted), the stale 'take coins' goal, and the thief taking the painting. Treat the sack, garlic and lantern as tools, not treasure.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "history",
+        "map",
+        "experience",
+        "actions"
+      ],
+      "temperature": 0.3,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.15,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 9.5,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 22,
+    "id": "13aa77d8875096da",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Check inventory before any descent. From West House, reach Behind House (forest loop worked: west, go around trees, west, go around forest, west), open window, west to Kitchen (+10), west to Living Room. Take the lantern and TURN IT ON BEFORE going down. Then push rug, open trap, down (+25). The trap door shuts behind you. In pitch black do NOT move; the first dark move got us eaten by a grue (-10, death). Without a lit lantern, stay out of the Cellar. Also take the egg if reachable (Up a Tree). Cellar with light: south, east to Gallery, take art (+4). Return: Gallery north, Studio, up to Kitchen, west to Living Room, then put treasures in case. NEVER 'jump' at East Chasm. Ignore stale 'take coins' and 'down' history goals unless prerequisites (light) are met. Do not shuffle Cellar and East Chasm.",
+      "historian_strategy": "Record verified scores: Kitchen 10, trapdoor 25, egg 5, case 5, art 4, painting banked 6 (peak 55). Flag failures: this run descended without the lantern, moved south in the dark and died to a grue at 25 points (-10). A 'jump' at East Chasm also killed an earlier run. Note that history-derived goals such as 'down' or 'take coins' ignore lighting prerequisites. Record the verified route to Behind House and the Gallery-Studio-Kitchen return. Treat the lantern as a required tool, not a treasure.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "actions",
+        "history",
+        "map",
+        "experience"
+      ],
+      "temperature": 0.2,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.1,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 10,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 23,
+    "id": "55b43024e0fdbaf4",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Check inventory before any descent. Route: West House, west, go around trees, west, go around forest, west to Behind House. Open window, west to Kitchen (+10), west to Living Room. Take lantern, turn it on, push rug, open trap, down (+25). Do not descend unlit; do not move in the dark. In the Cellar, NEVER go north: the Troll Room troll knocked us out and killed us (-10). Never shuttle between Cellar and Troll Room. Ignore stale history goals ('take coins' at Maze, repeat 'down') once at the Cellar. With light, go south then east to Gallery and take the art (+4). Return via Studio, up to Kitchen, west to Living Room, then put treasures in the case. Take the egg if reachable. NEVER 'jump' at East Chasm. If a move repeats a location, change plan.",
+      "historian_strategy": "Verified: Kitchen +10, trapdoor/Cellar +25 (lit lantern worked), egg 5, case 5, art 4, painting 6 (peak 55). Failures: (1) dark descent, grue death; (2) East Chasm 'jump' death; (3) this run: lit and safe at 25, then went north from Cellar into the armed Troll Room and was killed (-10) after a Cellar/Troll oscillation. Flag stale goals ('take coins', 'down') that ignore danger and prerequisites. Record Cellar north as lethal without a weapon. Lantern is a tool.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "actions",
+        "history",
+        "map",
+        "experience"
+      ],
+      "temperature": 0.2,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.1,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 10,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 24,
+    "id": "d5b62c2f7d1065d2",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Route: Kitchen (+10), Living Room, take lantern, light it, open trap, down (+25). South to East Chasm, east to Gallery, take art (+4), north Studio, up Kitchen, west Living Room, put painting/art in case. Then STOP looping: the Cellar-Gallery-Studio-Kitchen-Living Room cycle is a proven 300-step stall; do not repeat it. NEVER 'put down' or drop the lantern, never wait in the dark, never go north from Cellar (troll). Ignore historical 'take coins' goals. After banking, check inventory, try a new unexplored exit, or take the egg.",
+      "historian_strategy": "Verified: Kitchen +10, Cellar +25, art +4, painting +6 in case (peak 35-55). Failures: dark death, East Chasm jump, Troll Room north of Cellar, and this run: ~300 steps looping Living Room-Cellar-Gallery-Studio-Kitchen chasing a stale 'take coins' Maze goal, then dropping the lantern in the Cellar, waiting, and being eaten by a grue. Flag stale Maze goals as unreachable, flag loops, never drop the lantern.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "actions",
+        "history",
+        "map",
+        "experience"
+      ],
+      "temperature": 0.35,
+      "history_length": 30,
+      "retrieval_top_k": 10,
+      "retrieval_min_similarity": 0.7,
+      "actor_beta": 0.3,
+      "exploration": 0.25,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 10,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 25,
+    "id": "b0bfa046708af715",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Bank first: Kitchen west (+10), Living Room, take lantern, light it, open trap, down (+25), south, east to Gallery, take art (+4), north, up, west, put painting in case (+6). That is 35-45 and is DONE. Never go north from Cellar (troll killed the run). Do NOT repeat Living Room-Cellar-Chasm-Gallery-Studio-Kitchen loops; after 2 zero-score cycles stop. Ignore any 'take coins'/Maze goal: unreachable. Next: inventory, 'examine' items, take sack/bottle in Kitchen, go up to Attic (explored: dead end), try unexplored exits (Behind House window/forest, Clearing), try 'take egg' or 'take sword/lamp' in Living Room. Keep lantern.",
+      "historian_strategy": "Verified: Kitchen +10, Cellar +25, art +4, painting +6 (total 35 banked). Failures: dark/grue death, East Chasm jump, and this run ~280 steps looping Living Room-Cellar-Chasm-Gallery-Studio-Kitchen-Attic chasing stale Maze 'take coins' goal, ending with north from Cellar into the Troll (-10, death). Mark Maze goals unreachable, flag loops after 2 cycles, forbid Cellar north, and recommend untried exits and Living Room items instead.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "actions",
+        "history",
+        "map",
+        "experience"
+      ],
+      "temperature": 0.5,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.45,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 10,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 26,
+    "id": "93086951d7975d72",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Bank first: from start go south/east to Behind House, open window, west (Kitchen +10), west to Living Room, take lantern, turn it ON before descending, push rug, open trap, down (+25). In the Cellar the lantern must be lit; never act or move in the dark (grue killed this run: 'south' in the dark Cellar = death). If dark, light lantern first. Never go north from Cellar (troll). Ignore stale Maze 'take coins' goals. Then go up, put treasures in case. Avoid aimless forest wandering.",
+      "historian_strategy": "Verified: Kitchen +10 via open window then west; Cellar +25 via trap door. This run: wasted 5 forest steps at start, took the lantern-on step only in Living Room but the observation showed the Cellar dark anyway, then opened the sack and moved south in darkness: grue death at 16 steps. Flag: confirm lantern is carried and lit before the Cellar; never move blindly in dark; mark Maze goals unreachable; forbid Cellar north.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "actions",
+        "history",
+        "map",
+        "experience"
+      ],
+      "temperature": 0.4,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.35,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 10,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 27,
+    "id": "ed917f8a0b14ad6d",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Bank first: Behind House, open window, west (Kitchen +10), west to Living Room, take lantern and turn it ON, push rug, open trap, down (+25). Never drop or leave the lantern, and never move in the dark; if dark, light it first. Never go north from the Cellar (troll). The Maze 'take coins' goal is unreachable: ignore it. Do not repeat a move pair (north/south, east/west) more than once. After taking treasure (egg, art), go to the Living Room and put it in the case. Then try unvisited exits and untried items (Kitchen sack/bottle, Attic) instead of looping.",
+      "historian_strategy": "Verified: egg +5, Kitchen +10, Cellar +25, art +4 (Gallery), egg in case +5. Failures: about 300 steps looping Cellar/East Chasm/Gallery/Studio chasing the unreachable Maze 'take coins' goal; dropped the lantern in East Chasm, then moved north in the dark and died to a grue (-10). Flag: mark Maze goals stale, penalize movement cycles, forbid dropping the lantern, deposit art in the case, and prefer unexplored exits.",
+      "section_order": [
+        "state",
+        "goal",
+        "guidance",
+        "navigation",
+        "actions",
+        "history",
+        "map",
+        "experience"
+      ],
+      "temperature": 0.55,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.45,
+      "critic_learning_rate": 0.04,
+      "route_risk_weight": 10,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 28,
+    "id": "a0a02d41a7754b3a",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Keep the lantern: never drop it, and if a room is dark, light it before moving. Score so far: egg +5, Kitchen +10, Cellar +25, art +4, case deposits. After taking a treasure, return to the Living Room and put it in the case. The Maze 'take coins' goal is stale and unreachable; ignore it. Never go north from the Cellar (troll). Never repeat a move pair, and do not shuttle Cellar/East Chasm/Gallery/Studio. Once those are explored, leave. Try unvisited exits and untried items: Attic, Kitchen sack and bottle, Forest paths, Clearing. Use 'examine' or 'read' before wandering.",
+      "historian_strategy": "Verified: egg +5, Kitchen +10, Cellar +25, art +4, case +11. Failure: about 300 steps shuttling Cellar/East Chasm/Gallery/Studio chasing the stale Maze 'take coins' goal. The lantern was dropped in East Chasm, then north in the dark killed the agent to a grue (-10). Rules: mark Maze goals stale after one failed attempt; penalize 2-cycle movement; forbid dropping the lantern; prefer unvisited frontiers (Attic, Forest, Clearing, Kitchen items); reward deposits in the trophy case.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "actions",
+        "map",
+        "history",
+        "experience"
+      ],
+      "temperature": 0.7,
+      "history_length": 30,
+      "retrieval_top_k": 4,
+      "retrieval_min_similarity": 0.85,
+      "actor_beta": 0.3,
+      "exploration": 0.6,
+      "critic_learning_rate": 0.06,
+      "route_risk_weight": 10,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 29,
+    "id": "25ce47f00fdd856a",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Score so far: egg +5, Kitchen +10, egg in case +5. The Maze 'take coins' goal is stale and unreachable from here; ignore it. Never take the egg out of the case again: that costs -5 and the re-deposit only restores it. The Attic is dark: do not enter without a light. Do not shuttle Living Room/Kitchen, Clearing/Forest, or Attic/Kitchen. Before moving, check the room exits and untried verbs. First get the lantern from the Living Room and examine the rug and trap door. Open the trap door to reach the Cellar, then explore unvisited exits. Never go north from the Cellar (troll). Never drop the lantern.",
+      "historian_strategy": "Verified: egg +5 (Up a Tree), Kitchen +10, case deposit +5. Failures: 500 steps looping Forest/Clearing/Kitchen/Living Room chasing a stale Maze 'take coins' goal, never reaching the underground. Taking the egg back out of the case cost -5 each time. Rules: mark the Maze goal stale and do not emit it as a goal; reward new rooms and first-time actions only; penalize 2-cycles and 3-room loops; prioritize lantern, rug, trap door, Cellar; forbid removing treasure from the case.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "actions",
+        "map",
+        "history",
+        "experience"
+      ],
+      "temperature": 0.8,
+      "history_length": 30,
+      "retrieval_top_k": 4,
+      "retrieval_min_similarity": 0.85,
+      "actor_beta": 0.3,
+      "exploration": 0.8,
+      "critic_learning_rate": 0.06,
+      "route_risk_weight": 6,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 30,
+    "id": "c5e79f9a6d0fe11b",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Facts: the egg at Up a Tree gave +5 once; taking it again gives nothing. Never 'jump' at CanyView (death, -10). Never use the cycle Forest Path/Clearing/Forest/CanyView/Up a Tree. 'go around forest/trees' and up/down are exhausted: ban them. From Clearing go west to Behind House, then open window and enter the kitchen. Take the lantern, then rug, trap door, Cellar. Never go north from the Cellar. Do not re-take treasure. Prefer an untried verb or exit over any room revisit.",
+      "historian_strategy": "Verified: egg +5 at Up a Tree. Failure: 261 steps cycling Forest Path/Clearing/Forest #76-78/CanyView/Up a Tree; ended with 'jump' at CanyView (death -10). Maze 'take coins' goal is stale: do not emit it. Mark return-route goals as 'enter house via Behind House window, deposit egg in case'. Penalize visits repeated more than twice, 'go around' commands, and 'jump'. Reward new rooms and first-time actions.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "actions",
+        "guidance",
+        "map",
+        "history",
+        "experience"
+      ],
+      "temperature": 0.7,
+      "history_length": 30,
+      "retrieval_top_k": 4,
+      "retrieval_min_similarity": 0.85,
+      "actor_beta": 0.3,
+      "exploration": 0.8,
+      "critic_learning_rate": 0.06,
+      "route_risk_weight": 7,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 31,
+    "id": "1f59d994c6f2436d",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Known: egg at Up a Tree +5 once; Behind House window to Kitchen +10; 'put egg in case' +5; trap door down to Cellar +25. Never go north from the Cellar unless the troll is handled: the Troll Room killed us (-10). Never 'jump' at CanyView. Ban 'go around forest'. Don't loop Kitchen/Living Room. Once in the Cellar, take only new exits (south). Check inventory and use the lantern/sword deliberately. Prefer untried verbs/exits.",
+      "historian_strategy": "Verified: egg +5; window entry +10; case deposit +5; trap door +25. Failure: Cellar north leads to Troll Room death (-10), and 30 steps wasted looping Kitchen/Living Room. 'take coins' at Maze is stale: never emit it. Goals: bank treasure, then explore new Cellar exits except north. Penalize repeated visits, 'go around', 'jump', and north from Cellar without troll prep.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "actions",
+        "guidance",
+        "map",
+        "history",
+        "experience"
+      ],
+      "temperature": 0.6,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.6,
+      "critic_learning_rate": 0.06,
+      "route_risk_weight": 8,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 32,
+    "id": "1d1a5a01ab903456",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Verified: egg +5; window to Kitchen +10; 'put egg in case' +5; trap door down +25; Gallery 'take art' +4. Bank the painting: from Gallery go west, north to Cellar, but trapdoor is barred; find another way up (e.g. unexplored Cellar/Studio exits). Never loop East Chasm/Gallery/Cellar/Studio: if a room was visited twice, pick an untried exit or verb. Don't toggle open/close sack. Never attack or give items to the thief. Avoid Cellar north (troll) without prep.",
+      "historian_strategy": "Verified: egg +5; window +10; case +5; trap door +25; Gallery art +4. Failures: 183 steps looping East Chasm/Gallery/Cellar/Studio and sack open/close; thief encounter killed us (-10). 'take coins' at Maze is stale: drop that goal. Prioritize untried exits and puzzle prerequisites (Studio, Troll Room prep with sword). Penalize repeated movement cycles, sack toggling, thief interaction.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "actions",
+        "map",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.8,
+      "history_length": 20,
+      "retrieval_top_k": 4,
+      "retrieval_min_similarity": 0.85,
+      "actor_beta": 0.3,
+      "exploration": 0.75,
+      "critic_learning_rate": 0.1,
+      "route_risk_weight": 7,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 33,
+    "id": "a9b0a9c6a451c1e3",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Proven route: open window, west to Kitchen (+10), living room, push rug, open trap door, down (+25). BEFORE going down: 'take lantern' (it is in the Living Room; 'turn on lantern' alone does not carry it), check inventory, light it, keep the sword. If a room says pitch black, never move: light the lantern or go back up. Cellar is dark; a grue killed us when we moved south unlit. Don't chase 'take coins' at Maze. Don't loop rooms or toggle the sack. Never fight or give items to the thief. Avoid Cellar north (troll) without prep. Take treasures to the trophy case.",
+      "historian_strategy": "Verified: window +10, trap door down +25 (earlier runs also: egg +5, case +5, Gallery art +4). Failure this run: died in dark Cellar after 'south' because the lantern was lit but never taken. Set goals: take lantern first, verify light, then explore Cellar exits. Drop the stale 'take coins' Maze goal. Penalize moving in darkness, looping, sack toggling, thief interaction.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "actions",
+        "map",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.6,
+      "history_length": 20,
+      "retrieval_top_k": 4,
+      "retrieval_min_similarity": 0.85,
+      "actor_beta": 0.3,
+      "exploration": 0.6,
+      "critic_learning_rate": 0.1,
+      "route_risk_weight": 8,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 34,
+    "id": "a9b0a9c6a451c1e3",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Proven route: open window, west to Kitchen (+10), living room, push rug, open trap door, down (+25). BEFORE going down: 'take lantern' (it is in the Living Room; 'turn on lantern' alone does not carry it), check inventory, light it, keep the sword. If a room says pitch black, never move: light the lantern or go back up. Cellar is dark; a grue killed us when we moved south unlit. Don't chase 'take coins' at Maze. Don't loop rooms or toggle the sack. Never fight or give items to the thief. Avoid Cellar north (troll) without prep. Take treasures to the trophy case.",
+      "historian_strategy": "Verified: window +10, trap door down +25 (earlier runs also: egg +5, case +5, Gallery art +4). Failure this run: died in dark Cellar after 'south' because the lantern was lit but never taken. Set goals: take lantern first, verify light, then explore Cellar exits. Drop the stale 'take coins' Maze goal. Penalize moving in darkness, looping, sack toggling, thief interaction.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "actions",
+        "map",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.6,
+      "history_length": 20,
+      "retrieval_top_k": 4,
+      "retrieval_min_similarity": 0.85,
+      "actor_beta": 0.3,
+      "exploration": 0.6,
+      "critic_learning_rate": 0.1,
+      "route_risk_weight": 8,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 35,
+    "id": "7e913f7124dd7a82",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Route: open window, west (+10), living room, push rug, open trap door, down (+25). Before going down, take and light the lantern and keep the sword. Never move in pitch black. The trap door bars shut behind you, so find the way back before wandering deep. Never go north from the Cellar into the Troll room. Staying there got us killed, and dropping items next to the troll does nothing. Gallery 'take art' gives +4. If a place repeats twice, stop cycling Cellar/East Chasm/Gallery/Studio. Instead read each room text for unused exits (up, down, chimney, window) and try them. The Kitchen has a chimney leading down, so look for an upward chimney in the Studio and try 'up' there and in the Cellar. Then bring treasure to the trophy case. Don't toggle or drop items. Never fight the thief.",
+      "historian_strategy": "Verified: window +10, trap door +25, Gallery art +4. Failure this run: about 150 steps cycling Cellar, East Chasm, Gallery and Studio with no score, then death in the Troll room. 'take coins' at the Maze was a stale goal and led nowhere, so drop it. When the return route is blocked, set goals to test untried exits (up/down/chimney) and to read room descriptions for exits. Penalize room cycles of 2+ repeats, entering the Troll room, drop/take toggling, and darkness moves. Reward finding a new exit or reaching the Living Room with the art.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "map",
+        "actions",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.8,
+      "history_length": 30,
+      "retrieval_top_k": 4,
+      "retrieval_min_similarity": 0.85,
+      "actor_beta": 0.3,
+      "exploration": 0.7,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 36,
+    "id": "7e913f7124dd7a82",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Route: open window, west (+10), living room, push rug, open trap door, down (+25). Before going down, take and light the lantern and keep the sword. Never move in pitch black. The trap door bars shut behind you, so find the way back before wandering deep. Never go north from the Cellar into the Troll room. Staying there got us killed, and dropping items next to the troll does nothing. Gallery 'take art' gives +4. If a place repeats twice, stop cycling Cellar/East Chasm/Gallery/Studio. Instead read each room text for unused exits (up, down, chimney, window) and try them. The Kitchen has a chimney leading down, so look for an upward chimney in the Studio and try 'up' there and in the Cellar. Then bring treasure to the trophy case. Don't toggle or drop items. Never fight the thief.",
+      "historian_strategy": "Verified: window +10, trap door +25, Gallery art +4. Failure this run: about 150 steps cycling Cellar, East Chasm, Gallery and Studio with no score, then death in the Troll room. 'take coins' at the Maze was a stale goal and led nowhere, so drop it. When the return route is blocked, set goals to test untried exits (up/down/chimney) and to read room descriptions for exits. Penalize room cycles of 2+ repeats, entering the Troll room, drop/take toggling, and darkness moves. Reward finding a new exit or reaching the Living Room with the art.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "guidance",
+        "map",
+        "actions",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.8,
+      "history_length": 30,
+      "retrieval_top_k": 4,
+      "retrieval_min_similarity": 0.85,
+      "actor_beta": 0.3,
+      "exploration": 0.7,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 37,
+    "id": "c4cb8ad61d3cd21c",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Route: open window, west (+10), living room, push rug, open trap door, down (+25). Take and light the lantern first and keep the sword. Never move in darkness. The trap door bars shut behind you. Gallery 'take art' gives +4. NEVER type 'jump' (it killed us at East Chasm, -10). Never fight the thief. Do not enter the Troll room. The last run wasted about 150 moves cycling Cellar/East Chasm/Gallery/Studio and never tried 'up' in the Studio. Next: go Gallery, north to Studio, read the room text, then try 'up' and 'look'. Kitchen text says a dark chimney leads down, so a chimney up from the Studio is the best untested return route. If a room repeats twice, issue a non-compass command (up, down, look, examine) instead of a compass move. Once back in the Living Room, put the art in the trophy case. Don't drop and retake items.",
+      "historian_strategy": "Verified: window +10, trap door +25, Gallery art +4, 'jump' at East Chasm = death (-10). Failure: about 150 steps cycling Cellar/East Chasm/Gallery/Studio; 'up' in the Studio was never tried even though the strategy suggested it. 'take coins' at the Maze is a stale goal, so drop it. Set the goal to testing 'up' in the Studio, then reading every room text for unused exits. Penalize 2+ room repeats, 'jump', Troll room entry, drop/take toggling and darkness moves. Reward new exits or reaching the Living Room with the art.",
+      "section_order": [
+        "state",
+        "goal",
+        "actions",
+        "navigation",
+        "map",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.7,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.5,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 8,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 38,
+    "id": "36c0a6555e883757",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Known route: open window, west (+10), Living Room, push rug, open trap door, down (+25). Trap door bars behind you. Gallery 'take art' = +4. NEVER 'jump' (death at East Chasm). NEVER enter the Troll room (north of Cellar). NEVER 'give' anything to the troll (killed us at step 171). Last two runs cycled Cellar/East Chasm/Gallery/Studio for 150+ moves. At the Studio your next two commands MUST be 'look', then 'up' (never tried). Read any refusal text and act on it. If 'up' fails, try 'examine' on objects and 'climb' verbs. Never repeat a compass move between the same two rooms more than twice. After 2 repeats, use a non-compass verb. Don't drop and retake items. Once in the Living Room, put the art in the trophy case.",
+      "historian_strategy": "Verified: window +10, trap door +25, Gallery art +4. Deaths: 'jump' at East Chasm; 'give troll painting' (-10, ended game). Failure: about 150 steps cycling Cellar/East Chasm/Gallery/Studio, entered Troll room 6 times, never tried 'up' in the Studio. 'take coins' at the Maze is a stale goal, so drop it. Goal: Studio 'look' then 'up' to find a way back to the Living Room, then bank the art. Penalize room repeats, Troll room entry, giving items to the troll, jump, drop/take toggling. Reward new exits and reaching the Living Room.",
+      "section_order": [
+        "state",
+        "goal",
+        "actions",
+        "navigation",
+        "map",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.9,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.7,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 39,
+    "id": "a85778feac417022",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: open window, west (+10), west to Living Room. Before going down, 'take lantern' and 'inventory' to confirm you hold it and it is lit; 'take sword' worked. Then push rug, open trap door, down (+25). The trap door bars behind you. Last run: Cellar was pitch black and 'south' got us eaten by a grue. In darkness, never take a compass move. Fix the light first (take/turn on lantern, check inventory), then 'look'. Skip mailbox/leaflet and North House loops. NEVER 'jump' at East Chasm. NEVER 'give' to the troll. Avoid the Troll room. Read refusal text and act on it. Don't repeat a compass move between the same two rooms more than twice. Don't drop and retake items. Bank treasures in the trophy case.",
+      "historian_strategy": "Verified: window west +10; trap door down +25; Gallery art +4 (earlier run). Deaths: 'jump' at East Chasm; 'give' to the troll; this run, moving 'south' in the pitch-black Cellar (grue) after 28 steps. Wasted early steps on mailbox/leaflet and North House/West House loops. The Maze 'take coins' goal is stale and unreachable; drop it. Goal: carry a lit lantern before descending, then explore the Cellar safely with 'look'. Penalize moves in darkness, room repeats, Troll room, giving to the troll, jump, drop/take toggling. Reward new exits and lit exploration.",
+      "section_order": [
+        "state",
+        "goal",
+        "actions",
+        "navigation",
+        "map",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.7,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.5,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 40,
+    "id": "8aca2bb50528b70b",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: open window, west (+10), west to Living Room. 'take lantern' and 'take sword', then 'inventory'; turn on lantern before descending (it dimmed and went dark last run). Push rug, open trap door, down (+25). Gallery 'take art' gives +4, then go back UP and bank it in the trophy case at Living Room. Never ping-pong between Gallery/Studio/East Chasm/Cellar: 400 steps of this earned nothing. If a room has no new exit after one 'look', pick an unvisited exit or a new action. Don't put the lantern in the sack, don't drop it, and never move in darkness. NEVER 'jump'. NEVER 'give' to the troll. Avoid the Troll room unless armed and lit. Skip mailbox/leaflet and North House loops.",
+      "historian_strategy": "Verified: window west +10; trap door down +25; Gallery take art +4. Deaths: jump at East Chasm; give to troll; moving in the dark Cellar/Troll room (grue, -10). Last run: 420 steps stuck in Gallery/Studio/East Chasm/Cellar cycles with 'take coins' at the Maze as a stale, unreachable goal. Do not set it as a goal. Goals: keep the lantern lit and in hand, bank art in the trophy case, then explore unvisited exits. Penalize repeated room cycles, sack/lantern put-take toggles, dropping the lantern, moves in darkness, and the troll room.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "actions",
+        "guidance",
+        "map",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.9,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.7,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 41,
+    "id": "5e65ca7d5c55946c",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Verified fast route: from West House go to Behind House, 'open window', west (+10), west to Living Room. Optional egg: Forest Path -> up -> 'take egg' (+5), bank it with 'open case','put egg in case' (+5). Then 'take lantern' and 'take sword', 'turn on lantern' (it was on but the Cellar still went dark; check 'inventory' and that the lantern is lit and in hand before 'down'). Push rug, open trap door, down (+25). NEVER move while it is pitch black: the grue killed us when we went 'south' from the dark Cellar. If dark, 'turn on lantern' first, never move. NEVER 'jump'. NEVER 'give' to troll. Don't drop the lantern. Skip mailbox. Avoid ping-ponging rooms; after one 'look' pick an unvisited exit.",
+      "historian_strategy": "Verified: window west +10; trap door down +25; take egg in tree +5 and put in case +5; Gallery take art +4. Deaths: jump at East Chasm; give to troll; moving in the dark Cellar (grue, -10). Last run died at step 19 after 'south' from dark Cellar, even after 'turn on lantern' in the Living Room. 'take coins' at Maze is a stale, unreachable goal: do not set it as a goal early. Goals: bank the egg, ensure the lantern is lit in the Cellar before any movement, then explore unvisited exits. Penalize moves in darkness, room cycles, lantern drops.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "actions",
+        "guidance",
+        "map",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.7,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.5,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 42,
+    "id": "5c81e96fcf846e1f",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Fast route: West House -> Behind House, 'open window', west (+10), west to Living Room. Optional egg: Forest Path -> up -> 'take egg' (+5); in Living Room 'open case', 'put egg in case' (+5). BEFORE going down: 'take lantern' (it must be in hand, not on the floor; last run lit it but left it in the room), 'take sword', then 'inventory' to confirm lantern and sword, then 'turn on lantern'. Then 'push rug', 'open trap door', 'down' (+25). NEVER move while it is pitch black: the grue killed us twice. If dark, do not move; 'turn on lantern' (needs lantern carried). NEVER 'jump'. NEVER 'give' to troll. Don't drop the lantern. Skip mailbox and the North House loop. Avoid ping-ponging; pick unvisited exits.",
+      "historian_strategy": "Verified: window west +10; trap door down +25; egg in tree +5, in case +5; Gallery art +4. Deaths: jump at East Chasm; give to troll; moving in the dark Cellar (grue, -10). Root cause last run: 'turn on lantern' was used but 'take lantern' was never done, so the Cellar was dark. Require the lantern in inventory and lit before 'down'. Drop the stale 'take coins' Maze goal; it is unreachable early and wasted ~30 steps. Goals in order: egg, bank it, take lantern and sword, descend, then explore unvisited underground exits. Penalize darkness moves, room cycles, mailbox and North House loops.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "actions",
+        "guidance",
+        "map",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.5,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.3,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 43,
+    "id": "c65908d3bc588f24",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Route: West House -> Behind House, 'open window', west (+10), west to Living Room. Egg: Forest Path -> up -> 'take egg' (+5); Living Room 'open case', 'put egg in case' (+5). Before descending: 'take lantern', 'take sword', 'inventory', 'turn on lantern'. Then 'push rug', 'open trap door', 'down' (+25). Cellar -> south -> East Chasm -> east Gallery: 'take art' (+4), carry back and 'put painting in case' (+6). NEVER 'take knife' (rusty knife is cursed) or attack/hit anything with it: it killed us (-10). NEVER 'jump', NEVER 'give' to troll, never move in the dark. Maze loops waste steps: never revisit a room more than twice; leave the maze. Skip mailbox and North House.",
+      "historian_strategy": "Verified: window west +10; trap door down +25; egg in tree +5, case +5; Gallery art +4, painting in case +6; maze coins +10 (but 150+ steps lost cycling maze rooms 63-70, 167). Deaths: jump at East Chasm; give to troll; dark Cellar grue; 'hit chimney with knife' (cursed rusty knife, -10, ended game at 55). Rules: never pick up the rusty knife; penalize maze cycles (room 67/68/69/70 ping-pong) and drop/take loops. After banking art, explore untried exits outside the maze (Studio, Attic, Troll Room with sword). Prefer new rooms over repeats.",
+      "section_order": [
+        "state",
+        "goal",
+        "navigation",
+        "actions",
+        "guidance",
+        "map",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.6,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.35,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 44,
+    "id": "61080bf4e2877c94",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: Forest Path -> up -> 'take egg'; Behind House, 'open window', west (+10), west to Living Room, 'open case', 'put egg in case'. Before descending: 'take lantern', 'take sword', 'turn on lantern', 'push rug', 'open trap door', 'down' (+25). The trap door then bars shut, so the Living Room is not reachable by the same way. Cellar -> south -> East Chasm -> east Gallery: 'take art' (+4) and KEEP it. Never drop it. At Gallery go north to Studio and test untried exits there, especially 'up' (the Kitchen has a chimney leading down), to carry the painting home, then 'put painting in case'. NEVER go north from Cellar into the Troll Room: the troll killed us (-10). NEVER 'take knife', 'jump', or 'give' to troll, and never move in the dark. Do not repeat Cellar/East Chasm/Gallery shuttles: visiting a room more than twice means try a new exit or command.",
+      "historian_strategy": "Verified: window +10; trap door +25; egg +5, case +5; Gallery art +4. Run ended at 39 after dying -10 in the Troll Room. Failures: the trap door barred behind us, so the painting was never banked. About 130 steps went on Cellar/East Chasm/Gallery/Troll ping-pong, and a Studio 'up' exit was never tried. The Maze 'take coins' goal is unreachable from here, so do not set it. Goals: (1) from Studio, test 'up' and other untried exits to bank the painting; (2) never go north from Cellar, since the troll kills; (3) penalize repeated movement cycles and drop/take loops; (4) reward new rooms and verified exits.",
+      "section_order": [
+        "state",
+        "goal",
+        "map",
+        "navigation",
+        "actions",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.7,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.5,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 45,
+    "id": "d7682fd6b81e04b0",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening: Forest Path -> up -> 'take egg'; Behind House, 'open window', west (+10), west to Living Room, 'open case', 'put egg in case'. Then 'take lantern', 'take sword', 'turn on lantern', 'push rug', 'open trap door', 'down' (+25); the trap door bars shut behind you. Cellar -> south -> East Chasm -> east Gallery: 'take art' (+4), keep it. North to Studio, then 'up' leads home to the Kitchen; Living Room: 'put painting in case' (+6). After banking, DO NOT go north from Cellar to the Troll Room or the Maze: the maze has no known way back, wasted about 200 steps, and the thief killed us (-10). Never attack the thief, never take skeleton or knife, never move in the dark. Visiting a room more than twice means try an untested exit or command, or leave the area. Look for unexplored exits near the house, forest and clearing.",
+      "historian_strategy": "Verified: egg +5, window +10, case +5, trap door +25, Gallery art +4, painting in case +6 (Studio up -> Kitchen -> Living Room). Maze coins +10 were never banked: no return route from the maze was found, and about 200 steps were lost cycling rooms 67/68/167/64/65/66. Death came from hitting the thief (-10). Goals: (1) bank the painting early; (2) do not enter the Troll Room or Maze; (3) after banking, explore new above-ground exits and untested commands; (4) penalize movement cycles, repeated dead-end visits and fighting; (5) reward new rooms and verified return routes to the Living Room.",
+      "section_order": [
+        "state",
+        "goal",
+        "map",
+        "navigation",
+        "actions",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.6,
+      "history_length": 30,
+      "retrieval_top_k": 6,
+      "retrieval_min_similarity": 0.8,
+      "actor_beta": 0.3,
+      "exploration": 0.6,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 9,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 46,
+    "id": "1fcc5ef7558c6c03",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Banked so far: egg, window, case, trap door, Gallery art, painting in case (45 pts). Opening: Forest Path -> up -> 'take egg'; Behind House 'open window', west, west; 'open case','put egg in case'; take lantern and sword, 'turn on lantern', 'push rug', 'open trap', down; Cellar -> south -> east -> 'take art' -> north -> up -> west; 'put painting in case'. After banking, the Cellar/Gallery/Studio loop is exhausted: never shuttle there. Never go north from Cellar (Troll Room: troll knocked us out and killed us, -10). Instead go back up via Studio/Kitchen and explore ABOVE ground: read leaflet, Clearing, forest exits, house exteriors, Attic via Kitchen staircase up. Never fight, never wander in the dark. Same room visited twice means try a new exit or object.",
+      "historian_strategy": "Verified: egg +5, window +10, case +5, trap door +25, art +4, painting +6 (45 total). The Troll Room killed us (-10); about 80 steps were wasted cycling Studio/Gallery/East Chasm/Cellar. The Maze 'take coins' goal is a false lead: no route is verified, so do not issue it as a goal after banking. Goals: (1) bank treasure early; (2) forbid north from Cellar; (3) once banked, send the Actor to unexplored above-ground exits and the Kitchen staircase/Attic; (4) penalize movement cycles and revisits; (5) reward new rooms and verified returns to the Living Room.",
+      "section_order": [
+        "state",
+        "goal",
+        "map",
+        "navigation",
+        "actions",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.7,
+      "history_length": 30,
+      "retrieval_top_k": 5,
+      "retrieval_min_similarity": 0.85,
+      "actor_beta": 0.3,
+      "exploration": 0.7,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 10,
+      "memory_guidance": true
+    }
+  },
+  {
+    "episode": 47,
+    "id": "4a3bc819e684b57e",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening that banked 45 pts: Forest Path -> up -> 'take egg'; down; Clearing; Behind House 'open window', west; Living Room 'open case','put egg in case'; take lantern and sword, 'push rug','open trap', down, 'turn on lantern'; Cellar -> south -> east (Gallery) 'take art' -> north (Studio) -> up -> west; 'put painting in case'. After banking, never return to Cellar, East Chasm, Gallery or Studio. NEVER type 'jump' (it killed us at East Chasm, -10). Never go north from Cellar (Troll Room). Do not give items to the thief. Then explore ABOVE ground: take and read leaflet from mailbox, Kitchen staircase up to Attic, Clearing and forest exits, house exteriors. No fighting, no dark wandering. Same room twice means try a new exit or object; never repeat a back-and-forth move pair.",
+      "historian_strategy": "Verified: egg +5, window +10, case +5, trap door +25, art +4, painting +6 (45). The run ended by 'jump' at East Chasm (-10); about 85 steps cycled Cellar/East Chasm/Gallery/Studio. The Maze 'take coins' goal is an unverified false lead: never issue it. Goals: (1) bank treasure early; (2) once banked, forbid all underground rooms and send the Actor to unexplored above-ground exits, the leaflet, and the Kitchen staircase/Attic; (3) forbid 'jump' and any north from Cellar; (4) penalize movement cycles and revisits; (5) reward new rooms and verified returns to the Living Room.",
+      "section_order": [
+        "state",
+        "goal",
+        "map",
+        "navigation",
+        "actions",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.5,
+      "history_length": 30,
+      "retrieval_top_k": 3,
+      "retrieval_min_similarity": 0.9,
+      "actor_beta": 0.3,
+      "exploration": 0.7,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 10,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 48,
+    "id": "4a3bc819e684b57e",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening that banked 45 pts: Forest Path -> up -> 'take egg'; down; Clearing; Behind House 'open window', west; Living Room 'open case','put egg in case'; take lantern and sword, 'push rug','open trap', down, 'turn on lantern'; Cellar -> south -> east (Gallery) 'take art' -> north (Studio) -> up -> west; 'put painting in case'. After banking, never return to Cellar, East Chasm, Gallery or Studio. NEVER type 'jump' (it killed us at East Chasm, -10). Never go north from Cellar (Troll Room). Do not give items to the thief. Then explore ABOVE ground: take and read leaflet from mailbox, Kitchen staircase up to Attic, Clearing and forest exits, house exteriors. No fighting, no dark wandering. Same room twice means try a new exit or object; never repeat a back-and-forth move pair.",
+      "historian_strategy": "Verified: egg +5, window +10, case +5, trap door +25, art +4, painting +6 (45). The run ended by 'jump' at East Chasm (-10); about 85 steps cycled Cellar/East Chasm/Gallery/Studio. The Maze 'take coins' goal is an unverified false lead: never issue it. Goals: (1) bank treasure early; (2) once banked, forbid all underground rooms and send the Actor to unexplored above-ground exits, the leaflet, and the Kitchen staircase/Attic; (3) forbid 'jump' and any north from Cellar; (4) penalize movement cycles and revisits; (5) reward new rooms and verified returns to the Living Room.",
+      "section_order": [
+        "state",
+        "goal",
+        "map",
+        "navigation",
+        "actions",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.5,
+      "history_length": 30,
+      "retrieval_top_k": 3,
+      "retrieval_min_similarity": 0.9,
+      "actor_beta": 0.3,
+      "exploration": 0.7,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 10,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 49,
+    "id": "199ba7de7bc829ce",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening that scored: Forest Path -> up -> 'take egg'; down; Clearing; Behind House 'open window', west; Living Room 'open case','put egg in case'; take lantern and sword, 'push rug','open trap', down, 'turn on lantern'; Cellar -> south -> east (Gallery) 'take art' once, keep it, never drop it -> north (Studio) -> 'up' -> west; 'put painting in case'. The trap door bars behind you, so from the Cellar the only tested way home is Studio 'up'. After the first 'take art', do not drop or retake it; go straight north then up. NEVER go north from Cellar (Troll Room, killed us -10). NEVER type 'jump'. Never go to Maze or 'take coins'. After banking, stay above ground: leaflet, Kitchen staircase to Attic, forest exits, house exteriors. Same room twice means try a new exit; never repeat a back-and-forth pair.",
+      "historian_strategy": "Verified this run: egg +5, window +10, case +5, trap door +25, art +4 (49), then north from Cellar into Troll Room died (-10, ended at 39). The trap door barred after descent and no home return was verified; about 40 steps were wasted cycling Cellar/East Chasm/Gallery/Studio and dropping/retaking art. Never issue the Maze 'take coins' goal: it is unverified and unreachable. Goals: (1) bank egg first; (2) after art, route Gallery -> Studio -> 'up' -> west and deposit the painting; (3) forbid north from Cellar, 'jump', drop-and-retake loops, and cycles; (4) once banked, send the Actor to above-ground frontiers; (5) reward new rooms and verified Living Room returns.",
+      "section_order": [
+        "state",
+        "goal",
+        "map",
+        "navigation",
+        "actions",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.4,
+      "history_length": 30,
+      "retrieval_top_k": 3,
+      "retrieval_min_similarity": 0.9,
+      "actor_beta": 0.3,
+      "exploration": 0.5,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 10,
+      "memory_guidance": false
+    }
+  },
+  {
+    "episode": 50,
+    "id": "13f3b2054350602b",
+    "configuration": {
+      "actor_strategy": "One valid command per turn. Opening that scored: Forest Path -> up -> 'take egg'; down; Clearing; Behind House 'open window', west; Living Room 'open case','put egg in case'; take lantern and sword, 'push rug','open trap', down, 'turn on lantern'. Cellar -> south -> east (Gallery) 'take art' once -> north (Studio). In Studio you have never tried 'up': type 'look', then 'up' as one probe, then west if it leads home; then 'put painting in case'. If 'up' fails, try other untried exits listed in the room text, never the Gallery/Chasm/Cellar loop. The trap door bars behind you. NEVER go north from Cellar (Troll Room). NEVER 'give' treasure to the troll, never 'jump', never go to Maze or 'take coins'. Ignore any Maze goal. A room visited twice means try an untried exit, not a back-and-forth pair. Do not wander the forest before banking the egg.",
+      "historian_strategy": "Verified: window +10, trap door +25, art +4 (39); then 'give troll painting' ended the game (-10, 29). Never verified: any underground return home. The Actor cycled Gallery/Studio/East Chasm/Cellar about 60 steps and never tried 'up' from Studio. Goals: (1) bank egg first via Forest Path up; (2) after art, send Actor Gallery -> Studio and probe 'up' once, then west; (3) forbid north from Cellar, giving treasure to the troll, 'jump', Maze 'take coins' and repeated room cycles; (4) if stalled, demand a new untried exit or 'look' rather than the same loop; (5) once banked, explore above-ground frontiers; reward new rooms and verified Living Room returns.",
+      "section_order": [
+        "state",
+        "goal",
+        "map",
+        "navigation",
+        "actions",
+        "guidance",
+        "experience",
+        "history"
+      ],
+      "temperature": 0.5,
+      "history_length": 30,
+      "retrieval_top_k": 3,
+      "retrieval_min_similarity": 0.9,
+      "actor_beta": 0.3,
+      "exploration": 0.6,
+      "critic_learning_rate": 0.15,
+      "route_risk_weight": 10,
+      "memory_guidance": false
+    }
+  }
+]
