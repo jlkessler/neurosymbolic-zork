@@ -1,0 +1,5451 @@
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-08T21:32:03-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living 
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 4
+Remaining commands: north -> east -> west -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-08T21:32:03-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: east
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living 
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 2 of 4
+Remaining commands: east -> west -> west
+The navigator executes only the next command and validates its result.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:06-05:00
+Model: openai/gpt-4o-mini
+Location: Behind House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Living : the interaction 'down' produced an observed total gain of +25 (25.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The window is slightly ajar, indicating a possible opening that may lead to new opportunities or score.
+Base action: open window
+Candidate actions: ["open window", "south", "north", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Living .
+Last route type: historical candidate.
+Unexecuted route commands at handoff: west -> west.
+Edges blocked during this episode: Behind House --[west]--> Kitchen
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open window",
+  "candidate_actions": ["open window", "south", "north", "east"],
+  "decision_rationale": "The window is slightly ajar, indicating a possible opening that may lead to new opportunities or score.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["The window is slightly ajar, indicating a possible opening."],
+  "state_note": "Exploring the open window could reveal new pathways or items."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:06-05:00
+Base model action: open window
+Final action after Actor RL: open window
+RL selection details:
+{
+  "action": "open window",
+  "candidates": [
+    "open window",
+    "south",
+    "north",
+    "east"
+  ],
+  "scorer_preferred_action": "open window",
+  "corrected_preferred_action": "open window",
+  "base_logits": [
+    0.0,
+    -24.25,
+    -27.5,
+    -25.25
+  ],
+  "adjusted_logits": [
+    0.25008638434756586,
+    -23.9,
+    -27.15,
+    -24.9
+  ],
+  "conditioned_logits": [
+    0.25008638434756586,
+    -23.9,
+    -27.15,
+    -24.9
+  ],
+  "probabilities": [
+    0.9999999999542977,
+    3.249007738653751e-11,
+    1.2597770130543368e-12,
+    1.1952431512576332e-11
+  ],
+  "base_probabilities": [
+    0.9999999999586433,
+    2.940077739162881e-11,
+    1.1399918529972091e-12,
+    1.0815941556838382e-11
+  ],
+  "advantages": {
+    "open window": 0.012995054661371436,
+    "south": 0.0,
+    "north": 0.0,
+    "east": 0.0
+  },
+  "corrections": [
+    0.25008638434756586,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.206456641788148e-13,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 28.707304812220947,
+    "samples": 1,
+    "actions": {
+      "open window": {
+        "action": "open window",
+        "q_value": 28.707304812220947,
+        "state_value_baseline": 28.707304812220947,
+        "advantage": 0.012995054661371436,
+        "raw_advantage": 0.10396043729097149,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7194444444444444,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": 28.707304812220947,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": 28.707304812220947,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 28.707304812220947,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.9285103718122834
+  }
+}
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-08T21:32:06-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living 
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 2
+Remaining commands: west -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-08T21:32:07-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living 
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 2 of 2
+Remaining commands: west
+The navigator executes only the next command and validates its result.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:10-05:00
+Model: openai/gpt-4o-mini
+Location: Living 
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the lantern will provide light for exploring dark areas, which is essential for further progress.
+Base action: take lantern
+Candidate actions: ["take lantern", "open case", "take sword", "turn on lantern", "push rug"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: actor_or_puzzle_decision.
+Last route destination: Living .
+Last route type: historical candidate.
+Unexecuted route commands at handoff: none.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take lantern",
+  "candidate_actions": ["take lantern", "open case", "take sword", "turn on lantern", "push rug"],
+  "decision_rationale": "Taking the lantern will provide light for exploring dark areas, which is essential for further progress.",
+  "inventory_items": ["lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Acquiring the lantern will enhance exploration options in dark areas."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:10-05:00
+Base model action: take lantern
+Final action after Actor RL: take lantern
+RL selection details:
+{
+  "action": "take lantern",
+  "candidates": [
+    "take lantern",
+    "open case",
+    "take sword",
+    "turn on lantern",
+    "push rug"
+  ],
+  "scorer_preferred_action": "take lantern",
+  "corrected_preferred_action": "take lantern",
+  "base_logits": [
+    -0.0001983642578125,
+    -10.500198364257812,
+    -13.000198364257812,
+    -8.750198364257812,
+    -11.500198364257812
+  ],
+  "adjusted_logits": [
+    0.2467358338819266,
+    -10.150198364257813,
+    -12.650198364257813,
+    -8.400198364257813,
+    -11.150198364257813
+  ],
+  "conditioned_logits": [
+    0.2467358338819266,
+    -10.150198364257813,
+    -12.650198364257813,
+    -8.400198364257813,
+    -11.150198364257813
+  ],
+  "probabilities": [
+    0.9997801222732191,
+    3.051921416604498e-05,
+    2.5051696528222744e-06,
+    0.00017562595150951444,
+    1.1227391452396191e-05
+  ],
+  "base_probabilities": [
+    0.9998016511525991,
+    2.7530987526757124e-05,
+    2.259881073248433e-06,
+    0.00015842989449455693,
+    1.0128084306241359e-05
+  ],
+  "advantages": {
+    "take lantern": -0.0027658763777624606,
+    "open case": 0.0,
+    "take sword": 0.0,
+    "turn on lantern": 0.0,
+    "push rug": 0.0
+  },
+  "corrections": [
+    0.2469341981397391,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.1284919246869666e-06,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.81571497608306,
+    "samples": 1,
+    "actions": {
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": 14.81571497608306,
+        "state_value_baseline": 14.81571497608306,
+        "advantage": -0.0027658763777624606,
+        "raw_advantage": -0.022127011022099685,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.702,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 14.81571497608306,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": null,
+        "state_value_baseline": 14.81571497608306,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": null,
+        "state_value_baseline": 14.81571497608306,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "push rug": {
+        "action": "push rug",
+        "q_value": null,
+        "state_value_baseline": 14.81571497608306,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.5435370077406125
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:14-05:00
+Model: openai/gpt-4o-mini
+Location: Living 
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Pushing the rug previously revealed a trap door, which may lead to score-producing opportunities.
+Base action: push rug
+Candidate actions: ["push rug", "open case", "take sword", "turn on lantern", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "push rug",
+  "candidate_actions": ["push rug", "open case", "take sword", "turn on lantern", "east"],
+  "decision_rationale": "Pushing the rug previously revealed a trap door, which may lead to score-producing opportunities.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": ["A closed trap door has been revealed by moving the rug."],
+  "state_note": "Attempting to interact with the rug to potentially uncover new routes or score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:14-05:00
+Base model action: push rug
+Final action after Actor RL: push rug
+RL selection details:
+{
+  "action": "push rug",
+  "candidates": [
+    "push rug",
+    "open case",
+    "take sword",
+    "turn on lantern",
+    "east"
+  ],
+  "scorer_preferred_action": "push rug",
+  "corrected_preferred_action": "push rug",
+  "base_logits": [
+    0.0,
+    -18.25,
+    -21.75,
+    -22.0,
+    -20.625
+  ],
+  "adjusted_logits": [
+    0.2558078462022919,
+    -17.9,
+    -21.500132355483313,
+    -21.754576834084496,
+    -20.380680048764983
+  ],
+  "conditioned_logits": [
+    0.2558078462022919,
+    -17.9,
+    -21.500132355483313,
+    -21.754576834084496,
+    -20.668362121216763
+  ],
+  "probabilities": [
+    0.9999999855172377,
+    1.3032652984218503e-08,
+    3.5605346414552755e-10,
+    2.7606502095967003e-10,
+    8.179908363441477e-10
+  ],
+  "base_probabilities": [
+    0.9999999863985025,
+    1.1861119990014833e-08,
+    3.5817478815660454e-10,
+    2.789468054927981e-10,
+    1.1032560173376198e-09
+  ],
+  "advantages": {
+    "push rug": 0.04160236393500155,
+    "open case": 0.0,
+    "take sword": 0.011901355506980377,
+    "turn on lantern": -0.010321037498945196,
+    "east": -0.01583711090136586
+  },
+  "corrections": [
+    0.2558078462022919,
+    0.35,
+    0.24986764451668766,
+    0.24542316591550256,
+    0.24431995123501843
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.75
+  ],
+  "satisfaction_mass": 0.9999999997273363,
+  "log_satisfaction_mass": -2.7266366942058085e-10,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 9.660867184248214e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 15.03831711637343,
+    "samples": 6,
+    "actions": {
+      "push rug": {
+        "action": "push rug",
+        "q_value": 15.191729216424406,
+        "state_value_baseline": 15.03831711637343,
+        "advantage": 0.04160236393500155,
+        "raw_advantage": 0.1794068114290357,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.8833333333333332,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 15.03831711637343,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 15.115770570342283,
+        "state_value_baseline": 15.03831711637343,
+        "advantage": 0.011901355506980377,
+        "raw_advantage": 0.017757390086989178,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7166666666666667,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 14.890165805108603,
+        "state_value_baseline": 15.03831711637343,
+        "advantage": -0.010321037498945196,
+        "raw_advantage": 0.06558301127326427,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.9203703703703704,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "east": {
+        "action": "east",
+        "q_value": 14.964990758903118,
+        "state_value_baseline": 15.03831711637343,
+        "advantage": -0.01583711090136586,
+        "raw_advantage": -0.05337052974061596,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7166666666666667,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 1.0097570914659983
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:21-05:00
+Model: openai/gpt-4o-mini
+Location: Living 
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the trap door could reveal a new area or score-producing opportunity, as it is currently closed and previously obscured.
+Base action: open trap
+Candidate actions: ["open trap", "turn on lantern", "open case", "take sword", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open trap",
+  "candidate_actions": ["open trap", "turn on lantern", "open case", "take sword", "east"],
+  "decision_rationale": "Opening the trap door could reveal a new area or score-producing opportunity, as it is currently closed and previously obscured.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": ["The trap door is currently closed and may lead to a new area or score."],
+  "state_note": "The trap door has been revealed; opening it may provide new opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:21-05:00
+Base model action: open trap
+Final action after Actor RL: open trap
+RL selection details:
+{
+  "action": "open trap",
+  "candidates": [
+    "open trap",
+    "turn on lantern",
+    "open case",
+    "take sword",
+    "east"
+  ],
+  "scorer_preferred_action": "open trap",
+  "corrected_preferred_action": "open trap",
+  "base_logits": [
+    0.0,
+    -23.25,
+    -24.125,
+    -22.875,
+    -22.625
+  ],
+  "adjusted_logits": [
+    0.25523748669438223,
+    -22.9,
+    -23.775,
+    -22.525,
+    -22.275
+  ],
+  "conditioned_logits": [
+    0.25523748669438223,
+    -22.9,
+    -23.775,
+    -22.525,
+    -22.56268207245178
+  ],
+  "probabilities": [
+    0.9999999996245563,
+    8.786342575551747e-11,
+    3.662692511631768e-11,
+    1.2784053013322165e-10,
+    1.231128674804189e-10
+  ],
+  "base_probabilities": [
+    0.9999999996211733,
+    7.991959889926365e-11,
+    3.331544540904334e-11,
+    1.1628233025815884e-10,
+    1.4930946756315398e-10
+  ],
+  "advantages": {
+    "open trap": 0.03875056639545313,
+    "turn on lantern": 0.0,
+    "open case": 0.0,
+    "take sword": 0.0,
+    "east": 0.0
+  },
+  "corrections": [
+    0.25523748669438223,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.75
+  ],
+  "satisfaction_mass": 0.9999999999589625,
+  "log_satisfaction_mass": -4.103761774842951e-11,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.5436998075215822e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 15.268069564245634,
+    "samples": 1,
+    "actions": {
+      "open trap": {
+        "action": "open trap",
+        "q_value": 15.268069564245634,
+        "state_value_baseline": 15.268069564245634,
+        "advantage": 0.03875056639545313,
+        "raw_advantage": 0.31000453116362503,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.82,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": null,
+        "state_value_baseline": 15.268069564245634,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 15.268069564245634,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": null,
+        "state_value_baseline": 15.268069564245634,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 15.268069564245634,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.5027383706547615
+  }
+}
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-08T21:32:21-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: historian_observed_score
+Selected action: down
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:26-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Turning on the lantern will illuminate the area and allow for safe navigation and exploration of exits.
+Base action: turn on lantern
+Candidate actions: ["turn on lantern", "east", "south", "north", "put down lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "turn on lantern",
+  "candidate_actions": ["turn on lantern", "east", "south", "north", "put down lantern"],
+  "decision_rationale": "Turning on the lantern will illuminate the area and allow for safe navigation and exploration of exits.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Currently in a dark area; turning on the lantern is crucial to avoid being eaten by a grue."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:26-05:00
+Base model action: turn on lantern
+Final action after Actor RL: turn on lantern
+RL selection details:
+{
+  "action": "turn on lantern",
+  "candidates": [
+    "turn on lantern",
+    "east",
+    "south",
+    "north",
+    "put down lantern"
+  ],
+  "scorer_preferred_action": "turn on lantern",
+  "corrected_preferred_action": "turn on lantern",
+  "base_logits": [
+    0.0,
+    -24.125,
+    -26.625,
+    -25.25,
+    -24.875
+  ],
+  "adjusted_logits": [
+    0.35,
+    -23.775,
+    -26.275,
+    -25.009452832529117,
+    -24.525
+  ],
+  "conditioned_logits": [
+    0.35,
+    -23.775,
+    -26.275,
+    -25.232596383843326,
+    -24.525
+  ],
+  "probabilities": [
+    0.9999999999404572,
+    3.3315445419680425e-11,
+    2.7346982914290428e-12,
+    7.755674213311174e-12,
+    1.573710210592587e-11
+  ],
+  "base_probabilities": [
+    0.9999999999373967,
+    3.331544541957846e-11,
+    2.7346982914206736e-12,
+    1.081594155660858e-11,
+    1.5737102105877706e-11
+  ],
+  "advantages": {
+    "turn on lantern": 0.0,
+    "east": 0.0,
+    "south": 0.0,
+    "north": -0.03470102972204003,
+    "put down lantern": 0.0
+  },
+  "corrections": [
+    0.35,
+    0.35,
+    0.35,
+    0.2405471674708836,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    0.8,
+    1.0
+  ],
+  "satisfaction_mass": 0.999999999998061,
+  "log_satisfaction_mass": -1.9391155348102984e-12,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 4.809315883351752e-13,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.703725093562655,
+    "samples": 1,
+    "actions": {
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": null,
+        "state_value_baseline": -9.703725093562655,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": -9.703725093562655,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.703725093562655,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "north": {
+        "action": "north",
+        "q_value": -9.703725093562655,
+        "state_value_baseline": -9.703725093562655,
+        "advantage": -0.03470102972204003,
+        "raw_advantage": -0.27760823777632027,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7141176470588235,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.703725093562655,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.7294071692153286
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:29-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving north is the only path available to potentially establish a return route to the Living Room.
+Base action: north
+Candidate actions: ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"],
+  "decision_rationale": "Moving north is the only path available to potentially establish a return route to the Living Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to navigate north towards the Troll Room to explore possible connections back to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:29-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "south",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at ramp"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    0.0,
+    -15.625,
+    -19.5,
+    -21.125,
+    -20.125
+  ],
+  "adjusted_logits": [
+    0.16763242313199592,
+    -15.275,
+    -19.15,
+    -20.775,
+    -19.775
+  ],
+  "conditioned_logits": [
+    -0.05551112818221379,
+    -15.275,
+    -19.15,
+    -20.775,
+    -19.775
+  ],
+  "probabilities": [
+    0.9999997455522035,
+    2.456178101842975e-07,
+    5.097635020363169e-09,
+    1.0037838514392775e-09,
+    2.728567403068022e-09
+  ],
+  "base_probabilities": [
+    0.9999998303759275,
+    1.6373768528522355e-07,
+    3.3982672430670445e-09,
+    6.691584956238698e-10,
+    1.8189613790133568e-09
+  ],
+  "advantages": {
+    "north": -0.03683788434002038,
+    "south": 0.0,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at ramp": 0.0
+  },
+  "corrections": [
+    0.16763242313199592,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    0.8,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.8000000407116495,
+  "log_satisfaction_mass": -0.22314350042464903,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.8357670957674626e-08,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.825165076515274,
+    "samples": 3,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": -9.825165076515274,
+        "state_value_baseline": -9.825165076515274,
+        "advantage": -0.03683788434002038,
+        "raw_advantage": -0.14735153736008152,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 0.8452196382428939,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.825165076515274,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.825165076515274,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.825165076515274,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at ramp": {
+        "action": "throw lantern at ramp",
+        "q_value": null,
+        "state_value_baseline": -9.825165076515274,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.3075577419890225
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:34-05:00
+Model: openai/gpt-4o-mini
+Location: Troll 
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The only viable exit from the Troll Room is to the south, which historically led to the Cellar, allowing for potential exploration and score opportunities.
+Base action: south
+Candidate actions: ["south", "put out lantern", "put down lantern", "throw lantern at walls", "north"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "put out lantern", "put down lantern", "throw lantern at walls", "north"],
+  "decision_rationale": "The only viable exit from the Troll Room is to the south, which historically led to the Cellar, allowing for potential exploration and score opportunities.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to establish a return route by moving south to the Cellar."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:34-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at walls",
+    "north"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    0.0,
+    -18.25,
+    -21.875,
+    -21.625,
+    -21.625
+  ],
+  "adjusted_logits": [
+    0.2488577591224413,
+    -17.9,
+    -21.525,
+    -21.275,
+    -21.275
+  ],
+  "conditioned_logits": [
+    -0.03882431332933961,
+    -17.9,
+    -21.525,
+    -21.275,
+    -21.275
+  ],
+  "probabilities": [
+    0.9999999808381289,
+    1.749806198554657e-08,
+    4.663075570504123e-10,
+    5.987507552462983e-10,
+    5.987507552462983e-10
+  ],
+  "base_probabilities": [
+    0.9999999870110614,
+    1.1861119997280468e-08,
+    3.160881413257197e-10,
+    4.05865207375811e-10,
+    4.05865207375811e-10
+  ],
+  "advantages": {
+    "south": 0.006851928535748564,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at walls": 0.0,
+    "north": 0.0
+  },
+  "corrections": [
+    0.2488577591224413,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    0.75,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.7500000035928509,
+  "log_satisfaction_mass": -0.28768206766131316,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.2776688099288094e-09,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.876389152966704,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": -9.90025,
+        "state_value_baseline": -9.876389152966704,
+        "advantage": 0.006851928535748564,
+        "raw_advantage": 0.07867627531928445,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.8079672695951766,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.876389152966704,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.876389152966704,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at walls": {
+        "action": "throw lantern at walls",
+        "q_value": null,
+        "state_value_baseline": -9.876389152966704,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": -9.876389152966704,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.0626773634235809
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:38-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving north may lead to the Troll Room, which I need to assess for potential routes back to the Living Room.
+Base action: north
+Candidate actions: ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"],
+  "decision_rationale": "Moving north may lead to the Troll Room, which I need to assess for potential routes back to the Living Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to establish a route back to the Living Room by moving north to the Troll Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:38-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "south",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at ramp"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    -0.16027069091796875,
+    -1.9102706909179688,
+    -10.035270690917969,
+    -13.535270690917969,
+    -14.035270690917969
+  ],
+  "adjusted_logits": [
+    -0.012296861979086832,
+    -1.5602706909179687,
+    -9.685270690917969,
+    -13.185270690917969,
+    -13.685270690917969
+  ],
+  "conditioned_logits": [
+    -0.012296861979086832,
+    -1.5602706909179687,
+    -9.685270690917969,
+    -13.185270690917969,
+    -13.685270690917969
+  ],
+  "probabilities": [
+    0.8245760081296626,
+    0.1753695559756025,
+    5.191723285898778e-05,
+    1.5677645868686468e-06,
+    9.508972891475447e-07
+  ],
+  "base_probabilities": [
+    0.851913652403966,
+    0.14804039485750897,
+    4.382657873310152e-05,
+    1.3234480020918963e-06,
+    8.027117898041646e-07
+  ],
+  "advantages": {
+    "north": -0.04275464743051664,
+    "south": 0.0,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at ramp": 0.0
+  },
+  "corrections": [
+    0.14797382893888192,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.002824387327983367,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851493508254867,
+    "samples": 3,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": -9.851493508254867,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": -0.04275464743051664,
+        "raw_advantage": -0.14964126600680824,
+        "sample_count": 4,
+        "confidence": 0.5,
+        "best_similarity": 0.9203703703703704,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at ramp": {
+        "action": "throw lantern at ramp",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.9442877079275153
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:42-05:00
+Model: openai/gpt-4o-mini
+Location: Troll 
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The only available exit is south to the Cellar, which historically led to a score increase.
+Base action: south
+Candidate actions: ["south", "put out lantern", "put down lantern", "throw lantern at walls"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "put out lantern", "put down lantern", "throw lantern at walls"],
+  "decision_rationale": "The only available exit is south to the Cellar, which historically led to a score increase.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to exit the Troll Room to verify the return route to the Cellar."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:42-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at walls"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    0.0,
+    -16.625,
+    -20.875,
+    -20.0
+  ],
+  "adjusted_logits": [
+    0.20085498826888576,
+    -16.275,
+    -20.525,
+    -19.65
+  ],
+  "conditioned_logits": [
+    0.20085498826888576,
+    -16.275,
+    -20.525,
+    -19.65
+  ],
+  "probabilities": [
+    0.9999999266857853,
+    6.992412847948051e-08,
+    9.974141245142264e-10,
+    2.3926721011510007e-09
+  ],
+  "base_probabilities": [
+    0.9999999368438954,
+    6.02357345746102e-08,
+    8.592166076526335e-10,
+    2.061153492264124e-09
+  ],
+  "advantages": {
+    "south": -0.006088029737416288,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at walls": 0.0
+  },
+  "corrections": [
+    0.20085498826888576,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 7.763385963938753e-10,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.888211527216066,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": -9.90025,
+        "state_value_baseline": -9.888211527216066,
+        "advantage": -0.006088029737416288,
+        "raw_advantage": -0.02291610319712311,
+        "sample_count": 2,
+        "confidence": 0.25,
+        "best_similarity": 0.8888888888888888,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.888211527216066,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.888211527216066,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at walls": {
+        "action": "throw lantern at walls",
+        "q_value": null,
+        "state_value_baseline": -9.888211527216066,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.9008898591469473
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:46-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+I need to explore the north passage to see if it leads to the Troll Room, which is crucial for establishing a return route to the Living Room.
+Base action: north
+Candidate actions: ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"],
+  "decision_rationale": "I need to explore the north passage to see if it leads to the Troll Room, which is crucial for establishing a return route to the Living Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to navigate north to explore the passageway towards the Troll Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:46-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "south",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at ramp"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    -0.0182342529296875,
+    -4.0182342529296875,
+    -9.393234252929688,
+    -13.018234252929688,
+    -14.143234252929688
+  ],
+  "adjusted_logits": [
+    0.11702484274087105,
+    -3.6682342529296874,
+    -9.043234252929688,
+    -12.668234252929688,
+    -13.793234252929688
+  ],
+  "conditioned_logits": [
+    0.11702484274087105,
+    -3.6682342529296874,
+    -9.043234252929688,
+    -12.668234252929688,
+    -13.793234252929688
+  ],
+  "probabilities": [
+    0.9776969465942233,
+    0.022196634000566266,
+    0.00010279080821460324,
+    2.7392822533936108e-06,
+    8.89314742355176e-07
+  ],
+  "base_probabilities": [
+    0.9819291153698781,
+    0.01798465909144889,
+    8.328549470279968e-05,
+    2.219483255041428e-06,
+    7.20560715009741e-07
+  ],
+  "advantages": {
+    "north": -0.03813902995896767,
+    "south": 0.0,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at ramp": 0.0
+  },
+  "corrections": [
+    0.13525909567055855,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.0004700075066072972,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851493508254867,
+    "samples": 3,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": -9.851493508254867,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": -0.03813902995896767,
+        "raw_advantage": -0.12204489586869653,
+        "sample_count": 5,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at ramp": {
+        "action": "throw lantern at ramp",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.9425027052703004
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:49-05:00
+Model: openai/gpt-4o-mini
+Location: Troll 
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The troll blocks all exits, and putting out the lantern may prevent further damage while I explore other options.
+Base action: put out lantern
+Candidate actions: ["put out lantern", "put down lantern", "throw lantern at walls", "south", "north"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "put out lantern",
+  "candidate_actions": ["put out lantern", "put down lantern", "throw lantern at walls", "south", "north"],
+  "decision_rationale": "The troll blocks all exits, and putting out the lantern may prevent further damage while I explore other options.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The troll is blocking all exits, and I need to reconsider my strategy."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:49-05:00
+Base model action: put out lantern
+Final action after Actor RL: put out lantern
+RL selection details:
+{
+  "action": "put out lantern",
+  "candidates": [
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at walls",
+    "south",
+    "north"
+  ],
+  "scorer_preferred_action": "put out lantern",
+  "corrected_preferred_action": "put out lantern",
+  "base_logits": [
+    -0.00022125244140625,
+    -11.375221252441406,
+    -14.000221252441406,
+    -8.500221252441406,
+    -12.500221252441406
+  ],
+  "adjusted_logits": [
+    0.34977874755859373,
+    -11.025221252441407,
+    -13.650221252441407,
+    -8.325568200153146,
+    -12.150221252441407
+  ],
+  "conditioned_logits": [
+    0.34977874755859373,
+    -11.025221252441407,
+    -13.650221252441407,
+    -8.325568200153146,
+    -12.150221252441407
+  ],
+  "probabilities": [
+    0.9998132540973079,
+    1.1476756253188547e-05,
+    8.313734345223044e-07,
+    0.00017071181576964342,
+    3.7259572348680305e-06
+  ],
+  "base_probabilities": [
+    0.9997805427212764,
+    1.1476380762577794e-05,
+    8.313462340736929e-07,
+    0.00020342371639607475,
+    3.72583533091478e-06
+  ],
+  "advantages": {
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at walls": 0.0,
+    "south": -0.00173473855869831,
+    "north": 0.0
+  },
+  "corrections": [
+    0.35,
+    0.35,
+    0.35,
+    0.17465305228826034,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0000000000000002,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.7842252830671086e-06,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.88992370814104,
+    "samples": 3,
+    "actions": {
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.88992370814104,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.88992370814104,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at walls": {
+        "action": "throw lantern at walls",
+        "q_value": null,
+        "state_value_baseline": -9.88992370814104,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": -9.90025,
+        "state_value_baseline": -9.88992370814104,
+        "advantage": -0.00173473855869831,
+        "raw_advantage": -0.0017758083053136004,
+        "sample_count": 3,
+        "confidence": 0.25,
+        "best_similarity": 0.9537037037037036,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": -9.88992370814104,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.865365745490316
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:53-05:00
+Model: openai/gpt-4o-mini
+Location: Troll 
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Turning on the lantern is essential to navigate the dark Troll Room and find a way back to the Living Room.
+Base action: turn on lantern
+Candidate actions: ["turn on lantern", "south", "north", "put down lantern", "throw lantern at grue"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "turn on lantern",
+  "candidate_actions": ["turn on lantern", "south", "north", "put down lantern", "throw lantern at grue"],
+  "decision_rationale": "Turning on the lantern is essential to navigate the dark Troll Room and find a way back to the Living Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The room is currently pitch black, and I need light to explore or find an exit."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:53-05:00
+Base model action: turn on lantern
+Final action after Actor RL: turn on lantern
+RL selection details:
+{
+  "action": "turn on lantern",
+  "candidates": [
+    "turn on lantern",
+    "south",
+    "north",
+    "put down lantern",
+    "throw lantern at grue"
+  ],
+  "scorer_preferred_action": "turn on lantern",
+  "corrected_preferred_action": "turn on lantern",
+  "base_logits": [
+    0.0,
+    -21.5,
+    -24.875,
+    -24.5,
+    -24.0
+  ],
+  "adjusted_logits": [
+    0.35,
+    -21.3258855213673,
+    -24.525,
+    -24.15,
+    -23.65
+  ],
+  "conditioned_logits": [
+    0.35,
+    -21.508207078161256,
+    -24.525,
+    -24.15,
+    -23.65
+  ],
+  "probabilities": [
+    0.9999999996021731,
+    3.2144100813476576e-10,
+    1.5737102100602258e-11,
+    2.289734844734635e-11,
+    3.775134542777248e-11
+  ],
+  "base_probabilities": [
+    0.9999999994637088,
+    4.599055376185884e-10,
+    1.5737102098423232e-11,
+    2.2897348444175882e-11,
+    3.775134542254526e-11
+  ],
+  "advantages": {
+    "turn on lantern": 0.0,
+    "south": -0.004427606836505548,
+    "north": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at grue": 0.0
+  },
+  "corrections": [
+    0.35,
+    0.17411447863269888,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    0.8333333333333334,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999357118,
+  "log_satisfaction_mass": -6.428813037473446e-11,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.332190654789028e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.885944765714012,
+    "samples": 3,
+    "actions": {
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": null,
+        "state_value_baseline": -9.885944765714012,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": -9.90025,
+        "state_value_baseline": -9.885944765714012,
+        "advantage": -0.004427606836505548,
+        "raw_advantage": -0.010557810203028104,
+        "sample_count": 3,
+        "confidence": 0.25,
+        "best_similarity": 0.8439716312056736,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": -9.885944765714012,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.885944765714012,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at grue": {
+        "action": "throw lantern at grue",
+        "q_value": null,
+        "state_value_baseline": -9.885944765714012,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.0996603035584172
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:32:56-05:00
+Model: openai/gpt-4o-mini
+Location: Troll 
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The south passage historically led to the Cellar, and since the troll blocks all other exits, it is the best option to explore.
+Base action: south
+Candidate actions: ["south", "put out lantern", "put down lantern", "throw lantern at axe", "take walls"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "put out lantern", "put down lantern", "throw lantern at axe", "take walls"],
+  "decision_rationale": "The south passage historically led to the Cellar, and since the troll blocks all other exits, it is the best option to explore.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to navigate south to the Cellar, where previous exploration occurred."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:32:56-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at axe",
+    "take walls"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    -0.023311614990234375,
+    -3.7733116149902344,
+    -10.023311614990234,
+    -11.273311614990234,
+    -11.773311614990234
+  ],
+  "adjusted_logits": [
+    0.15023116395835465,
+    -3.515195017920026,
+    -9.673311614990235,
+    -10.923311614990235,
+    -11.423311614990235
+  ],
+  "conditioned_logits": [
+    -0.032090392835599946,
+    -3.515195017920026,
+    -9.673311614990235,
+    -10.923311614990235,
+    -11.423311614990235
+  ],
+  "probabilities": [
+    0.97011387387641,
+    0.029794053757783854,
+    6.305122663534041e-05,
+    1.8064478878944012e-05,
+    1.0956660291810845e-05
+  ],
+  "base_probabilities": [
+    0.9769593492755463,
+    0.022975881687914333,
+    4.435388583791271e-05,
+    1.2707601051951242e-05,
+    7.707549649404942e-06
+  ],
+  "advantages": {
+    "south": -0.007286105257054836,
+    "put out lantern": 0.05314611827458221,
+    "put down lantern": 0.0,
+    "throw lantern at axe": 0.0,
+    "take walls": 0.0
+  },
+  "corrections": [
+    0.17354277894858902,
+    0.258116597070208,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    0.8333333333333334,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.8375049631596871,
+  "log_satisfaction_mass": -0.1773280891396546,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.0009533456392108253,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.880137510623102,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": -9.90025,
+        "state_value_baseline": -9.880137510623102,
+        "advantage": -0.007286105257054836,
+        "raw_advantage": -0.019088176339770665,
+        "sample_count": 3,
+        "confidence": 0.25,
+        "best_similarity": 0.9651162790697675,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.880137510623102,
+        "advantage": 0.05314611827458221,
+        "raw_advantage": 0.21258447309832884,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.883720930232558,
+        "source": "historian_td"
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.880137510623102,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at axe": {
+        "action": "throw lantern at axe",
+        "q_value": null,
+        "state_value_baseline": -9.880137510623102,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take walls": {
+        "action": "take walls",
+        "q_value": null,
+        "state_value_baseline": -9.880137510623102,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.1607747134458555
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:01-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+I need to explore the north passage to see if it leads back to the Living Room, as the historian goal emphasizes establishing a return route.
+Base action: north
+Candidate actions: ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"],
+  "decision_rationale": "I need to explore the north passage to see if it leads back to the Living Room, as the historian goal emphasizes establishing a return route.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Moving north to investigate the Troll Room and determine if it provides a route back to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:01-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "south",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at ramp"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    -2.6702880859375e-05,
+    -10.50002670288086,
+    -16.87502670288086,
+    -19.25002670288086,
+    -19.25002670288086
+  ],
+  "adjusted_logits": [
+    0.12484083972301607,
+    -10.15002670288086,
+    -16.525026702880858,
+    -18.900026702880858,
+    -18.900026702880858
+  ],
+  "conditioned_logits": [
+    0.12484083972301607,
+    -10.15002670288086,
+    -16.525026702880858,
+    -18.900026702880858,
+    -18.900026702880858
+  ],
+  "probabilities": [
+    0.999965442418523,
+    3.448789721684149e-05,
+    5.8754264414215664e-08,
+    5.464997893436532e-09,
+    5.464997893436532e-09
+  ],
+  "base_probabilities": [
+    0.9999724086733879,
+    2.753568958257941e-05,
+    4.6910345863957e-08,
+    4.363341859231521e-09,
+    4.363341859231521e-09
+  ],
+  "advantages": {
+    "north": -0.037100114746770295,
+    "south": 0.0,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at ramp": 0.0
+  },
+  "corrections": [
+    0.12486754260387545,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 8.135618954679597e-07,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851493508254867,
+    "samples": 3,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": -9.851493508254867,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": -0.037100114746770295,
+        "raw_advantage": -0.11130034424031088,
+        "sample_count": 6,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at ramp": {
+        "action": "throw lantern at ramp",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.9458765331769748
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:05-05:00
+Model: openai/gpt-4o-mini
+Location: Troll 
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Turning off the lantern may temporarily distract the troll, potentially allowing for a safe exit or alternative action.
+Base action: put out lantern
+Candidate actions: ["put out lantern", "put down lantern", "push all", "throw lantern at walls", "south"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "put out lantern",
+  "candidate_actions": ["put out lantern", "put down lantern", "push all", "throw lantern at walls", "south"],
+  "decision_rationale": "Turning off the lantern may temporarily distract the troll, potentially allowing for a safe exit or alternative action.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The troll currently blocks all exits; turning off the lantern may provide a new opportunity."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:05-05:00
+Base model action: put out lantern
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "put out lantern",
+    "put down lantern",
+    "push all",
+    "throw lantern at walls",
+    "south"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    -1.3134231567382812,
+    -9.063423156738281,
+    -10.438423156738281,
+    -11.188423156738281,
+    -0.31342315673828125
+  ],
+  "adjusted_logits": [
+    -1.055282888658153,
+    -8.713423156738282,
+    -10.088423156738282,
+    -10.838423156738282,
+    -0.16029651450763066
+  ],
+  "conditioned_logits": [
+    -1.055282888658153,
+    -8.713423156738282,
+    -10.088423156738282,
+    -10.838423156738282,
+    -0.16029651450763066
+  ],
+  "probabilities": [
+    0.29002737320234967,
+    0.00013694649742143516,
+    3.462549705491142e-05,
+    1.6355926680772663e-05,
+    0.7097846988764933
+  ],
+  "base_probabilities": [
+    0.26889867448202337,
+    0.00011582609820382155,
+    2.9285423853495113e-05,
+    1.383345471123497e-05,
+    0.7309423805412081
+  ],
+  "advantages": {
+    "put out lantern": 0.05326447332418344,
+    "put down lantern": 0.0,
+    "push all": 0.0,
+    "throw lantern at walls": 0.0,
+    "south": -0.01699058097167338
+  },
+  "corrections": [
+    0.2581402680801283,
+    0.35,
+    0.35,
+    0.35,
+    0.1531266422306506
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.0011208732318638097,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.888050484654176,
+    "samples": 3,
+    "actions": {
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.888050484654176,
+        "advantage": 0.05326447332418344,
+        "raw_advantage": 0.21305789329673375,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.923611111111111,
+        "source": "historian_td"
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.888050484654176,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "push all": {
+        "action": "push all",
+        "q_value": null,
+        "state_value_baseline": -9.888050484654176,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at walls": {
+        "action": "throw lantern at walls",
+        "q_value": null,
+        "state_value_baseline": -9.888050484654176,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": -9.90025,
+        "state_value_baseline": -9.888050484654176,
+        "advantage": -0.01699058097167338,
+        "raw_advantage": -0.054129745437058986,
+        "sample_count": 4,
+        "confidence": 0.25,
+        "best_similarity": 0.9166666666666666,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 0.9995936269371168
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:08-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+I need to investigate the north exit to see if it leads to the Living Room, as establishing a return route is my immediate goal.
+Base action: north
+Candidate actions: ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "south", "put out lantern", "put down lantern", "throw lantern at ramp"],
+  "decision_rationale": "I need to investigate the north exit to see if it leads to the Living Room, as establishing a return route is my immediate goal.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to move north to explore the Troll Room and verify the route back to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:08-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "south",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at ramp"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    0.0,
+    -15.0,
+    -19.0,
+    -20.875,
+    -20.5
+  ],
+  "adjusted_logits": [
+    0.11768922105154249,
+    -14.65,
+    -18.65,
+    -20.525,
+    -20.15
+  ],
+  "conditioned_logits": [
+    0.11768922105154249,
+    -14.65,
+    -18.65,
+    -20.525,
+    -20.15
+  ],
+  "probabilities": [
+    0.9999996043718065,
+    3.8589920957072447e-07,
+    7.067990569945355e-09,
+    1.083911459514237e-09,
+    1.577081867799499e-09
+  ],
+  "base_probabilities": [
+    0.999999686385612,
+    3.0590222456645675e-07,
+    5.602794680419692e-09,
+    8.592163924547033e-10,
+    1.2501524743208165e-09
+  ],
+  "advantages": {
+    "north": -0.030272328280516507,
+    "south": 0.0,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at ramp": 0.0
+  },
+  "corrections": [
+    0.11768922105154249,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 9.894859201772476e-09,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851493508254867,
+    "samples": 3,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": -9.851493508254867,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": -0.030272328280516507,
+        "raw_advantage": -0.08649236651576145,
+        "sample_count": 7,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at ramp": {
+        "action": "throw lantern at ramp",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.9471070520070298
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:11-05:00
+Model: openai/gpt-4o-mini
+Location: Troll 
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The south passage historically leads to the Cellar, which is the only available exit from the Troll Room.
+Base action: south
+Candidate actions: ["south"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south"],
+  "decision_rationale": "The south passage historically leads to the Cellar, which is the only available exit from the Troll Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to exit the Troll Room to establish a return route to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:11-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    -0.02324676513671875
+  ],
+  "adjusted_logits": [
+    0.1162387492147976
+  ],
+  "conditioned_logits": [
+    0.1162387492147976
+  ],
+  "probabilities": [
+    1.0
+  ],
+  "base_probabilities": [
+    1.0
+  ],
+  "advantages": {
+    "south": -0.017006936554178634
+  },
+  "corrections": [
+    0.13948551435151635
+  ],
+  "feasibility": [
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.0,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.88992370814104,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": -9.90025,
+        "state_value_baseline": -9.88992370814104,
+        "advantage": -0.017006936554178634,
+        "raw_advantage": -0.050291680229787916,
+        "sample_count": 5,
+        "confidence": 0.25,
+        "best_similarity": 0.9537037037037036,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 0.8705364753125657
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:14-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The south crawlway may provide a new route away from the troll, which is currently blocking all exits.
+Base action: south
+Candidate actions: ["south", "put out lantern", "put down lantern", "throw lantern at ramp", "north"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "put out lantern", "put down lantern", "throw lantern at ramp", "north"],
+  "decision_rationale": "The south crawlway may provide a new route away from the troll, which is currently blocking all exits.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to navigate south to explore a new route."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:14-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at ramp",
+    "north"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    0.0,
+    -18.5,
+    -22.25,
+    -22.375,
+    -21.125
+  ],
+  "adjusted_logits": [
+    0.35,
+    -18.15,
+    -21.9,
+    -22.025,
+    -21.00593601864985
+  ],
+  "conditioned_logits": [
+    0.35,
+    -18.15,
+    -21.9,
+    -22.025,
+    -21.00593601864985
+  ],
+  "probabilities": [
+    0.9999999898224178,
+    9.237449567955691e-09,
+    2.172439912968831e-10,
+    1.9171714942461413e-10,
+    5.311715756848522e-10
+  ],
+  "base_probabilities": [
+    0.9999999896844306,
+    9.23744956668104e-09,
+    2.1724399126690621e-10,
+    1.917171493981596e-10,
+    6.69158602226526e-10
+  ],
+  "advantages": {
+    "south": 0.0,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at ramp": 0.0,
+    "north": -0.02339852678748613
+  },
+  "corrections": [
+    0.35,
+    0.35,
+    0.35,
+    0.35,
+    0.11906398135014856
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.532053435659466e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851493508254867,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at ramp": {
+        "action": "throw lantern at ramp",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "north": {
+        "action": "north",
+        "q_value": -9.851493508254867,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": -0.02339852678748613,
+        "raw_advantage": -0.0668529336785318,
+        "sample_count": 7,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 0.9449233451262028
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:18-05:00
+Model: openai/gpt-4o-mini
+Location: East Chasm
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving north may lead to a new area and help establish a return route to the Living Room.
+Base action: north
+Candidate actions: ["north", "east", "put down lantern", "put out lantern", "jump"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "east", "put down lantern", "put out lantern", "jump"],
+  "decision_rationale": "Moving north may lead to a new area and help establish a return route to the Living Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring the narrow passage north could reveal new opportunities or pathways."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:18-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "east",
+    "put down lantern",
+    "put out lantern",
+    "jump"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    0.0,
+    -19.0,
+    -23.5,
+    -23.75,
+    -23.25
+  ],
+  "adjusted_logits": [
+    0.35,
+    -18.65,
+    -23.15,
+    -23.4,
+    -22.9
+  ],
+  "conditioned_logits": [
+    0.35,
+    -18.65,
+    -23.15,
+    -23.4,
+    -22.9
+  ],
+  "probabilities": [
+    0.9999999942065689,
+    5.602796405077853e-09,
+    6.22414458684863e-11,
+    4.8473686781873594e-11,
+    7.991959846653064e-11
+  ],
+  "base_probabilities": [
+    0.9999999942065689,
+    5.602796405077853e-09,
+    6.22414458684863e-11,
+    4.8473686781873594e-11,
+    7.991959846653064e-11
+  ],
+  "advantages": {},
+  "corrections": [
+    0.35,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -3.3563845965107674e-17,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 1.2660908323542255
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:21-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The south exit historically led to the East Chasm, which may provide a new route to explore and establish a return path to the Living Room.
+Base action: south
+Candidate actions: ["south", "north", "put out lantern", "put down lantern", "throw lantern at ramp"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to East Chasm
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "north", "put out lantern", "put down lantern", "throw lantern at ramp"],
+  "decision_rationale": "The south exit historically led to the East Chasm, which may provide a new route to explore and establish a return path to the Living Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to explore the south exit to potentially verify a route back to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:21-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "north",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at ramp"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    0.0,
+    -19.375,
+    -22.125,
+    -23.0,
+    -22.125
+  ],
+  "adjusted_logits": [
+    0.2614553685555197,
+    -19.2561793870021,
+    -21.775,
+    -22.65,
+    -21.775
+  ],
+  "conditioned_logits": [
+    0.2614553685555197,
+    -19.2561793870021,
+    -21.775,
+    -22.65,
+    -21.775
+  ],
+  "probabilities": [
+    0.9999999960110932,
+    3.33886549589688e-09,
+    2.6896082671002844e-10,
+    1.1211955343674377e-10,
+    2.6896082671002844e-10
+  ],
+  "base_probabilities": [
+    0.9999999955543,
+    3.8507419056483735e-09,
+    2.4616969408714185e-10,
+    1.0261879586080651e-10,
+    2.4616969408714185e-10
+  ],
+  "advantages": {
+    "south": 0.06983997570114056,
+    "north": -0.024615368548733686,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at ramp": 0.0
+  },
+  "corrections": [
+    0.2614553685555197,
+    0.11882061299789906,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.811264727627766e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851493508254867,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.06983997570114056,
+        "raw_advantage": 0.27935990280456224,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": -9.851493508254867,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": -0.024615368548733686,
+        "raw_advantage": -0.07032962442495339,
+        "sample_count": 7,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at ramp": {
+        "action": "throw lantern at ramp",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.9563026364987931
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:24-05:00
+Model: openai/gpt-4o-mini
+Location: East Chasm
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving north is the only historical route that led to the Cellar, which is essential for establishing a return route to the Living Room.
+Base action: north
+Candidate actions: ["north", "east", "jump", "put down lantern", "put out lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "east", "jump", "put down lantern", "put out lantern"],
+  "decision_rationale": "Moving north is the only historical route that led to the Cellar, which is essential for establishing a return route to the Living Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to verify the route to the Cellar, which may help in establishing a return path to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:24-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "east",
+    "jump",
+    "put down lantern",
+    "put out lantern"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    0.0,
+    -20.5,
+    -24.625,
+    -24.375,
+    -22.75
+  ],
+  "adjusted_logits": [
+    0.23296766688568307,
+    -20.15,
+    -24.275,
+    -24.025,
+    -22.4
+  ],
+  "conditioned_logits": [
+    0.23296766688568307,
+    -20.15,
+    -24.275,
+    -24.025,
+    -22.4
+  ],
+  "probabilities": [
+    0.9999999983946257,
+    1.4053665640757632e-09,
+    2.2715634852827868e-11,
+    2.916745250722889e-11,
+    1.4812454607875708e-10
+  ],
+  "base_probabilities": [
+    0.999999998571929,
+    1.2501528646014355e-09,
+    2.020683906136537e-11,
+    2.5946094945711803e-11,
+    1.317651425127847e-10
+  ],
+  "advantages": {
+    "north": -0.07259853264804259
+  },
+  "corrections": [
+    0.23296766688568307,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.057740238189397e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "north": {
+        "action": "north",
+        "advantage": -0.07259853264804259,
+        "raw_advantage": -0.29039413059217034,
+        "sample_count": 1,
+        "best_similarity": 0.8571428571428572,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 0.9461047297866658
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:27-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The south exit has not been tested since entering the Cellar, and it may lead to new opportunities.
+Base action: south
+Candidate actions: ["south", "north", "put out lantern", "put down lantern", "throw lantern at ramp"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to East Chasm
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "north", "put out lantern", "put down lantern", "throw lantern at ramp"],
+  "decision_rationale": "The south exit has not been tested since entering the Cellar, and it may lead to new opportunities.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring the south exit to investigate potential new areas."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:27-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "north",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at ramp"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    0.0,
+    -19.375,
+    -23.375,
+    -23.875,
+    -23.0
+  ],
+  "adjusted_logits": [
+    0.21269952430115613,
+    -19.246067114569698,
+    -23.025,
+    -23.525,
+    -22.65
+  ],
+  "conditioned_logits": [
+    0.21269952430115613,
+    -19.246067114569698,
+    -23.025,
+    -23.525,
+    -22.65
+  ],
+  "probabilities": [
+    0.9999999962109773,
+    3.541318779264333e-09,
+    8.090871855907437e-11,
+    4.907361844413916e-11,
+    1.1772149087121353e-10
+  ],
+  "base_probabilities": [
+    0.9999999959333326,
+    3.8507419071079296e-09,
+    7.052879822430443e-11,
+    4.277787851572658e-11,
+    1.0261879589970238e-10
+  ],
+  "advantages": {
+    "south": 0.05313465042393557,
+    "north": -0.0167734006146295,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0,
+    "throw lantern at ramp": 0.0
+  },
+  "corrections": [
+    0.21269952430115613,
+    0.12893288543030362,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.5010262685995646e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851493508254867,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.05313465042393557,
+        "raw_advantage": 0.13283662605983892,
+        "sample_count": 2,
+        "confidence": 0.0,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": -9.851493508254867,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": -0.0167734006146295,
+        "raw_advantage": -0.05032020184388851,
+        "sample_count": 6,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at ramp": {
+        "action": "throw lantern at ramp",
+        "q_value": null,
+        "state_value_baseline": -9.851493508254867,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.9554978868680941
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:33-05:00
+Model: openai/gpt-4o-mini
+Location: East Chasm
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The north passage historically led to the Cellar, which is a potential route back towards the Living Room.
+Base action: north
+Candidate actions: ["north", "east", "jump", "put out lantern", "put down lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "east", "jump", "put out lantern", "put down lantern"],
+  "decision_rationale": "The north passage historically led to the Cellar, which is a potential route back towards the Living Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to establish a return route to the Living Room by moving north."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:33-05:00
+Base model action: north
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "north",
+    "east",
+    "jump",
+    "put out lantern",
+    "put down lantern"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    -3.773456573486328,
+    -0.023456573486328125,
+    -11.898456573486328,
+    -11.898456573486328,
+    -8.523456573486328
+  ],
+  "adjusted_logits": [
+    -3.5810310619802532,
+    0.32654342651367185,
+    -11.548456573486328,
+    -11.548456573486328,
+    -8.173456573486328
+  ],
+  "conditioned_logits": [
+    -3.5810310619802532,
+    0.32654342651367185,
+    -11.548456573486328,
+    -11.548456573486328,
+    -8.173456573486328
+  ],
+  "probabilities": [
+    0.019689345617725004,
+    0.9800975880484301,
+    6.823738066748727e-06,
+    6.823738066748727e-06,
+    0.00019941885771148027
+  ],
+  "base_probabilities": [
+    0.022972490602192586,
+    0.9768151566415026,
+    6.800884779059752e-06,
+    6.800884779059752e-06,
+    0.00019875098674672345
+  ],
+  "advantages": {
+    "north": -0.048235413551470166
+  },
+  "corrections": [
+    0.192425511506075,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.0002521684802880158,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "north": {
+        "action": "north",
+        "advantage": -0.048235413551470166,
+        "raw_advantage": -0.12058853387867542,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 0.9453795063787543
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:37-05:00
+Model: openai/gpt-4o-mini
+Location: Gallery
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the art may yield a score increase, as it is described as a painting of unparalleled beauty.
+Base action: take art
+Candidate actions: ["take art", "put out lantern", "put down lantern", "throw lantern at art", "north"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take art",
+  "candidate_actions": ["take art", "put out lantern", "put down lantern", "throw lantern at art", "north"],
+  "decision_rationale": "Taking the art may yield a score increase, as it is described as a painting of unparalleled beauty.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to take the painting to see if it provides a score increase."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:37-05:00
+Base model action: take art
+Final action after Actor RL: take art
+RL selection details:
+{
+  "action": "take art",
+  "candidates": [
+    "take art",
+    "put out lantern",
+    "put down lantern",
+    "throw lantern at art",
+    "north"
+  ],
+  "scorer_preferred_action": "take art",
+  "corrected_preferred_action": "take art",
+  "base_logits": [
+    0.0,
+    -23.75,
+    -27.5,
+    -25.5,
+    -22.75
+  ],
+  "adjusted_logits": [
+    0.35,
+    -23.4,
+    -27.15,
+    -25.15,
+    -22.4
+  ],
+  "conditioned_logits": [
+    0.35,
+    -23.4,
+    -27.15,
+    -25.15,
+    -22.4
+  ],
+  "probabilities": [
+    0.9999999998101976,
+    4.8473687053502136e-11,
+    1.1399918528279822e-12,
+    8.423463752869854e-12,
+    1.3176514267594532e-10
+  ],
+  "base_probabilities": [
+    0.9999999998101976,
+    4.8473687053502136e-11,
+    1.1399918528279822e-12,
+    8.423463752869854e-12,
+    1.3176514267594532e-10
+  ],
+  "advantages": {},
+  "corrections": [
+    0.35,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -3.6025209311625136e-20,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 1.3067593074494384
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:41-05:00
+Model: openai/gpt-4o-mini
+Location: Gallery
+Score: 39
+Goal: Return the carried treasure candidates (art) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Returning west is the only direction that leads to a new area, as the north exit is untested and the goal is to find a route back to the Living Room.
+Base action: west
+Candidate actions: ["west", "north", "put down art", "put down all", "put out lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "north", "put down art", "put down all", "put out lantern"],
+  "decision_rationale": "Returning west is the only direction that leads to a new area, as the north exit is untested and the goal is to find a route back to the Living Room.",
+  "inventory_items": ["art", "brass lantern"],
+  "treasure_candidates": ["art"],
+  "carried_treasures": ["art"],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to navigate west from the Gallery to explore new areas and find a path back to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:41-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "north",
+    "put down art",
+    "put down all",
+    "put out lantern"
+  ],
+  "scorer_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "base_logits": [
+    -0.000202178955078125,
+    -8.500202178955078,
+    -15.000202178955078,
+    -17.500202178955078,
+    -16.000202178955078
+  ],
+  "adjusted_logits": [
+    0.34979782104492185,
+    -8.150202178955078,
+    -14.650202178955078,
+    -17.150202178955077,
+    -15.650202178955078
+  ],
+  "conditioned_logits": [
+    0.34979782104492185,
+    -8.150202178955078,
+    -14.650202178955078,
+    -17.150202178955077,
+    -15.650202178955078
+  ],
+  "probabilities": [
+    0.9997961296550953,
+    0.00020342688784407678,
+    3.0583995609023796e-07,
+    2.510487237480045e-08,
+    1.125122321343752e-07
+  ],
+  "base_probabilities": [
+    0.9997961296550953,
+    0.00020342688784407678,
+    3.0583995609023796e-07,
+    2.510487237480045e-08,
+    1.125122321343752e-07
+  ],
+  "advantages": {},
+  "corrections": [
+    0.35,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -2.2752203020710518e-17,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 2.1706746262032506
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:44-05:00
+Model: openai/gpt-4o-mini
+Location: East Chasm
+Score: 39
+Goal: Return the carried treasure candidates (art) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving north to the Cellar is a step towards returning to the Living Room with the carried treasure.
+Base action: north
+Candidate actions: ["north", "east", "put down painting", "put down all", "put out lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Cellar
+- east: historically led to Gallery
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "east", "put down painting", "put down all", "put out lantern"],
+  "decision_rationale": "Moving north to the Cellar is a step towards returning to the Living Room with the carried treasure.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": ["brass lantern"],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to return to the Cellar to explore potential routes back to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:44-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "east",
+    "put down painting",
+    "put down all",
+    "put out lantern"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    -0.00409698486328125,
+    -5.504096984863281,
+    -11.754096984863281,
+    -14.254096984863281,
+    -11.504096984863281
+  ],
+  "adjusted_logits": [
+    0.1859708885118999,
+    -5.232512249782521,
+    -11.404096984863282,
+    -13.904096984863282,
+    -11.154096984863282
+  ],
+  "conditioned_logits": [
+    0.1859708885118999,
+    -5.232512249782521,
+    -11.404096984863282,
+    -13.904096984863282,
+    -11.154096984863282
+  ],
+  "probabilities": [
+    0.9955639942588377,
+    0.004414198452798186,
+    9.216513406568082e-06,
+    7.565374902952858e-07,
+    1.1834237467276737e-05
+  ],
+  "base_probabilities": [
+    0.9959113472600682,
+    0.004070062049224716,
+    7.85706811762928e-06,
+    6.449474256234786e-07,
+    1.0088675163682904e-05
+  ],
+  "advantages": {
+    "north": -0.06002360420593929,
+    "east": 0.12048680832734626
+  },
+  "corrections": [
+    0.19006787337518116,
+    0.27158473508076086,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.4479415668554694e-05,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "north": {
+        "action": "north",
+        "advantage": -0.06002360420593929,
+        "raw_advantage": -0.1500590105148482,
+        "sample_count": 2,
+        "best_similarity": 0.9422222222222222,
+        "source": "historian_td"
+      },
+      "east": {
+        "action": "east",
+        "advantage": 0.12048680832734626,
+        "raw_advantage": 0.48194723330938505,
+        "sample_count": 1,
+        "best_similarity": 0.9422222222222222,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 2.1613315512401585
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:49-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 39
+Goal: Return the carried treasure candidates (a painting) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The south exit historically led to the East Chasm, and I need to explore routes back to the Living Room while preserving my current treasures.
+Base action: south
+Candidate actions: ["south", "north", "put down painting", "put down all", "put out lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to East Chasm
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "north", "put down painting", "put down all", "put out lantern"],
+  "decision_rationale": "The south exit historically led to the East Chasm, and I need to explore routes back to the Living Room while preserving my current treasures.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": ["brass lantern"],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to explore south to see if it leads to a potential return route."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:49-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "north",
+    "put down painting",
+    "put down all",
+    "put out lantern"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    -1.1444091796875e-05,
+    -11.500011444091797,
+    -14.500011444091797,
+    -17.250011444091797,
+    -15.125011444091797
+  ],
+  "adjusted_logits": [
+    0.18581655167000022,
+    -11.358455824722569,
+    -14.150011444091797,
+    -16.900011444091795,
+    -14.775011444091797
+  ],
+  "conditioned_logits": [
+    0.18581655167000022,
+    -11.358455824722569,
+    -14.150011444091797,
+    -16.900011444091795,
+    -14.775011444091797
+  ],
+  "probabilities": [
+    0.9999893582710186,
+    9.691289959384246e-06,
+    5.943255299091269e-07,
+    3.7993959987633593e-08,
+    3.181195321444651e-07
+  ],
+  "base_probabilities": [
+    0.9999890634786299,
+    1.0129982810645588e-05,
+    5.043421467588984e-07,
+    3.2241514758695804e-08,
+    2.699548979365022e-07
+  ],
+  "advantages": {
+    "south": 0.054139978808985544,
+    "north": -0.006656411465622343,
+    "put down painting": 0.0,
+    "put down all": 0.0,
+    "put out lantern": 0.0
+  },
+  "corrections": [
+    0.1858279957617971,
+    0.14155561936922761,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.1774611611164513e-08,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851211802501057,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.054139978808985544,
+        "raw_advantage": 0.10827995761797109,
+        "sample_count": 3,
+        "confidence": 0.0,
+        "best_similarity": 0.8866666666666666,
+        "source": "historian_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": -9.851211802501057,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": -0.006656411465622343,
+        "raw_advantage": -0.021300516689991496,
+        "sample_count": 5,
+        "confidence": 0.5,
+        "best_similarity": 0.8866666666666666,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put down painting": {
+        "action": "put down painting",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down all": {
+        "action": "put down all",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.1638298545820875
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:54-05:00
+Model: openai/gpt-4o-mini
+Location: East Chasm
+Score: 39
+Goal: Return the carried treasure candidates (a painting) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+I will attempt to return north to the Cellar, as it is a confirmed route and I need to explore pathways back to the Living Room.
+Base action: north
+Candidate actions: ["north", "east", "put down painting", "put out lantern", "put down all"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Cellar
+- east: historically led to Gallery
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "east", "put down painting", "put out lantern", "put down all"],
+  "decision_rationale": "I will attempt to return north to the Cellar, as it is a confirmed route and I need to explore pathways back to the Living Room.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": ["brass lantern"],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to navigate back to the Cellar to further explore return routes to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:54-05:00
+Base model action: north
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "north",
+    "east",
+    "put down painting",
+    "put out lantern",
+    "put down all"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    -1.9102325439453125,
+    -0.1602325439453125,
+    -11.910232543945312,
+    -13.910232543945312,
+    -12.910232543945312
+  ],
+  "adjusted_logits": [
+    -1.7448376264346999,
+    0.1113538489464429,
+    -11.560232543945313,
+    -13.560232543945313,
+    -12.560232543945313
+  ],
+  "conditioned_logits": [
+    -1.7448376264346999,
+    0.1113538489464429,
+    -11.560232543945313,
+    -13.560232543945313,
+    -12.560232543945313
+  ],
+  "probabilities": [
+    0.135146085207197,
+    0.8648428217001407,
+    7.379579565122771e-06,
+    9.987174906130094e-07,
+    2.7147956064975605e-06
+  ],
+  "base_probabilities": [
+    0.1480457022362708,
+    0.8519441942599915,
+    6.72126448316444e-06,
+    9.096242325372448e-07,
+    2.4726150220319974e-06
+  ],
+  "advantages": {
+    "north": -0.048025412446936346,
+    "east": 0.12049509738231906
+  },
+  "corrections": [
+    0.16539491751061272,
+    0.2715863928917554,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.0006762640836176818,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "north": {
+        "action": "north",
+        "advantage": -0.048025412446936346,
+        "raw_advantage": -0.09605082489387269,
+        "sample_count": 3,
+        "best_similarity": 0.8888888888888888,
+        "source": "historian_td"
+      },
+      "east": {
+        "action": "east",
+        "advantage": 0.12049509738231906,
+        "raw_advantage": 0.48198038952927624,
+        "sample_count": 1,
+        "best_similarity": 0.8866666666666666,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 2.159719621347468
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:33:57-05:00
+Model: openai/gpt-4o-mini
+Location: Gallery
+Score: 39
+Goal: Return the carried treasure candidates (a painting) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The west exit historically leads to the East Chasm, which is a potential return route to the Living Room where I can deposit the painting.
+Base action: west
+Candidate actions: ["west", "north", "put down art", "put down all", "put out lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- west: historically led to East Chasm
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "north", "put down art", "put down all", "put out lantern"],
+  "decision_rationale": "The west exit historically leads to the East Chasm, which is a potential return route to the Living Room where I can deposit the painting.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": ["a brass lantern"],
+  "useful_items": ["a brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to navigate west to explore the next potential return route."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:33:57-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "north",
+    "put down art",
+    "put down all",
+    "put out lantern"
+  ],
+  "scorer_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "base_logits": [
+    0.0,
+    -20.5,
+    -24.25,
+    -24.0,
+    -21.625
+  ],
+  "adjusted_logits": [
+    0.246553723999964,
+    -20.15,
+    -23.9,
+    -23.65,
+    -21.275
+  ],
+  "conditioned_logits": [
+    0.246553723999964,
+    -20.15,
+    -23.9,
+    -23.65,
+    -21.275
+  ],
+  "probabilities": [
+    0.999999998089028,
+    1.3864022898026165e-09,
+    3.2605056705767017e-11,
+    4.186572152274994e-11,
+    4.500989241356853e-10
+  ],
+  "base_probabilities": [
+    0.9999999982768297,
+    1.2501528642325163e-09,
+    2.940077734218218e-11,
+    3.775134537773898e-11,
+    4.0586521194819447e-10
+  ],
+  "advantages": {
+    "west": -0.0046682470766379325
+  },
+  "corrections": [
+    0.246553723999964,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 9.881158687553878e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "west": {
+        "action": "west",
+        "advantage": -0.0046682470766379325,
+        "raw_advantage": -0.01867298830655173,
+        "sample_count": 1,
+        "best_similarity": 0.7222222222222222,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 2.1708815512712745
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:34:01-05:00
+Model: openai/gpt-4o-mini
+Location: East Chasm
+Score: 39
+Goal: Return the carried treasure candidates (a painting) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Returning north to the Cellar is necessary to establish a route back to the Living Room and deposit the painting.
+Base action: north
+Candidate actions: ["north", "east", "put down painting", "put down lantern", "put out lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Cellar
+- east: historically led to Gallery
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "east", "put down painting", "put down lantern", "put out lantern"],
+  "decision_rationale": "Returning north to the Cellar is necessary to establish a route back to the Living Room and deposit the painting.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": ["a brass lantern"],
+  "useful_items": ["a brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Moving north to the Cellar to explore for a route back to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:34:01-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "east",
+    "put down painting",
+    "put down lantern",
+    "put out lantern"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    -1.9073486328125e-05,
+    -11.000019073486328,
+    -14.875019073486328,
+    -17.250019073486328,
+    -15.500019073486328
+  ],
+  "adjusted_logits": [
+    0.1653741462621106,
+    -10.780968850448605,
+    -14.525019073486328,
+    -16.900019073486327,
+    -15.150019073486328
+  ],
+  "conditioned_logits": [
+    0.1653741462621106,
+    -10.780968850448605,
+    -14.525019073486328,
+    -16.900019073486327,
+    -15.150019073486328
+  ],
+  "probabilities": [
+    0.9999816991463182,
+    1.762202006773138e-05,
+    4.1690330656794576e-07,
+    3.8778048110654194e-08,
+    2.2315225942784918e-07
+  ],
+  "base_probabilities": [
+    0.9999827341835783,
+    1.6701412421745885e-05,
+    3.4662675636891997e-07,
+    3.224131069040419e-08,
+    1.855359327769321e-07
+  ],
+  "advantages": {
+    "north": -0.04803390125780622,
+    "east": 0.08488814410676904
+  },
+  "corrections": [
+    0.16539321974843874,
+    0.21905022303772284,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.580640967098778e-08,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "north": {
+        "action": "north",
+        "advantage": -0.04803390125780622,
+        "raw_advantage": -0.09606780251561244,
+        "sample_count": 3,
+        "best_similarity": 0.8888888888888888,
+        "source": "historian_td"
+      },
+      "east": {
+        "action": "east",
+        "advantage": 0.08488814410676904,
+        "raw_advantage": 0.2122203602669226,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 2.1580365847830563
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:34:05-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 39
+Goal: Return the carried treasure candidates (a painting) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+I need to explore the northern path to verify if it leads to the Troll Room, which could help in finding a route back to the Living Room.
+Base action: north
+Candidate actions: ["north", "south", "put down painting", "put down all", "put out lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to East Chasm
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "south", "put down painting", "put down all", "put out lantern"],
+  "decision_rationale": "I need to explore the northern path to verify if it leads to the Troll Room, which could help in finding a route back to the Living Room.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": [],
+  "useful_items": ["a brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to move north to explore the passageway and potentially access the Troll Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:34:05-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "south",
+    "put down painting",
+    "put down all",
+    "put out lantern"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    -0.030208587646484375,
+    -3.5302085876464844,
+    -8.405208587646484,
+    -11.405208587646484,
+    -8.405208587646484
+  ],
+  "adjusted_logits": [
+    0.12559773612014333,
+    -3.365463799519572,
+    -8.055208587646485,
+    -11.055208587646485,
+    -8.055208587646485
+  ],
+  "conditioned_logits": [
+    0.12559773612014333,
+    -3.365463799519572,
+    -8.055208587646485,
+    -11.055208587646485,
+    -8.055208587646485
+  ],
+  "probabilities": [
+    0.9698922150219835,
+    0.02955117219188824,
+    0.0002715466375594392,
+    1.3519511009235371e-05,
+    0.0002715466375594392
+  ],
+  "base_probabilities": [
+    0.9702426745793338,
+    0.029298790056967935,
+    0.0002236990225835476,
+    1.1137318531191426e-05,
+    0.0002236990225835476
+  ],
+  "advantages": {
+    "north": -0.003592173291787832,
+    "south": 0.04110014850963619,
+    "put down painting": 0.0,
+    "put down all": 0.0,
+    "put out lantern": 0.0
+  },
+  "corrections": [
+    0.1558063237666277,
+    0.16474478812691248,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.0959385556937469e-05,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851211802501057,
+    "samples": 3,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": -9.851211802501057,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": -0.003592173291787832,
+        "raw_advantage": -0.012572606521257412,
+        "sample_count": 4,
+        "confidence": 0.5,
+        "best_similarity": 0.8866666666666666,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.04110014850963619,
+        "raw_advantage": 0.07192525989186334,
+        "sample_count": 4,
+        "confidence": 0.0,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "put down painting": {
+        "action": "put down painting",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down all": {
+        "action": "put down all",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.160425372255093
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:34:09-05:00
+Model: openai/gpt-4o-mini
+Location: Troll 
+Score: 39
+Goal: Return the carried treasure candidates (a painting) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The south exit historically led to the Cellar, which may provide an opportunity to escape the troll.
+Base action: south
+Candidate actions: ["south", "put down painting", "put out lantern", "give troll lantern", "give troll painting"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to Cellar
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "put down painting", "put out lantern", "give troll lantern", "give troll painting"],
+  "decision_rationale": "The south exit historically led to the Cellar, which may provide an opportunity to escape the troll.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": ["a brass lantern"],
+  "useful_items": ["a brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to escape the Troll Room by going south to the Cellar."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:34:09-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "put down painting",
+    "put out lantern",
+    "give troll lantern",
+    "give troll painting"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    0.0,
+    -16.125,
+    -18.375,
+    -19.5,
+    -19.375
+  ],
+  "adjusted_logits": [
+    0.14091805762987547,
+    -15.775,
+    -18.11604148201839,
+    -19.15,
+    -19.025
+  ],
+  "conditioned_logits": [
+    0.14091805762987547,
+    -15.775,
+    -18.11604148201839,
+    -19.15,
+    -19.025
+  ],
+  "probabilities": [
+    0.9999998568798862,
+    1.2240651994651053e-07,
+    1.1778857112189679e-08,
+    4.188520781649014e-09,
+    4.746215844363835e-09
+  ],
+  "base_probabilities": [
+    0.9999998829716591,
+    9.931193149925051e-08,
+    1.0467400569761993e-08,
+    3.3982674218014263e-09,
+    3.8507414721216786e-09
+  ],
+  "advantages": {
+    "south": -0.009844220162383052,
+    "put down painting": 0.0,
+    "put out lantern": 0.057355722831590135,
+    "give troll lantern": 0.0,
+    "give troll painting": 0.0
+  },
+  "corrections": [
+    0.14091805762987547,
+    0.35,
+    0.2589585179816096,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.759690466299417e-09,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.889152422977423,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": -9.90025,
+        "state_value_baseline": -9.889152422977423,
+        "advantage": -0.009844220162383052,
+        "raw_advantage": -0.02706247371059507,
+        "sample_count": 5,
+        "confidence": 0.25,
+        "best_similarity": 0.8866666666666666,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put down painting": {
+        "action": "put down painting",
+        "q_value": null,
+        "state_value_baseline": -9.889152422977423,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.889152422977423,
+        "advantage": 0.057355722831590135,
+        "raw_advantage": 0.22942289132636054,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.8866666666666666,
+        "source": "historian_td"
+      },
+      "give troll lantern": {
+        "action": "give troll lantern",
+        "q_value": null,
+        "state_value_baseline": -9.889152422977423,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "give troll painting": {
+        "action": "give troll painting",
+        "q_value": null,
+        "state_value_baseline": -9.889152422977423,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.104702543559421
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:34:13-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 39
+Goal: Return the carried treasure candidates (a painting) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The south exit historically leads to the East Chasm, which may provide a new opportunity to explore and potentially find a return route to the Living Room.
+Base action: south
+Candidate actions: ["south", "put down painting", "put down all", "put out lantern", "throw lantern at ramp"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to East Chasm
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "put down painting", "put down all", "put out lantern", "throw lantern at ramp"],
+  "decision_rationale": "The south exit historically leads to the East Chasm, which may provide a new opportunity to explore and potentially find a return route to the Living Room.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": [],
+  "useful_items": ["a brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to explore the south passage, which has previously led to the East Chasm."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:34:13-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "put down painting",
+    "put down all",
+    "put out lantern",
+    "throw lantern at ramp"
+  ],
+  "scorer_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "base_logits": [
+    -5.7220458984375e-05,
+    -10.000057220458984,
+    -12.375057220458984,
+    -12.250057220458984,
+    -13.375057220458984
+  ],
+  "adjusted_logits": [
+    0.18463503578180898,
+    -9.650057220458985,
+    -12.025057220458985,
+    -11.900057220458985,
+    -13.025057220458985
+  ],
+  "conditioned_logits": [
+    0.18463503578180898,
+    -9.650057220458985,
+    -12.025057220458985,
+    -11.900057220458985,
+    -13.025057220458985
+  ],
+  "probabilities": [
+    0.9999339835556729,
+    5.3557309335143095e-05,
+    4.981605771305834e-06,
+    5.64489887354398e-06,
+    1.8326303472844221e-06
+  ],
+  "base_probabilities": [
+    0.9999440417329033,
+    4.539738926108904e-05,
+    4.222614973617856e-06,
+    4.784849625251891e-06,
+    1.5534132367767017e-06
+  ],
+  "advantages": {
+    "south": 0.04846128120396682,
+    "put down painting": 0.0,
+    "put down all": 0.0,
+    "put out lantern": 0.0,
+    "throw lantern at ramp": 0.0
+  },
+  "corrections": [
+    0.18469225624079336,
+    0.35,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0000000000000002,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 8.542387731296839e-07,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851211802501057,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.04846128120396682,
+        "raw_advantage": 0.09692256240793364,
+        "sample_count": 3,
+        "confidence": 0.0,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "put down painting": {
+        "action": "put down painting",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down all": {
+        "action": "put down all",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "throw lantern at ramp": {
+        "action": "throw lantern at ramp",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.1577517664076042
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:34:17-05:00
+Model: openai/gpt-4o-mini
+Location: East Chasm
+Score: 39
+Goal: Return the carried treasure candidates (a painting) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Returning north to the Cellar is a confirmed route that may provide further opportunities to explore or escape the current situation.
+Base action: north
+Candidate actions: ["north", "east", "look around lantern", "jump", "put out lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Cellar
+- east: historically led to Gallery
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "east", "look around lantern", "jump", "put out lantern"],
+  "decision_rationale": "Returning north to the Cellar is a confirmed route that may provide further opportunities to explore or escape the current situation.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": ["a brass lantern"],
+  "useful_items": ["a brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to navigate back to the Cellar to explore further options or escape."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:34:17-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "east",
+    "look around lantern",
+    "jump",
+    "put out lantern"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    -0.3143653869628906,
+    -1.3143653869628906,
+    -8.06436538696289,
+    -10.43936538696289,
+    -7.189365386962891
+  ],
+  "adjusted_logits": [
+    -0.16563730716518776,
+    -1.0953004626726894,
+    -7.714365386962891,
+    -10.089365386962891,
+    -6.839365386962891
+  ],
+  "conditioned_logits": [
+    -0.16563730716518776,
+    -1.0953004626726894,
+    -7.714365386962891,
+    -10.089365386962891,
+    -6.839365386962891
+  ],
+  "probabilities": [
+    0.7160625248624156,
+    0.282620309105268,
+    0.0003772072184700247,
+    3.50857367525645e-05,
+    0.0009048730770937919
+  ],
+  "base_probabilities": [
+    0.7302555974531562,
+    0.2686460211033848,
+    0.00031455215131658904,
+    2.9257907684827865e-05,
+    0.0007545713844575656
+  ],
+  "advantages": {
+    "north": -0.03898339313641203,
+    "east": 0.08496165036916144
+  },
+  "corrections": [
+    0.14872807979770286,
+    0.2190649242902013,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.000516611285883683,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "north": {
+        "action": "north",
+        "advantage": -0.03898339313641203,
+        "raw_advantage": -0.06822093798872106,
+        "sample_count": 4,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "east": {
+        "action": "east",
+        "advantage": 0.08496165036916144,
+        "raw_advantage": 0.21240412592290359,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 2.1539442082461697
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-08T21:34:21-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 39
+Goal: Return the carried treasure candidates (a painting) to Living Room. The home room is not yet identified in the current map. Preserve the items, inspect route clues, and discover a way back before attempting further optional exploration.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Attempting to move north towards the Troll Room, as it may provide a route back to the Living Room despite the troll's blocking presence.
+Base action: north
+Candidate actions: ["north", "south", "wait", "put out lantern", "put down lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to East Chasm
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "south", "wait", "put out lantern", "put down lantern"],
+  "decision_rationale": "Attempting to move north towards the Troll Room, as it may provide a route back to the Living Room despite the troll's blocking presence.",
+  "inventory_items": ["a painting", "a brass lantern"],
+  "treasure_candidates": ["a painting"],
+  "carried_treasures": ["a painting"],
+  "ordinary_items": ["a brass lantern"],
+  "useful_items": ["a brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Navigating back towards the Troll Room to find a way to the Living Room."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-08T21:34:21-05:00
+Base model action: north
+Final action after Actor RL: wait
+RL selection details:
+{
+  "action": "wait",
+  "candidates": [
+    "north",
+    "south",
+    "wait",
+    "put out lantern",
+    "put down lantern"
+  ],
+  "scorer_preferred_action": "wait",
+  "corrected_preferred_action": "wait",
+  "base_logits": [
+    -4.641597747802734,
+    -1.5165977478027344,
+    -0.2665977478027344,
+    -6.141597747802734,
+    -5.891597747802734
+  ],
+  "adjusted_logits": [
+    -4.500156375236392,
+    -1.3329016263263112,
+    0.0834022521972656,
+    -5.791597747802735,
+    -5.541597747802735
+  ],
+  "conditioned_logits": [
+    -4.500156375236392,
+    -1.3329016263263112,
+    0.0834022521972656,
+    -5.791597747802735,
+    -5.541597747802735
+  ],
+  "probabilities": [
+    0.00811477102740094,
+    0.19266265028363072,
+    0.7941279640335182,
+    0.002230542015087711,
+    0.002864072640362512
+  ],
+  "base_probabilities": [
+    0.009642330329747116,
+    0.21945842676217533,
+    0.765985174305014,
+    0.0021514947106805364,
+    0.002762573892383047
+  ],
+  "advantages": {
+    "north": -0.0072276454800469835,
+    "south": 0.04348060738211574,
+    "wait": 0.0,
+    "put out lantern": 0.0,
+    "put down lantern": 0.0
+  },
+  "corrections": [
+    0.14144137256634268,
+    0.18369612147642314,
+    0.35,
+    0.35,
+    0.35
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.0023488456755184346,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.851211802501057,
+    "samples": 3,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": -9.851211802501057,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": -0.0072276454800469835,
+        "raw_advantage": -0.023128465536150347,
+        "sample_count": 5,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.04348060738211574,
+        "raw_advantage": 0.08696121476423148,
+        "sample_count": 3,
+        "confidence": 0.0,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "wait": {
+        "action": "wait",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put out lantern": {
+        "action": "put out lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": -9.851211802501057,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.156038163497742
+  }
+}

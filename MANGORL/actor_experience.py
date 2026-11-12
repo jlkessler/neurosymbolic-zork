@@ -233,7 +233,7 @@ class ActorExperienceMemory:
         running_return = _number(bootstrap_value)
         completed = list(self._episode_steps)
         truncated = bool(completed and not completed[-1].get("terminal") and termination_reason in {
-            "step_limit", "episode_exception", "interrupted", "no_valid_actions", "no_safe_actions",
+            "step_limit", "episode_exception", "interrupted", "no_valid_actions", "no_safe_actions", "recovery_action_limit",
         })
         if truncated:
             completed[-1]["truncated"] = True

@@ -11,6 +11,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from .goal_control import carried_treasures
 from .llm_connections import complete_historian_validated
 
 
@@ -1009,8 +1010,9 @@ class Historian:
                 counts[key] = counts.get(key, 0) + 1
         repeated = [{"action": action, "destination": destination, "count": count}
                     for (action, destination, _), count in counts.items() if count >= 3]
-        protected = {self.normalize_action(action) for action in protected_actions}
-        stale = {item["action"] for item in repeated} - protected
+        # Compatibility argument retained, but even a planned command loses
+        # protection after three observed repetitions without new evidence.
+        stale = {item["action"] for item in repeated}
         alternatives = [action for action in valid_actions
                         if self.normalize_action(action) not in stale | {"look", "inventory", "wait", "z"}]
         blocked = [action for action in valid_actions if self.normalize_action(action) in stale] if alternatives else []
@@ -1132,15 +1134,6 @@ class Historian:
             lines.append(
                 "The home room has not been identified in the map yet. Continue discovery while preserving valuables; no known return destination is available to navigate toward."
             )
-        elif (episode.get("underground_reached") and not episode.get("home_return_verified")
-              and episode.get("steps", 0) - self._last_progress_step >= 12):
-            lines.append(
-                "The return route remains unverified and the search has stalled. Preserve useful items and investigate new exits or local prerequisites; repeatedly retracing the same rooms does not verify a route."
-            )
-        elif episode.get("underground_reached") and not episode.get("home_return_verified"):
-            lines.append(
-                "EARLY UNDERGROUND PRIORITY: establish and test at least one route back to the Living Room before committing to a long underground treasure expedition. Once that return is verified, continue exploring and use it as a recovery route."
-            )
         elif episode.get("home_return_verified"):
             lines.append(
                 "A return from the underground to the Living Room has been verified during this episode. Preserve that knowledge, but still treat any untested alternate passages as uncertain."
@@ -1185,6 +1178,17 @@ class Historian:
 
             target_node = str(pattern.get("node", ""))
             action = str(pattern.get("action", ""))
+            # Historical deposit rewards do not imply present possession.
+            # Infer command prerequisites conservatively; unknown tasks remain
+            # Actor suggestions and can never authorize symbolic takeover.
+            inventory = self.agent_state.get("inventory_items", [])
+            deposit = re.match(r"^(?:put|place|insert) (.+?) (?:in|into|inside) (?:the )?(?:trophy )?case$", action, re.I)
+            if deposit and not any(self._items_match(deposit[1], item) for item in carried_treasures(self, inventory)):
+                continue
+            acquisition = re.match(r"^(?:take|get|pick up) (.+)$", action, re.I)
+            if acquisition and any(self._items_match(acquisition[1], item) for item in inventory):
+                continue
+
             if target_node == current_key:
                 suggested_action = valid_by_normalized.get(self.normalize_action(action))
                 if suggested_action is None:
@@ -1295,13 +1299,13 @@ class Historian:
         ):
             episode["home_return_verified"] = True
 
-        carried = list(self.agent_state.get("carried_treasures", []))
+        carried = carried_treasures(self, self.agent_state.get("inventory_items", []))
         inventory = list(self.agent_state.get("inventory_items", []))
         ordinary = list(self.agent_state.get("ordinary_items", []))
         useful = list(self.agent_state.get("useful_items", []))
         treasure_priority = bool(carried)
 
-        return_needed = treasure_priority or (episode.get("underground_reached") and not episode.get("home_return_verified"))
+        return_needed = treasure_priority
         if return_needed and home_key is None:
             recovery = self.cycle_recovery(current_node, valid_actions, known_routes)
             return {
@@ -1415,54 +1419,8 @@ class Historian:
                 "source": "actor_inventory_and_reward_evidence",
             }
 
-        # Goal sequence B: after first entering the underground, make a return
-        # trip a deliberate early milestone even when no treasure is carried.
-        if episode.get("underground_reached") and not episode.get("home_return_verified"):
-            sequence = self._goal_sequence(
-                {
-                    "goal": f"Establish a return route to {home_label}",
-                    "details": "Do this early, before committing to a long treasure expedition. Use a historical route as a cautious candidate, not as proof that the door or puzzle prerequisite is currently solved."
-                },
-                {
-                    "goal": "Verify the route by reaching {home_label}".format(home_label=home_label),
-                    "details": "A route is established only after the environment actually returns the player to the Living Room. Record any obstacles and newly discovered transitions."
-                },
-                {
-                    "goal": "Resume underground exploration",
-                    "details": "Once the return trip is verified, explore productive areas, collect likely treasures, and use the tested route to bank valuables."
-                },
-            )
-            if home_key is not None and current_key != home_key and home_route_status in {"confirmed", "historical_unconfirmed"}:
-                return {
-                    "kind": "establish_return_route",
-                    "description": (
-                        f"Before deep exploration, make an early return trip to {home_label}. A candidate path is present "
-                        "in the learned map. Follow it one action/transition at a time; if it fails, stop and investigate "
-                        "the prerequisite or alternate route rather than repeating it. Reaching the Living Room will "
-                        "verify a practical return path for this episode."
-                    ),
-                    "target_node": home_key,
-                    "target_label": home_label,
-                    "route_available": True,
-                    "route_status": home_route_status,
-                    "sequence": sequence,
-                    "source": "early_underground_safety_milestone",
-                }
-            return {
-                "kind": "solve_return_route",
-                "description": (
-                    f"Make finding a way back to {home_label} your immediate strategic objective, even though you are "
-                    "not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, "
-                    "guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked "
-                    "actions. Establish the return route before beginning a lengthy treasure-hunting sequence."
-                ),
-                "target_node": home_key,
-                "target_label": home_label,
-                "route_available": False,
-                "route_status": home_route_status,
-                "sequence": sequence,
-                "source": "early_underground_safety_milestone",
-            }
+        # Route knowledge remains useful without forcing an empty-handed trip.
+        # Only currently carried valuables create a return/deposit objective.
 
         # Goal sequence C: exploit earlier score-positive actions and navigate
         # through historical map routes to productive rooms.
@@ -1516,8 +1474,7 @@ class Historian:
                 "kind": "explore_frontier",
                 "description": (
                     "Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, "
-                    "record the resulting transition, and look for score-producing interactions. If you enter the "
-                    "underground, make establishing a return route your next milestone before extensive exploration."
+                    "record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables."
                 ),
                 "target_node": None,
                 "target_label": None,

@@ -14,6 +14,7 @@ import random
 import re
 
 from .evolution import SECTION_NAMES, validate_configuration
+from .provider_requests import provider_request
 from .policy_logits import LabelLogprobScorer
 from .navigation_controller import NavigationController
 
@@ -154,7 +155,7 @@ class SmartAgent:
         request = {**request, "messages": list(request["messages"])}
         for attempt in range(3):
             self._log_event("request", {**request, "attempt": attempt + 1})
-            response = self.client.chat.completions.create(**request)
+            response = provider_request(self.client, request, event_logger=self._log_event)
             choice = response.choices[0]
             answer = choice.message.content or ""
             finish = getattr(choice, "finish_reason", None)
@@ -270,7 +271,7 @@ STRATEGY:
   interactions that may produce score. Learn from actual score increases and
   from previously successful actions/locations listed in Historian guidance.
 - Make goals sequential rather than impulsive: after entering the underground,
-  establish and test a route back to the Living Room early; then pursue known
+  retain discovered return routes while exploring; pursue known
   score-positive opportunities, collect likely valuables, return and deposit
   those valuables, and continue to the next productive opportunity.
 - Classify inventory carefully. `inventory_items` must list everything you
@@ -290,7 +291,7 @@ STRATEGY:
   historical candidate one transition at a time; each step must succeed before
   it advances. If a step fails or is unavailable, the plan is abandoned.
 - When a candidate return route is blocked, or no route is known, make solving
-  the return route a strategic objective. Use textual clues to infer barriers,
+  the return route a strategic objective when carrying treasure. Otherwise continue productive exploration. Use textual clues to infer barriers,
   prerequisites, and alternate paths rather than repeating the failed command.
 - For puzzles, inspect the situation and reason from textual clues. Consider
   relevant objects, keys, dialogue, special actions, environmental mechanisms,
@@ -470,47 +471,7 @@ markdown fences or prose outside the JSON.
                 "error": str(exc),
             })
             print(f"Actor request or policy scoring failed: {type(exc).__name__}: {exc}")
-            if self.policy_mode == "logprobs":
-                raise
-
-        # Deterministic fallback; no model response means do not invent reports.
-        fallback = next((item for item in preferred_actions if item in valid_actions), None)
-        if fallback is None:
-            fallback = self.rng.choice(valid_actions)
-        self._log_event("fallback", {
-            "selected_action": fallback,
-            "reason": "The model request failed or did not return a valid action.",
-        })
-        self._log_event("actor_decision_rationale", {
-            "model": self.model,
-            "location": str(current_location),
-            "current_score": current_score,
-            "goal_kind": goal.get("kind"),
-            "goal_description": goal.get("description"),
-            "navigation_context": navigation_context,
-            "rationale": "No model rationale is available because the LLM call or response parsing failed.",
-            "base_action": fallback,
-            "candidate_actions": [fallback],
-            "raw_response": "",
-            "rationale_source": "fallback_no_model_rationale",
-        })
-        return {
-            "action": fallback,
-            "candidate_actions": [fallback],
-            "report": {
-                "location": current_location,
-                "inventory_items": [],
-                "treasure_candidates": [],
-                "carried_treasures": [],
-                "ordinary_items": [],
-                "useful_items": [],
-                "uncertain_items": [],
-                "puzzle_clues": [],
-                "state_note": "Actor fallback selected after request/parse failure.",
-            },
-            "decision_rationale": "",
-            "raw_response": "",
-        }
+            raise
 
     def choose_action(self, **kwargs):
         """Compatibility wrapper for callers expecting only an action string."""

@@ -17,6 +17,9 @@ class AdaptiveSystem:
         self.critic, self.policy, self.navigator = critic, policy, navigator
         self.output_dir = Path(output_dir)
         self.scores = []
+        metrics_path = self.output_dir / "metrics.jsonl"
+        if metrics_path.exists():
+            self.scores = [json.loads(line)["score"] for line in metrics_path.read_text().splitlines() if line.strip()]
         initial = default_configuration()
         initial.update(temperature=args.temperature, history_length=args.history_length,
                        retrieval_top_k=args.actor_rl_top_k,
@@ -43,7 +46,7 @@ class AdaptiveSystem:
     def finish_episode(self, episode, *, info, reason, event_logger, api_requests=None, episode_number=None):
         # A failed API call is not an evaluated configuration, and must not
         # trigger a second paid LLM call or enter the score benchmark.
-        if reason in {"episode_exception", "initialization_failed", "interrupted", "no_safe_actions", "no_valid_actions"}:
+        if reason in {"episode_exception", "initialization_failed", "interrupted", "no_safe_actions", "no_valid_actions", "recovery_action_limit"} or episode.get("control_metrics", {}).get("recovery_actions", 0):
             event_logger("configuration_evaluation_skipped", {"reason": reason})
             return
         score = float(info.get("score", 0))
@@ -52,6 +55,7 @@ class AdaptiveSystem:
                   "evaluated_episode": len(self.scores), "score": score, "moves": info.get("moves"),
                   "steps": episode.get("steps"), "termination_reason": reason,
                   "configuration_id": self.configuration_id, "seed": self.args.seed,
+                  "control_metrics": episode.get("control_metrics", {}),
                   "api_requests_before_evolution": api_requests,
                   "policy_mode": self.args.actor_policy_mode,
                   "nsi": self.args.nsi, "actor_rl": self.args.actor_rl,

@@ -56,7 +56,7 @@ def _record_score_event(historian, *, node, location, action, before=0, after=5)
     historian.finish_episode(final_score=after, moves=1)
 
 
-def test_historian_prioritizes_early_return_route_after_entering_cellar(tmp_path):
+def test_historian_keeps_exploring_without_treasure_after_entering_cellar(tmp_path):
     historian = Historian(tmp_path / "historian.json")
     historian.start_episode("Living Room", "Living Room", initial_score=0)
     historian.observe_step(
@@ -87,14 +87,12 @@ def test_historian_prioritizes_early_return_route_after_entering_cellar(tmp_path
         home_route_status="historical_unconfirmed",
     )
 
-    assert goal["kind"] == "establish_return_route"
-    assert goal["target_node"] == "Living Room"
-    assert "early return trip" in goal["description"]
-    assert [step["order"] for step in goal["sequence"]] == [1, 2, 3]
-    assert "Establish a return route" in goal["sequence"][0]["goal"]
+    assert goal["kind"] == "explore_frontier"
+    assert goal.get("target_node") != "Living Room"
+    assert "EARLY UNDERGROUND PRIORITY" not in historian.build_guidance("Cellar", "Cellar")
 
 
-def test_historian_keeps_return_route_goal_when_no_route_is_known_even_without_treasure(tmp_path):
+def test_historian_does_not_force_unknown_return_route_without_treasure(tmp_path):
     historian = Historian(tmp_path / "historian.json")
     historian.start_episode("Cellar", "Cellar", initial_score=0)
 
@@ -108,10 +106,8 @@ def test_historian_keeps_return_route_goal_when_no_route_is_known_even_without_t
         home_route_status="unknown",
     )
 
-    assert goal["kind"] == "solve_return_route"
-    assert "immediate strategic objective" in goal["description"]
-    assert "before beginning a lengthy treasure-hunting sequence" in goal["description"]
-    assert len(goal["sequence"]) == 3
+    assert goal["kind"] == "explore_frontier"
+    assert "immediate strategic objective" not in goal["description"]
 
 
 def test_historian_marks_return_home_verified_only_after_reaching_living_room(tmp_path):

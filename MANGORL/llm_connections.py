@@ -4,6 +4,7 @@ from __future__ import annotations
 import os
 from urllib.parse import urlsplit
 
+from .provider_requests import provider_request
 from .policy_logits import _provider_error
 
 
@@ -11,12 +12,10 @@ class AnthropicHistorian:
     def __init__(self, client):
         self.client = client
 
-    def complete(self, *, model, messages, max_tokens):
+    def complete(self, *, model, messages, max_tokens, event_logger=None):
         system = "\n\n".join(msg["content"] for msg in messages if msg["role"] == "system")
         conversation = [msg for msg in messages if msg["role"] != "system"]
-        response = self.client.messages.create(
-            model=model, system=system, messages=conversation, max_tokens=max_tokens,
-        )
+        response = provider_request(self.client, dict(model=model, system=system, messages=conversation, max_tokens=max_tokens), native=True, event_logger=event_logger)
         content = "".join(block.text for block in response.content if block.type == "text")
         return content, response.stop_reason
 
@@ -32,15 +31,15 @@ class AnthropicHistorian:
             ) from exc
 
 
-def complete_historian(client, request):
+def complete_historian(client, request, event_logger=None):
     native = isinstance(client, AnthropicHistorian)
     try:
         if native:
             # Recent Claude models reject temperature. Use native sampling defaults.
             return client.complete(
-                model=request["model"], messages=request["messages"], max_tokens=request["max_tokens"],
+                model=request["model"], messages=request["messages"], max_tokens=request["max_tokens"], event_logger=event_logger,
             )
-        choice = client.chat.completions.create(**request).choices[0]
+        choice = provider_request(client, request, event_logger=event_logger).choices[0]
         return choice.message.content or "", getattr(choice, "finish_reason", None)
     except Exception as exc:
         endpoint = urlsplit(str(getattr(client, "base_url", "")))
@@ -74,7 +73,7 @@ def complete_historian_validated(client, request, *, validate, event_prefix, eve
     for attempt in (1, 2):
         if event_logger:
             event_logger(f"{event_prefix}_request", {**current, "attempt": attempt})
-        raw, finish_reason = complete_historian(client, current)
+        raw, finish_reason = complete_historian(client, current, event_logger=event_logger)
         if event_logger:
             event_logger(f"{event_prefix}_response", {
                 "model": current["model"], "content": raw,

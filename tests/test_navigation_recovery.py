@@ -74,7 +74,7 @@ def test_repeated_room_cycle_temporarily_excludes_old_route_and_prefers_new_exit
 def test_cycle_guard_keeps_only_exit_and_purposeful_backtracking_available(tmp_path):
     historian = make_cycle(tmp_path)
     assert historian.cycle_recovery("Gallery", ["south", "look"])["blocked_actions"] == []
-    assert historian.cycle_recovery("Gallery", ["south", "east"], protected_actions=["s"])["blocked_actions"] == []
+    assert historian.cycle_recovery("Gallery", ["south", "east"], protected_actions=["s"])["blocked_actions"] == ["south"]
 
 
 def test_grounded_inventory_change_releases_temporary_cycle_exclusion(tmp_path):
@@ -119,6 +119,7 @@ def test_stale_return_goal_reframes_exploration_after_bounded_attempts(tmp_path)
     historian = make_cycle(tmp_path)
     historian.episode["underground_reached"] = True
     historian.episode["steps"] = 20
+    historian.agent_state.update(inventory_items=["painting"], carried_treasures=["painting"])
     goal = historian.choose_goal(
         current_node="Gallery", current_location="Gallery", valid_actions=["south", "east"],
         known_routes=[], home_node="Living Room", home_route_status="blocked",
@@ -130,4 +131,4 @@ def test_stale_return_goal_reframes_exploration_after_bounded_attempts(tmp_path)
         current_node="Gallery", current_location="Gallery", valid_actions=["south", "east"],
         known_routes=[], home_node="Living Room", home_route_status="confirmed",
     )
-    assert routed["kind"] == "establish_return_route"
+    assert routed["kind"] == "navigate_to_home"

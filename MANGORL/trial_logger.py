@@ -52,11 +52,12 @@ class EpisodeLogger:
         self._reasoning_file = None
         self._redirects = contextlib.ExitStack()
         self.api_requests = 0
+        self.provider_retries = 0
 
     def __enter__(self):
-        self._output_file = self.output_path.open("w", encoding="utf-8", buffering=1)
-        self._chat_file = self.chat_path.open("w", encoding="utf-8", buffering=1)
-        self._reasoning_file = self.reasoning_path.open("w", encoding="utf-8", buffering=1)
+        self._output_file = self.output_path.open("x", encoding="utf-8", buffering=1)
+        self._chat_file = self.chat_path.open("x", encoding="utf-8", buffering=1)
+        self._reasoning_file = self.reasoning_path.open("x", encoding="utf-8", buffering=1)
         self._redirects.enter_context(
             contextlib.redirect_stdout(_Tee(sys.stdout, self._output_file))
         )
@@ -150,6 +151,8 @@ class EpisodeLogger:
         self._reasoning_file.flush()
 
     def log_chat_event(self, event: str, payload: Any):
+        if event == 'provider_request_failure' and payload.get('retrying'):
+            self.provider_retries += 1
         """Append one structured event to the episode's chat transcript."""
         if event == "request" or event.endswith("_request"):
             self.api_requests += 1
@@ -261,7 +264,12 @@ class EpisodeLogger:
 class TrialLogger:
     """Create a unique directory containing one pair of logs per episode."""
 
-    def __init__(self, output_directory="logs", trial_name=None):
+    def __init__(self, output_directory="logs", trial_name=None, resume_directory=None):
+        if resume_directory is not None:
+            self.run_directory = Path(resume_directory).resolve()
+            if not (self.run_directory / "checkpoint.json").is_file():
+                raise ValueError("Resume requires an existing trial checkpoint.")
+            return
         root = Path(output_directory).expanduser()
         root.mkdir(parents=True, exist_ok=True)
 

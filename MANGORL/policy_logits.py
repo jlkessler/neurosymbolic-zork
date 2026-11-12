@@ -6,6 +6,8 @@ are unknown, never fabricated as zero probability or reconstructed from ranks.
 """
 from __future__ import annotations
 
+from .provider_requests import provider_request
+
 import json
 import math
 import re
@@ -192,7 +194,7 @@ class LabelLogprobScorer:
                     attempt_request["logit_bias"] = {token_ids[label]: bias for label in labels}
                 if event_logger:
                     event_logger("actor_logprob_request", attempt_request)
-                response = client.chat.completions.create(**attempt_request)
+                response = provider_request(client, attempt_request, event_logger=event_logger)
                 scores, missing = _read_scores(
                     response, labels, attempt=attempt, bias=bias, event_logger=event_logger,
                 )

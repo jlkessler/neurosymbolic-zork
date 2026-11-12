@@ -25,6 +25,7 @@ class NavigationController:
         self.active_plan: dict | None = None
         self.last_status = "idle"
         self.last_plan_summary: dict | None = None
+        self.route_start_counts = {}
 
     @staticmethod
     def _normalize_action(action: str) -> str:
@@ -46,6 +47,7 @@ class NavigationController:
         self.active_plan = None
         self.last_status = "idle"
         self.last_plan_summary = None
+        self.route_start_counts.clear()
 
     def _resolve_node(self, location, location_id=None):
         if location in self.world_map.graph:
@@ -168,6 +170,8 @@ class NavigationController:
             "status": "active" if route["transitions"] else "complete",
         }
         self.last_status = self.active_plan["status"]
+        pair = (str(start_node), str(target_node))
+        self.route_start_counts[pair] = self.route_start_counts.get(pair, 0) + 1
         return route
 
     def ensure_plan(

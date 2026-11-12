@@ -1,0 +1,884 @@
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:21:52-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 6
+Remaining commands: north -> north -> go around forest -> west -> west -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:21:52-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 2 of 6
+Remaining commands: north -> go around forest -> west -> west -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:21:52-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: go around forest
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 3 of 6
+Remaining commands: go around forest -> west -> west -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:21:53-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 4 of 6
+Remaining commands: west -> west -> west
+The navigator executes only the next command and validates its result.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:21:56-05:00
+Model: openai/gpt-4o-mini
+Location: Behind House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +75 (25.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the window may provide access to the Kitchen, which has previously yielded score-positive opportunities.
+Base action: open window
+Candidate actions: ["open window", "south", "north", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Living Room.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: west -> west.
+Edges blocked during this episode: Behind House --[west]--> Kitchen
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Clearing
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open window",
+  "candidate_actions": ["open window", "south", "north", "east"],
+  "decision_rationale": "Opening the window may provide access to the Kitchen, which has previously yielded score-positive opportunities.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["The window is slightly ajar, suggesting it can be opened."],
+  "state_note": "Attempting to open the window to explore potential score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:21:56-05:00
+Base model action: open window
+Final action after Actor RL: open window
+RL selection details:
+{
+  "action": "open window",
+  "candidates": [
+    "open window",
+    "south",
+    "north",
+    "east"
+  ],
+  "scorer_preferred_action": "open window",
+  "corrected_preferred_action": "open window",
+  "base_logits": [
+    0.0,
+    -25.875,
+    -28.625,
+    -26.0
+  ],
+  "adjusted_logits": [
+    -0.008097504416503497,
+    -25.835,
+    -28.585,
+    -25.96
+  ],
+  "conditioned_logits": [
+    -0.008097504416503497,
+    -25.835,
+    -28.585,
+    -26.24768207245178
+  ],
+  "probabilities": [
+    0.9999999999895164,
+    6.074615046178009e-12,
+    3.8833714755624534e-13,
+    4.0206217219844085e-12
+  ],
+  "base_probabilities": [
+    0.9999999999887315,
+    5.789356328665414e-12,
+    3.7010116785509673e-13,
+    5.109089028005753e-12
+  ],
+  "advantages": {
+    "open window": -0.08911861481168151,
+    "south": 0.0,
+    "north": 0.0,
+    "east": 0.0
+  },
+  "corrections": [
+    -0.008097504416503497,
+    0.04,
+    0.04,
+    0.04
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    0.75
+  ],
+  "satisfaction_mass": 0.9999999999986597,
+  "log_satisfaction_mass": -1.340261235327489e-12,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.3250063147843983e-13,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 24.554106265811797,
+    "samples": 2,
+    "actions": {
+      "open window": {
+        "action": "open window",
+        "q_value": 24.554106265811797,
+        "state_value_baseline": 24.554106265811797,
+        "advantage": -0.08911861481168151,
+        "raw_advantage": -0.44559307405840753,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": 24.554106265811797,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": 24.554106265811797,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 24.554106265811797,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.087328245731289
+  }
+}
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:21:56-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 2
+Remaining commands: west -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:21:56-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 2 of 2
+Remaining commands: west
+The navigator executes only the next command and validates its result.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:22:00-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Pushing the rug is a previously successful action that revealed a trap door, which may lead to score-producing opportunities.
+Base action: push rug
+Candidate actions: ["push rug", "turn on lantern", "open case", "take sword", "take lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: actor_or_puzzle_decision.
+Last route destination: Living Room.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: none.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "push rug",
+  "candidate_actions": ["push rug", "turn on lantern", "open case", "take sword", "take lantern"],
+  "decision_rationale": "Pushing the rug is a previously successful action that revealed a trap door, which may lead to score-producing opportunities.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["A closed trap door is revealed under the rug."],
+  "state_note": "Pushing the rug may uncover a trap door, allowing further exploration."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:22:00-05:00
+Base model action: push rug
+Final action after Actor RL: push rug
+RL selection details:
+{
+  "action": "push rug",
+  "candidates": [
+    "push rug",
+    "turn on lantern",
+    "open case",
+    "take sword",
+    "take lantern"
+  ],
+  "scorer_preferred_action": "push rug",
+  "corrected_preferred_action": "push rug",
+  "base_logits": [
+    0.0,
+    -23.625,
+    -26.75,
+    -25.25,
+    -24.375
+  ],
+  "adjusted_logits": [
+    -0.0032684773654019852,
+    -23.64729228489617,
+    -26.71,
+    -25.249026760257955,
+    -24.335
+  ],
+  "conditioned_logits": [
+    -0.0032684773654019852,
+    -23.64729228489617,
+    -26.71,
+    -25.249026760257955,
+    -24.335
+  ],
+  "probabilities": [
+    0.9999999999056317,
+    5.389282263585201e-11,
+    2.5200773442110552e-12,
+    1.0861917159415214e-11,
+    2.7093384757545332e-11
+  ],
+  "base_probabilities": [
+    0.9999999999058966,
+    5.492788350437793e-11,
+    2.4133627716061084e-12,
+    1.0815941556267876e-11,
+    2.5946094980323053e-11
+  ],
+  "advantages": {
+    "push rug": -0.06648136390114853,
+    "turn on lantern": -0.1296751304678749,
+    "open case": 0.0,
+    "take sword": -0.07803151858690038,
+    "take lantern": 0.0
+  },
+  "corrections": [
+    -0.0032684773654019852,
+    -0.022292284896171185,
+    0.04,
+    0.0009732397420467651,
+    0.04
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.7256686825643445e-14,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.85598711312349,
+    "samples": 10,
+    "actions": {
+      "push rug": {
+        "action": "push rug",
+        "q_value": 14.884348259986758,
+        "state_value_baseline": 14.85598711312349,
+        "advantage": -0.06648136390114853,
+        "raw_advantage": -0.29428660246786265,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 0.8888888888888888,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 14.78122840985022,
+        "state_value_baseline": 14.85598711312349,
+        "advantage": -0.1296751304678749,
+        "raw_advantage": -0.5736169490661046,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.8888888888888888,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 14.85598711312349,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 14.642482048152274,
+        "state_value_baseline": 14.85598711312349,
+        "advantage": -0.07803151858690038,
+        "raw_advantage": -0.4107470837239875,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7706379310344827,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": null,
+        "state_value_baseline": 14.85598711312349,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 3.188764924141795
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:22:03-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the trap door may lead to a new area with potential score increases, as it has been successful in the past.
+Base action: open trap
+Candidate actions: ["open trap", "turn on lantern", "take sword", "take lantern", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open trap",
+  "candidate_actions": ["open trap", "turn on lantern", "take sword", "take lantern", "east"],
+  "decision_rationale": "Opening the trap door may lead to a new area with potential score increases, as it has been successful in the past.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["A closed trap door is revealed under the rug."],
+  "state_note": "The trap door is closed and can be opened, which may lead to a new area."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:22:03-05:00
+Base model action: open trap
+Final action after Actor RL: open trap
+RL selection details:
+{
+  "action": "open trap",
+  "candidates": [
+    "open trap",
+    "turn on lantern",
+    "take sword",
+    "take lantern",
+    "east"
+  ],
+  "scorer_preferred_action": "open trap",
+  "corrected_preferred_action": "open trap",
+  "base_logits": [
+    0.0,
+    -22.25,
+    -24.375,
+    -24.375,
+    -22.375
+  ],
+  "adjusted_logits": [
+    0.007131099158652846,
+    -22.26735533501305,
+    -24.374673593220184,
+    -24.335,
+    -22.335
+  ],
+  "conditioned_logits": [
+    0.007131099158652846,
+    -22.26735533501305,
+    -24.374673593220184,
+    -24.335,
+    -22.740465108108165
+  ],
+  "probabilities": [
+    0.9999999996033455,
+    2.1198906250004722e-10,
+    2.5770139119431485e-11,
+    2.681308504668694e-11,
+    1.3208225973024566e-10
+  ],
+  "base_probabilities": [
+    0.9999999995391466,
+    2.1724399340778408e-10,
+    2.5946094970807322e-11,
+    2.5946094970807322e-11,
+    1.917171512874777e-10
+  ],
+  "advantages": {
+    "open trap": -0.03676828811813473,
+    "turn on lantern": -0.10672952860871243,
+    "take sword": -0.07987961276470132,
+    "take lantern": 0.0,
+    "east": 0.0
+  },
+  "corrections": [
+    0.007131099158652846,
+    -0.01735533501304935,
+    0.0003264067798164384,
+    0.04,
+    0.04
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.6666666666666666
+  ],
+  "satisfaction_mass": 0.9999999999339589,
+  "log_satisfaction_mass": -6.604117253061759e-11,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.0500621776328842e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.874832732236293,
+    "samples": 11,
+    "actions": {
+      "open trap": {
+        "action": "open trap",
+        "q_value": 14.956090793862668,
+        "state_value_baseline": 14.874832732236293,
+        "advantage": -0.03676828811813473,
+        "raw_advantage": -0.22833121409891408,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 14.844494801455765,
+        "state_value_baseline": 14.874832732236293,
+        "advantage": -0.10672952860871243,
+        "raw_advantage": -0.3965801836543221,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 0.8412698412698412,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 14.642482048152274,
+        "state_value_baseline": 14.874832732236293,
+        "advantage": -0.07987961276470132,
+        "raw_advantage": -0.4066862180335924,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7457957746478873,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": null,
+        "state_value_baseline": 14.874832732236293,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 14.874832732236293,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.282824012076826
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:22:06-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +75 (25.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The 'down' command has previously produced a score increase in this location, and the prerequisites remain compatible.
+Base action: down
+Candidate actions: ["down", "turn on lantern", "open case", "take sword", "take lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- down: historically led to Cellar
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "down",
+  "candidate_actions": ["down", "turn on lantern", "open case", "take sword", "take lantern"],
+  "decision_rationale": "The 'down' command has previously produced a score increase in this location, and the prerequisites remain compatible.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Preparing to descend into the Cellar, where previous interactions yielded score increases."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:22:06-05:00
+Base model action: down
+Final action after Actor RL: down
+RL selection details:
+{
+  "action": "down",
+  "candidates": [
+    "down",
+    "turn on lantern",
+    "open case",
+    "take sword",
+    "take lantern"
+  ],
+  "scorer_preferred_action": "down",
+  "corrected_preferred_action": "down",
+  "base_logits": [
+    0.0,
+    -20.375,
+    -24.25,
+    -22.25,
+    -23.25
+  ],
+  "adjusted_logits": [
+    0.7209887362423408,
+    -20.34882100327778,
+    -24.21,
+    -22.21,
+    -23.21
+  ],
+  "conditioned_logits": [
+    0.4978451849281311,
+    -20.34882100327778,
+    -24.21,
+    -22.21,
+    -23.21
+  ],
+  "probabilities": [
+    0.9999999989094908,
+    8.839097163818059e-10,
+    1.8600266896862845e-11,
+    1.3743841555600228e-10,
+    5.056076751023059e-11
+  ],
+  "base_probabilities": [
+    0.9999999982568268,
+    1.4166087841738017e-09,
+    2.940077734159408e-11,
+    2.172439931292078e-10,
+    7.991959879022563e-11
+  ],
+  "advantages": {
+    "down": 1.993984929927874,
+    "turn on lantern": -0.0060150700721258235,
+    "open case": 0.0,
+    "take sword": 0.0,
+    "take lantern": 0.0
+  },
+  "corrections": [
+    0.7209887362423408,
+    0.026178996722217858,
+    0.04,
+    0.04,
+    0.04
+  ],
+  "feasibility": [
+    0.8,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.8000000001744816,
+  "log_satisfaction_mass": -0.22314355109610773,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.411630307742163e-10,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.993349269613498,
+    "samples": 5,
+    "actions": {
+      "down": {
+        "action": "down",
+        "q_value": 15.05,
+        "state_value_baseline": 14.993349269613498,
+        "advantage": 4.732375874520525,
+        "raw_advantage": 23.605228642216122,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.8888888888888888,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 14.97475,
+        "state_value_baseline": 14.993349269613498,
+        "advantage": -0.014275720977444062,
+        "raw_advantage": -0.09560649820605471,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 14.993349269613498,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": null,
+        "state_value_baseline": 14.993349269613498,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": null,
+        "state_value_baseline": 14.993349269613498,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.528682517785384
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:22:10-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Make finding a way back to Living Room your immediate strategic objective, even though you are not currently carrying identified treasure. Investigate exits, room descriptions, keys, mechanisms, guardians, and special interactions. Use previously learned puzzle clues and avoid repeating blocked actions. Establish the return route before beginning a lengthy treasure-hunting sequence.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east is the only available action that may lead to a new area, as the other directions are historically linked to potential dangers or dead ends.
+Base action: east
+Candidate actions: ["east", "north", "south"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- north: historically led to Troll 
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["east", "north", "south"],
+  "decision_rationale": "Moving east is the only available action that may lead to a new area, as the other directions are historically linked to potential dangers or dead ends.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Currently in a dark Cellar with no items; need to explore cautiously to find a way back."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:22:10-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "north",
+    "south"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    -7.62939453125e-06,
+    -14.750007629394531,
+    -15.250007629394531
+  ],
+  "adjusted_logits": [
+    0.03999237060546875,
+    -15.430007629394531,
+    -15.210007629394532
+  ],
+  "conditioned_logits": [
+    0.03999237060546875,
+    -15.835472737502695,
+    -15.210007629394532
+  ],
+  "probabilities": [
+    0.9999996343034042,
+    1.274597161794541e-07,
+    2.3823687962773405e-07
+  ],
+  "base_probabilities": [
+    0.9999993689770769,
+    3.927861066909103e-07,
+    2.3823681641719463e-07
+  ],
+  "advantages": {
+    "east": 0.0,
+    "north": -2.0,
+    "south": 0.0
+  },
+  "corrections": [
+    0.04,
+    -0.6799999999999999,
+    0.04
+  ],
+  "feasibility": [
+    1.0,
+    0.6666666666666666,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999362701459,
+  "log_satisfaction_mass": -6.372985603825265e-08,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.218749963788268e-07,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.987649184895146,
+    "samples": 3,
+    "actions": {
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": -9.987649184895146,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "north": {
+        "action": "north",
+        "q_value": -9.987649184895146,
+        "state_value_baseline": -9.987649184895146,
+        "advantage": -2.044923041511055,
+        "raw_advantage": -8.17969216604422,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -9.987649184895146,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 0.6256219011695784
+  }
+}

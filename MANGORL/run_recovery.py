@@ -1,6 +1,7 @@
 """Classify operational failures without hiding configuration or code errors."""
 from __future__ import annotations
 
+from .provider_requests import MalformedProviderResponse, ProviderBudgetExhausted
 from .policy_logits import IncompleteLabelScores
 
 
@@ -13,7 +14,7 @@ def recoverable_episode_error(exc):
     seen = set()
     while exc is not None and id(exc) not in seen:
         seen.add(id(exc))
-        if isinstance(exc, IncompleteLabelScores):
+        if isinstance(exc, (IncompleteLabelScores, MalformedProviderResponse, ProviderBudgetExhausted)):
             return True
         # These are the SDKs used for the Actor and Historian respectively.
         # Local Python timeouts and arbitrary status_code attributes are not

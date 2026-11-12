@@ -155,10 +155,24 @@ command must be reassessed by the Actor against the present state. Observation
 guards preserve the sole active carried light and prioritize restoring it in
 observed darkness; these are heuristics, not a guarantee of survival.
 
-Exhausted transient API errors or incomplete native label scores save an
-incomplete episode and allow the next scheduled episode to run. Three
-consecutive recoverable failures stop the trial; change this with
-`--max-consecutive-episode-failures`. `--fail-fast` stops at the first failure.
+Automatic symbolic navigation now requires a home-deposit goal and treasures
+confirmed in the current inventory. Historical acquisition/deposit rewards
+remain Actor advice; they cannot trigger an empty-handed trip. Active goals
+are retained while eligible, with bounded stagnation detection that also
+applies to planned actions. Cancellation never deletes the learned map.
+
+Malformed HTTP JSON and transient transport errors retry the same request up
+to three times, with 60-second request timeouts and SDK retries disabled.
+The Actor has a shared ceiling of 12 actual calls per decision, including
+proposal repairs, label recovery, and NSI re-selection. Exhausted recoverable
+errors select an explicitly logged, guarded observation/light command when
+one is available. `--max-recovery-actions 5` caps these actions per episode
+(allowed range 1-10); exhaustion ends an incomplete episode. Recovery commands
+never receive fabricated logits or enter Actor policy samples. Observed
+transitions still train the external critic. Episodes using recovery actions
+are flagged `degraded` and excluded from benchmark scores/configuration fitness.
+`--fail-fast` disables default-action recovery. Three consecutive propagated
+recoverable errors stop the trial (`--max-consecutive-episode-failures`).
 Authentication, endpoint, unsupported-scoring, and unexpected code errors stop
 immediately. This does not guarantee remote-service availability.
 
@@ -169,6 +183,23 @@ Interrupted experience is bootstrapped at the last recorded state when the
 critic is enabled, otherwise excluded from return-based learning. Existing
 interrupted records without a valid bootstrap remain on disk but are not
 retrieved for training.
+
+New trials write an atomic `checkpoint.json`. Resume with
+`python main.py --resume-trial /absolute/path/to/trial --episodes TOTAL`.
+Resume restores the original configuration and memory paths, using current
+credentials; TOTAL can extend the planned number of episodes. It starts at
+the next unused episode identity, not the exact interrupted emulator move.
+A process-killed partial episode is marked interrupted and never replayed;
+already persisted learning is retained, while unflushed state may be lost.
+Concurrent writers to the same checkpointed trial are rejected. Older trials
+without checkpoints cannot be resumed by this option; their learned memories
+remain usable through the existing five memory-path arguments. Do not use
+`--fresh-memory` when intending to reuse learned routes.
+
+`control_metrics` chat events report unauthorized navigation (must stay zero),
+goal cancellations, route starts/restarts, observed treasure deposits, recovery
+actions, and provider retries. Incomplete/degraded episodes remain visible in
+`run_status.json`, even though they are excluded from score averages.
 
 ## Controlled comparisons
 

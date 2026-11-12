@@ -178,7 +178,7 @@ def test_configuration_errors_and_programming_errors_are_not_recoverable():
     assert not recoverable_episode_error(exc)
 
 
-def failure_run(tmp_path, monkeypatch, *, always_fail=False, exception=None, extra=()):
+def failure_run(tmp_path, monkeypatch, *, always_fail=False, exception=None, extra=(), fail_every=False, terminal_moves=2):
     games = []
 
     class Game:
@@ -197,7 +197,7 @@ def failure_run(tmp_path, monkeypatch, *, always_fail=False, exception=None, ext
 
         def step(self, action):
             self.moves += 1
-            return "A room.", 1, self.moves == 2, {"score": self.moves, "moves": self.moves}
+            return "A room.", 1, self.moves == terminal_moves, {"score": self.moves, "moves": self.moves}
 
         def close(self):
             self.closed = True
@@ -217,7 +217,7 @@ def failure_run(tmp_path, monkeypatch, *, always_fail=False, exception=None, ext
 
         def choose_decision(self, **kwargs):
             self.calls += 1
-            if self.calls == 2 and (always_fail or self.episode == 1):
+            if (fail_every or self.calls == 2) and (always_fail or self.episode == 1):
                 raise exception or IncompleteLabelScores("Missing C after 3 attempts")
             return {"action": "look", "candidate_actions": ["look"], "base_logits": [0], "report": {}}
 
@@ -228,24 +228,24 @@ def failure_run(tmp_path, monkeypatch, *, always_fail=False, exception=None, ext
     return lambda: main.main(argv), games
 
 
-def test_incomplete_policy_episode_is_saved_and_next_episode_finishes(tmp_path, monkeypatch):
+def test_default_recovery_is_degraded_and_next_episode_finishes(tmp_path, monkeypatch):
     run, games = failure_run(tmp_path, monkeypatch)
     directory = run()
     status = json.loads((directory / "run_status.json").read_text())
-    assert [row["status"] for row in status["outcomes"]] == ["failed", "completed"]
-    assert status["completed_episodes"] == 1 and status["incomplete_episodes"] == 1
-    assert not status["all_episodes_completed"]
+    assert [row["status"] for row in status["outcomes"]] == ["completed", "completed"]
+    assert status["completed_episodes"] == 2 and status["degraded_episodes"] == 1
+    assert status["all_episodes_completed"]
     metrics = [json.loads(line) for line in (directory / "metrics.jsonl").read_text().splitlines()]
     assert [row["episode"] for row in metrics] == [2]  # Actual identity, not completed count.
     assert [row["score"] for row in metrics] == [2]
     samples = [json.loads(line) for line in (directory / "memory/actor_experiences.jsonl").read_text().splitlines()]
-    partial = [sample for sample in samples if sample["termination_reason"] == "episode_exception"]
-    assert len(partial) == 1  # No action or reward invented for the failed request.
-    assert partial[0]["episode_truncated"] and partial[0]["return_estimator"] == "bootstrapped"
+    first = [sample for sample in samples if sample["episode_id"].endswith("episode_0001")]
+    assert len(first) == 1  # Recovery action is not a native policy sample.
+    assert first[0]["step"] == 0
     assert len(games) == 2 and all(game.closed for game in games)
 
 
-@pytest.mark.parametrize("extra,expected_games", [([], 3), (["--fail-fast"], 1)])
+@pytest.mark.parametrize("extra,expected_games", [(["--fail-fast"], 1)])
 def test_repeated_recovery_failure_stops_at_limit_with_saved_status(tmp_path, monkeypatch, extra, expected_games):
     run, games = failure_run(tmp_path, monkeypatch, always_fail=True, extra=extra)
     with pytest.raises(IncompleteLabelScores):

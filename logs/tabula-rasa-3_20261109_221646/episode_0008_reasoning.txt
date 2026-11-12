@@ -1,0 +1,5609 @@
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:01-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Behind House
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 4
+Remaining commands: north -> north -> go around forest -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:01-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Behind House
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 2 of 4
+Remaining commands: north -> go around forest -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:01-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: go around forest
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Behind House
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 3 of 4
+Remaining commands: go around forest -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:01-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Behind House
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 4 of 4
+Remaining commands: west
+The navigator executes only the next command and validates its result.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:04-05:00
+Model: openai/gpt-4o-mini
+Location: Behind House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +175 (7.29 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the window may provide a new entry point or interaction opportunity that could lead to score gain.
+Base action: open window
+Candidate actions: ["open window", "east", "south", "north"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Living Room.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: west -> west.
+Edges blocked during this episode: Behind House --[west]--> Kitchen
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Clearing
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open window",
+  "candidate_actions": ["open window", "east", "south", "north"],
+  "decision_rationale": "Opening the window may provide a new entry point or interaction opportunity that could lead to score gain.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to interact with the ajar window for potential new opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:04-05:00
+Base model action: open window
+Final action after Actor RL: open window
+RL selection details:
+{
+  "action": "open window",
+  "candidates": [
+    "open window",
+    "east",
+    "south",
+    "north"
+  ],
+  "scorer_preferred_action": "open window",
+  "corrected_preferred_action": "open window",
+  "base_logits": [
+    0.0,
+    -22.125,
+    -25.375,
+    -24.0
+  ],
+  "adjusted_logits": [
+    0.009458168078219087,
+    -21.825,
+    -25.075,
+    -23.7
+  ],
+  "conditioned_logits": [
+    0.009458168078219087,
+    -22.11268207245178,
+    -25.075,
+    -23.7
+  ],
+  "probabilities": [
+    0.999999999689883,
+    2.468746887977297e-10,
+    1.2763160655779805e-11,
+    5.047927962057044e-11
+  ],
+  "base_probabilities": [
+    0.9999999997065339,
+    2.4616969510929597e-10,
+    9.545034920039483e-12,
+    3.775134543171224e-11
+  ],
+  "advantages": {
+    "open window": -0.29694621092728307,
+    "east": 0.0,
+    "south": 0.0,
+    "north": 0.0
+  },
+  "corrections": [
+    0.009458168078219087,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    0.75,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999177084,
+  "log_satisfaction_mass": -8.229172898666093e-11,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.4296737124174437e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 27.080219267669815,
+    "samples": 6,
+    "actions": {
+      "open window": {
+        "action": "open window",
+        "q_value": 27.080219267669815,
+        "state_value_baseline": 27.080219267669815,
+        "advantage": -0.29694621092728307,
+        "raw_advantage": -0.8908386327818492,
+        "sample_count": 6,
+        "confidence": 0.6666666666666666,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 27.080219267669815,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": 27.080219267669815,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": 27.080219267669815,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 5.215243272412858
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:07-05:00
+Model: openai/gpt-4o-mini
+Location: Behind House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Behind House: the interaction 'west' produced an observed total gain of +70 (10.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Revisiting the 'west' command is supported by previous evidence indicating a score-positive interaction at this location.
+Base action: west
+Candidate actions: ["west", "close window", "south", "north", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Clearing
+- west: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "close window", "south", "north", "east"],
+  "decision_rationale": "Revisiting the 'west' command is supported by previous evidence indicating a score-positive interaction at this location.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to move west to check for score increase and confirm previously successful interaction."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:07-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "close window",
+    "south",
+    "north",
+    "east"
+  ],
+  "scorer_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "base_logits": [
+    0.0,
+    -25.5,
+    -28.75,
+    -26.875,
+    -25.375
+  ],
+  "adjusted_logits": [
+    0.8341640786499873,
+    -25.2,
+    -28.45,
+    -26.575,
+    -25.075
+  ],
+  "conditioned_logits": [
+    0.7163810429936038,
+    -25.2,
+    -28.45,
+    -26.575,
+    -25.36268207245178
+  ],
+  "probabilities": [
+    0.9999999999881048,
+    5.554675874270231e-12,
+    2.1537815678680607e-13,
+    1.404442002876862e-12,
+    4.720704280662704e-12
+  ],
+  "base_probabilities": [
+    0.999999999979575,
+    8.423463754296599e-12,
+    3.2661313427207367e-13,
+    2.1297851709122842e-12,
+    9.54503492264567e-12
+  ],
+  "advantages": {
+    "west": 2.0,
+    "close window": 0.0,
+    "south": 0.0,
+    "north": 0.0,
+    "east": 0.0
+  },
+  "corrections": [
+    0.8341640786499873,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    0.8888888888888888,
+    1.0,
+    1.0,
+    1.0,
+    0.75
+  ],
+  "satisfaction_mass": 0.8888888888888204,
+  "log_satisfaction_mass": -0.11778303565646053,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.218845593413146e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 27.08021926766981,
+    "samples": 6,
+    "actions": {
+      "west": {
+        "action": "west",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 6.594503187029941,
+        "raw_advantage": 11.540380577302397,
+        "sample_count": 4,
+        "confidence": 0.0,
+        "best_similarity": 0.8125000000000001,
+        "source": "historian_td"
+      },
+      "close window": {
+        "action": "close window",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 4.229562325693172
+  }
+}
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:07-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: west
+The navigator executes only the next command and validates its result.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:10-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the lantern will provide a useful tool for exploration in dark areas, which may lead to further score opportunities.
+Base action: take lantern
+Candidate actions: ["take lantern", "open case", "take sword", "turn on lantern", "push rug"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take lantern",
+  "candidate_actions": ["take lantern", "open case", "take sword", "turn on lantern", "push rug"],
+  "decision_rationale": "Taking the lantern will provide a useful tool for exploration in dark areas, which may lead to further score opportunities.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Taking the lantern will enhance exploration capabilities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:10-05:00
+Base model action: take lantern
+Final action after Actor RL: take lantern
+RL selection details:
+{
+  "action": "take lantern",
+  "candidates": [
+    "take lantern",
+    "open case",
+    "take sword",
+    "turn on lantern",
+    "push rug"
+  ],
+  "scorer_preferred_action": "take lantern",
+  "corrected_preferred_action": "take lantern",
+  "base_logits": [
+    0.0,
+    -16.5,
+    -15.875,
+    -14.75,
+    -15.25
+  ],
+  "adjusted_logits": [
+    0.5946736601826021,
+    -16.2,
+    -15.575,
+    -14.965262652812315,
+    -15.265744049813474
+  ],
+  "conditioned_logits": [
+    0.5946736601826021,
+    -16.2,
+    -15.575,
+    -14.965262652812315,
+    -15.265744049813474
+  ],
+  "probabilities": [
+    0.9999995500543766,
+    5.083533719429721e-08,
+    9.497291320794966e-08,
+    1.747452281480037e-07,
+    1.2939214500337407e-07
+  ],
+  "base_probabilities": [
+    0.9999991732022694,
+    6.825597732941488e-08,
+    1.2751895371626475e-07,
+    3.9278602979323736e-07,
+    2.3823676977639834e-07
+  ],
+  "advantages": {
+    "take lantern": 1.092976073790394,
+    "open case": 0.0,
+    "take sword": 0.0,
+    "turn on lantern": -1.1099078101977242,
+    "push rug": -0.6510745261983958
+  },
+  "corrections": [
+    0.5946736601826021,
+    0.3,
+    0.3,
+    -0.2152626528123157,
+    -0.01574404981347427
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0000000000000002,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.1337073425293488e-07,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 17.940932769553353,
+    "samples": 5,
+    "actions": {
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": 29.922383410719128,
+        "state_value_baseline": 17.940932769553353,
+        "advantage": 1.092976073790394,
+        "raw_advantage": -3.2376420508426245,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.8125000000000001,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 17.940932769553353,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": null,
+        "state_value_baseline": 17.940932769553353,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 14.82537686875,
+        "state_value_baseline": 17.940932769553353,
+        "advantage": -1.1099078101977242,
+        "raw_advantage": -2.4339831501852682,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.8125000000000001,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "push rug": {
+        "action": "push rug",
+        "q_value": 14.82537686875,
+        "state_value_baseline": 17.940932769553353,
+        "advantage": -0.6510745261983958,
+        "raw_advantage": -2.093040308783814,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.8125000000000001,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 8.722670055800764
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:13-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east to the Kitchen is the next step in the historical route toward the Gallery, where a previous score-positive interaction occurred.
+Base action: east
+Candidate actions: ["east", "turn on lantern", "open case", "take sword", "push rug"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["east", "turn on lantern", "open case", "take sword", "push rug"],
+  "decision_rationale": "Moving east to the Kitchen is the next step in the historical route toward the Gallery, where a previous score-positive interaction occurred.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Navigating east to the Kitchen to explore further opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:13-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "turn on lantern",
+    "open case",
+    "take sword",
+    "push rug"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    -0.00020599365234375,
+    -12.500205993652344,
+    -14.875205993652344,
+    -15.750205993652344,
+    -8.500205993652344
+  ],
+  "adjusted_logits": [
+    0.29979400634765624,
+    -11.895385561773187,
+    -14.976254843045462,
+    -15.846564389918125,
+    -8.200205993652343
+  ],
+  "conditioned_logits": [
+    0.1662626137231336,
+    -11.895385561773187,
+    -14.976254843045462,
+    -15.846564389918125,
+    -8.200205993652343
+  ],
+  "probabilities": [
+    0.9997613684366562,
+    5.775493587355997e-06,
+    2.652067525621474e-07,
+    1.1107439180414842e-07,
+    0.0002324797886121785
+  ],
+  "base_probabilities": [
+    0.9997923569716333,
+    3.725879358528348e-06,
+    3.465607653940688e-07,
+    1.4446802060350125e-07,
+    0.00020342612022232595
+  ],
+  "advantages": {
+    "east": 0.0,
+    "turn on lantern": 1.2331867174921967,
+    "open case": -0.8948025249973779,
+    "take sword": -0.8814012303478461,
+    "push rug": 0.0
+  },
+  "corrections": [
+    0.3,
+    0.6048204318791566,
+    -0.10104884939311803,
+    -0.09635839626578191,
+    0.3
+  ],
+  "feasibility": [
+    0.875,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.8750261011058091,
+  "log_satisfaction_mass": -0.1335015632342128,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.4794560756471016e-06,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 13.163803099773748,
+    "samples": 4,
+    "actions": {
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 13.163803099773748,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 22.594258858396834,
+        "state_value_baseline": 13.163803099773748,
+        "advantage": 1.970352584578992,
+        "raw_advantage": 0.421307164271874,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.8333333333333333,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": 2.3852525583858646,
+        "state_value_baseline": 13.163803099773748,
+        "advantage": -1.429691418832159,
+        "raw_advantage": -0.658980809269389,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7808585858585858,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 2.3972387521465977,
+        "state_value_baseline": 13.163803099773748,
+        "advantage": -1.4082791905176122,
+        "raw_advantage": -0.49966917651374704,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7785317460317459,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "push rug": {
+        "action": "push rug",
+        "q_value": null,
+        "state_value_baseline": 13.163803099773748,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 5.419219319271719
+  }
+}
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:13-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: west
+The navigator executes only the next command and validates its result.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:17-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east may lead to the Kitchen, a previously productive area for score opportunities.
+Base action: east
+Candidate actions: ["east", "turn on lantern", "open case", "take sword", "push rug"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["east", "turn on lantern", "open case", "take sword", "push rug"],
+  "decision_rationale": "Moving east may lead to the Kitchen, a previously productive area for score opportunities.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to explore the eastern exit to Kitchen for potential score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:17-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "turn on lantern",
+    "open case",
+    "take sword",
+    "push rug"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    -0.039539337158203125,
+    -6.789539337158203,
+    -8.039539337158203,
+    -9.914539337158203,
+    -3.289539337158203
+  ],
+  "adjusted_logits": [
+    0.20378743719097694,
+    -6.119039042560572,
+    -8.18340559096163,
+    -10.053007077373007,
+    -2.9895393371582033
+  ],
+  "conditioned_logits": [
+    0.20378743719097694,
+    -6.119039042560572,
+    -8.18340559096163,
+    -10.053007077373007,
+    -2.9895393371582033
+  ],
+  "probabilities": [
+    0.9586874026600729,
+    0.001720712725389653,
+    0.00021835612062662033,
+    3.366725907791007e-05,
+    0.03933986123483293
+  ],
+  "base_probabilities": [
+    0.9612316115079221,
+    0.0011254865047748855,
+    0.0003224572824194139,
+    4.945042585433495e-05,
+    0.037270994279029246
+  ],
+  "advantages": {
+    "east": 0.08912782855204529,
+    "turn on lantern": 1.4208434681164095,
+    "open case": -1.01713796616969,
+    "take sword": -1.0017136416307646,
+    "push rug": 0.0
+  },
+  "corrections": [
+    0.24332677434918007,
+    0.670500294597631,
+    -0.14386625380342727,
+    -0.13846774021480335,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.00021682891024037376,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 13.091254820273742,
+    "samples": 4,
+    "actions": {
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": 0.12452440120800268,
+        "raw_advantage": 0.4980976048320107,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.9965277777777777,
+        "source": "historian_td"
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 22.594258858396834,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": 1.9851227719991118,
+        "raw_advantage": 0.42260982187246565,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.829861111111111,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": 2.3852525583858646,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": -1.4210880960624481,
+        "raw_advantage": -0.6627025066117089,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7832716049382715,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 2.3972387521465977,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": -1.3995380952551693,
+        "raw_advantage": -0.5022886939142102,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7808585858585858,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "push rug": {
+        "action": "push rug",
+        "q_value": null,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 6.117594605596271
+  }
+}
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:17-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: west
+The navigator executes only the next command and validates its result.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:20-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Pushing the rug may reveal the trap door, which is a known opportunity for score from the Living Room.
+Base action: push rug
+Candidate actions: ["push rug", "open case", "take sword", "turn on lantern", "put down lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "push rug",
+  "candidate_actions": ["push rug", "open case", "take sword", "turn on lantern", "put down lantern"],
+  "decision_rationale": "Pushing the rug may reveal the trap door, which is a known opportunity for score from the Living Room.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": ["Potential trap door under the rug may lead to score opportunities."],
+  "state_note": "Exploring the rug may uncover new interactions or pathways."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:20-05:00
+Base model action: push rug
+Final action after Actor RL: push rug
+RL selection details:
+{
+  "action": "push rug",
+  "candidates": [
+    "push rug",
+    "open case",
+    "take sword",
+    "turn on lantern",
+    "put down lantern"
+  ],
+  "scorer_preferred_action": "push rug",
+  "corrected_preferred_action": "push rug",
+  "base_logits": [
+    0.0,
+    -21.5,
+    -24.625,
+    -23.625,
+    -23.125
+  ],
+  "adjusted_logits": [
+    0.3,
+    -21.598587742061113,
+    -24.7188846889524,
+    -23.017712220578865,
+    -22.825
+  ],
+  "conditioned_logits": [
+    0.3,
+    -21.598587742061113,
+    -24.7188846889524,
+    -23.017712220578865,
+    -22.825
+  ],
+  "probabilities": [
+    0.9999999995124043,
+    3.0871958512705345e-10,
+    1.3628135281600471e-11,
+    7.468721265804194e-11,
+    9.056076985257163e-11
+  ],
+  "base_probabilities": [
+    0.9999999993743989,
+    4.5990553757751426e-10,
+    2.020683907758075e-11,
+    5.492788347518389e-11,
+    9.056076984007375e-11
+  ],
+  "advantages": {
+    "push rug": 0.0,
+    "open case": -0.887770789763078,
+    "take sword": -0.874333495166752,
+    "turn on lantern": 1.240236281897847,
+    "put down lantern": 0.0
+  },
+  "corrections": [
+    0.3,
+    -0.09858774206111304,
+    -0.09388468895239893,
+    0.6072877794211342,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.2536096119660374e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 13.091254820273742,
+    "samples": 4,
+    "actions": {
+      "push rug": {
+        "action": "push rug",
+        "q_value": null,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": 2.3852525583858646,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": -1.4209519155627421,
+        "raw_advantage": -0.6616130626140606,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7832716049382715,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 2.3972387521465977,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": -1.3994443938952112,
+        "raw_advantage": -0.5015390830345461,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7808585858585858,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 22.594258858396834,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": 1.9851026197690882,
+        "raw_advantage": 0.42250906072234784,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.829861111111111,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put down lantern": {
+        "action": "put down lantern",
+        "q_value": null,
+        "state_value_baseline": 13.091254820273742,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 6.111413629832151
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:24-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The trap door is now exposed, and opening it could lead to a score-positive opportunity.
+Base action: open trap
+Candidate actions: ["open trap", "turn on lantern", "open case", "take sword", "put down lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open trap",
+  "candidate_actions": ["open trap", "turn on lantern", "open case", "take sword", "put down lantern"],
+  "decision_rationale": "The trap door is now exposed, and opening it could lead to a score-positive opportunity.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": ["The trap door is closed but accessible after moving the rug."],
+  "state_note": "The trap door is now revealed; opening it may provide access to new areas or treasures."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:24-05:00
+Base model action: open trap
+Final action after Actor RL: open trap
+RL selection details:
+{
+  "action": "open trap",
+  "candidates": [
+    "open trap",
+    "turn on lantern",
+    "open case",
+    "take sword",
+    "put down lantern"
+  ],
+  "scorer_preferred_action": "open trap",
+  "corrected_preferred_action": "open trap",
+  "base_logits": [
+    0.0,
+    -21.75,
+    -24.5,
+    -23.75,
+    -23.5
+  ],
+  "adjusted_logits": [
+    0.3,
+    -21.45,
+    -24.2,
+    -23.45,
+    -23.2
+  ],
+  "conditioned_logits": [
+    0.3,
+    -21.45,
+    -24.2,
+    -23.45,
+    -23.2
+  ],
+  "probabilities": [
+    0.9999999995082127,
+    3.581747928521723e-10,
+    2.2897348445194904e-11,
+    4.847368703886381e-11,
+    6.224144619846828e-11
+  ],
+  "base_probabilities": [
+    0.9999999995082127,
+    3.581747928521723e-10,
+    2.2897348445194904e-11,
+    4.847368703886381e-11,
+    6.224144619846828e-11
+  ],
+  "advantages": {},
+  "corrections": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -2.418551173476734e-19,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 6.156337125973392
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:27-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +175 (7.29 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The command 'down' is historically proven to yield score increases in the Cellar, and the trap door is currently accessible.
+Base action: down
+Candidate actions: ["down", "turn on lantern", "open case", "take sword", "close trap"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- down: historically led to Cellar
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "down",
+  "candidate_actions": ["down", "turn on lantern", "open case", "take sword", "close trap"],
+  "decision_rationale": "The command 'down' is historically proven to yield score increases in the Cellar, and the trap door is currently accessible.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The trap door is open, allowing descent into the Cellar."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:27-05:00
+Base model action: down
+Final action after Actor RL: down
+RL selection details:
+{
+  "action": "down",
+  "candidates": [
+    "down",
+    "turn on lantern",
+    "open case",
+    "take sword",
+    "close trap"
+  ],
+  "scorer_preferred_action": "down",
+  "corrected_preferred_action": "down",
+  "base_logits": [
+    0.0,
+    -25.0,
+    -28.375,
+    -23.125,
+    -25.875
+  ],
+  "adjusted_logits": [
+    0.7800739598242352,
+    -24.82118334772257,
+    -28.075,
+    -22.825,
+    -25.575
+  ],
+  "conditioned_logits": [
+    0.740853246670954,
+    -24.82118334772257,
+    -28.075,
+    -22.825,
+    -25.575
+  ],
+  "probabilities": [
+    0.9999999999297773,
+    7.916779714720862e-12,
+    3.0579750916962055e-13,
+    5.827469022639828e-11,
+    3.725376308657067e-12
+  ],
+  "base_probabilities": [
+    0.9999999998892868,
+    1.3887943863426442e-11,
+    4.752193062245023e-13,
+    9.05607698867024e-11,
+    5.7893563280896934e-12
+  ],
+  "advantages": {
+    "down": 1.9048131940613346,
+    "turn on lantern": -0.09518680593866562,
+    "open case": 0.0,
+    "take sword": 0.0,
+    "close trap": 0.0
+  },
+  "corrections": [
+    0.7800739598242352,
+    0.17881665227743127,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    0.9615384615384616,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9615384615410586,
+  "log_satisfaction_mass": -0.03922071315058029,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 8.573237473338764e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 17.755459782518567,
+    "samples": 7,
+    "actions": {
+      "down": {
+        "action": "down",
+        "q_value": 18.180446436805322,
+        "state_value_baseline": 17.755459782518567,
+        "advantage": 7.756834406692815,
+        "raw_advantage": 22.845516565791687,
+        "sample_count": 6,
+        "confidence": 0.6666666666666666,
+        "best_similarity": 0.8948275862068965,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 14.97475,
+        "state_value_baseline": 17.755459782518567,
+        "advantage": -0.38762241550520193,
+        "raw_advantage": -0.3202695415230483,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7852459016393443,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 17.755459782518567,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": null,
+        "state_value_baseline": 17.755459782518567,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "close trap": {
+        "action": "close trap",
+        "q_value": null,
+        "state_value_baseline": 17.755459782518567,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 5.801386682022737
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:30-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Before deep exploration, make an early return trip to Living Room. A candidate path is present in the learned map. Follow it one action/transition at a time; if it fails, stop and investigate the prerequisite or alternate route rather than repeating it. Reaching the Living Room will verify a practical return path for this episode.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Turning on the lantern will illuminate the dark cellar, allowing for further exploration and potential interactions.
+Base action: turn on lantern
+Candidate actions: ["turn on lantern"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Living Room.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: south -> east -> north -> up -> west.
+Edges blocked during this episode: Cellar --[south]--> East Chasm
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "turn on lantern",
+  "candidate_actions": ["turn on lantern"],
+  "decision_rationale": "Turning on the lantern will illuminate the dark cellar, allowing for further exploration and potential interactions.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": ["The cellar is dark; turning on the lantern may reveal more opportunities."],
+  "state_note": "The cellar is currently dark, and turning on the lantern is necessary to proceed safely."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:30-05:00
+Base model action: turn on lantern
+Final action after Actor RL: turn on lantern
+RL selection details:
+{
+  "action": "turn on lantern",
+  "candidates": [
+    "turn on lantern"
+  ],
+  "scorer_preferred_action": "turn on lantern",
+  "corrected_preferred_action": "turn on lantern",
+  "base_logits": [
+    0.0
+  ],
+  "adjusted_logits": [
+    0.3
+  ],
+  "conditioned_logits": [
+    0.3
+  ],
+  "probabilities": [
+    1.0
+  ],
+  "base_probabilities": [
+    1.0
+  ],
+  "advantages": {},
+  "corrections": [
+    0.3
+  ],
+  "feasibility": [
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.0,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 2.6063521534896776
+  }
+}
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:31-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 5
+Remaining commands: south -> east -> north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:31-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: east
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 2 of 5
+Remaining commands: east -> north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:31-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 3 of 5
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:31-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: up
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 4 of 5
+Remaining commands: up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:31:31-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: west
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: confirmed during this episode
+Progress: transition 1 of 1
+Remaining commands: west
+The navigator executes only the next command and validates its result.
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:34-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the trophy case may reveal treasures or items that can be deposited for score, aligning with the goal of maximizing points.
+Base action: open case
+Candidate actions: ["open case", "take sword", "east", "open trap"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open case",
+  "candidate_actions": ["open case", "take sword", "east", "open trap"],
+  "decision_rationale": "Opening the trophy case may reveal treasures or items that can be deposited for score, aligning with the goal of maximizing points.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The Living Room contains a trophy case that may hold valuable items; opening it is the next logical step."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:34-05:00
+Base model action: open case
+Final action after Actor RL: open case
+RL selection details:
+{
+  "action": "open case",
+  "candidates": [
+    "open case",
+    "take sword",
+    "east",
+    "open trap"
+  ],
+  "scorer_preferred_action": "open case",
+  "corrected_preferred_action": "open case",
+  "base_logits": [
+    0.0,
+    -19.25,
+    -22.875,
+    -23.5
+  ],
+  "adjusted_logits": [
+    0.3,
+    -18.95,
+    -22.688700265799252,
+    -23.32512365856251
+  ],
+  "conditioned_logits": [
+    0.3,
+    -18.95,
+    -22.794060781457077,
+    -23.32512365856251
+  ],
+  "probabilities": [
+    0.9999999954882102,
+    4.3634622332566774e-09,
+    9.340644339554953e-11,
+    5.492109137858373e-11
+  ],
+  "base_probabilities": [
+    0.9999999954580139,
+    4.363462233124917e-09,
+    1.1628232977405697e-10,
+    6.224144594637805e-11
+  ],
+  "advantages": {
+    "east": 0.037413295553882675,
+    "open trap": -0.10644483690993158
+  },
+  "corrections": [
+    0.3,
+    0.3,
+    0.18629973420074666,
+    0.17487634143748818
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    0.9,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999896215,
+  "log_satisfaction_mass": -1.0378364834195963e-11,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.8626530511310664e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "east": {
+        "action": "east",
+        "advantage": 0.037413295553882675,
+        "raw_advantage": 0.09353323888470669,
+        "sample_count": 2,
+        "best_similarity": 0.8569444444444444,
+        "source": "historian_td"
+      },
+      "open trap": {
+        "action": "open trap",
+        "advantage": -0.10644483690993158,
+        "raw_advantage": -0.4257793476397263,
+        "sample_count": 1,
+        "best_similarity": 0.8616379310344827,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 6.795248031781012
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:37-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east to the Kitchen is the next logical step to explore potential score opportunities since the Gallery is verified as previously productive.
+Base action: east
+Candidate actions: ["east", "open trap", "take sword", "close case"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["east", "open trap", "take sword", "close case"],
+  "decision_rationale": "Moving east to the Kitchen is the next logical step to explore potential score opportunities since the Gallery is verified as previously productive.",
+  "inventory_items": ["brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring the Kitchen next to seek further score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:37-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "open trap",
+    "take sword",
+    "close case"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    -7.62939453125e-05,
+    -10.500076293945312,
+    -10.500076293945312,
+    -11.375076293945312
+  ],
+  "adjusted_logits": [
+    0.18712022586865373,
+    -10.324753132998762,
+    -10.728893111227118,
+    -11.075076293945312
+  ],
+  "conditioned_logits": [
+    0.08175971021082745,
+    -10.324753132998762,
+    -10.728893111227118,
+    -11.075076293945312
+  ],
+  "probabilities": [
+    0.9999353085629763,
+    3.023296910767043e-05,
+    2.0182038849466844e-05,
+    1.4276429066639892e-05
+  ],
+  "base_probabilities": [
+    0.9999334526302569,
+    2.7534616871470867e-05,
+    2.7534616871470867e-05,
+    1.1478136000115279e-05
+  ],
+  "advantages": {
+    "east": 0.03997554016308146,
+    "open trap": -0.10516820974118057,
+    "take sword": -1.2598538618221968,
+    "close case": 0.0
+  },
+  "corrections": [
+    0.18719651981396623,
+    0.17532316094655104,
+    -0.22881681728180464,
+    0.3
+  ],
+  "feasibility": [
+    0.9,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9000058222669973,
+  "log_satisfaction_mass": -0.10535404649319882,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.5274443364280416e-06,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 11.881991835557741,
+    "samples": 4,
+    "actions": {
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 11.881991835557741,
+        "advantage": 0.03997554016308146,
+        "raw_advantage": 0.09993885040770366,
+        "sample_count": 2,
+        "confidence": 0.0,
+        "best_similarity": 0.9497474747474747,
+        "source": "historian_td"
+      },
+      "open trap": {
+        "action": "open trap",
+        "q_value": null,
+        "state_value_baseline": 11.881991835557741,
+        "advantage": -0.10516820974118057,
+        "raw_advantage": -0.4206728389647223,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.8595338983050848,
+        "source": "historian_td"
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 2.3972387521465977,
+        "state_value_baseline": 11.881991835557741,
+        "advantage": -1.2598538618221968,
+        "raw_advantage": -0.59407781116643,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.8311111111111111,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "close case": {
+        "action": "close case",
+        "q_value": null,
+        "state_value_baseline": 11.881991835557741,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 5.8929607190482205
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:41-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The elongated brown sack on the table may contain something valuable or useful, so I will take it to explore its contents later.
+Base action: take sack
+Candidate actions: ["take sack", "open bottle", "open sack", "take bottle", "up"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- up: historically led to Attic
+- west: historically led to Living Room
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take sack",
+  "candidate_actions": ["take sack", "open bottle", "open sack", "take bottle", "up"],
+  "decision_rationale": "The elongated brown sack on the table may contain something valuable or useful, so I will take it to explore its contents later.",
+  "inventory_items": ["brass lantern", "sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": ["sack"],
+  "puzzle_clues": ["The sack smells of hot peppers, suggesting it may contain something related to food or a puzzle."],
+  "state_note": "I have taken the sack from the table, adding it to my inventory for further exploration."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:41-05:00
+Base model action: take sack
+Final action after Actor RL: take sack
+RL selection details:
+{
+  "action": "take sack",
+  "candidates": [
+    "take sack",
+    "open bottle",
+    "open sack",
+    "take bottle",
+    "up"
+  ],
+  "scorer_preferred_action": "take sack",
+  "corrected_preferred_action": "take sack",
+  "base_logits": [
+    0.0,
+    -22.0,
+    -20.625,
+    -23.625,
+    -21.125
+  ],
+  "adjusted_logits": [
+    0.3,
+    -21.7,
+    -20.325,
+    -23.325,
+    -20.825
+  ],
+  "conditioned_logits": [
+    0.3,
+    -21.7,
+    -20.325,
+    -23.325,
+    -21.11268207245178
+  ],
+  "probabilities": [
+    0.9999999980610004,
+    2.7894680874601473e-10,
+    1.103256030204341e-09,
+    5.492788340304169e-11,
+    5.018689558738355e-10
+  ],
+  "base_probabilities": [
+    0.9999999978937106,
+    2.7894680869934975e-10,
+    1.1032560300197775e-09,
+    5.492788339385282e-11,
+    6.691586077198365e-10
+  ],
+  "advantages": {},
+  "corrections": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.75
+  ],
+  "satisfaction_mass": 0.9999999998327103,
+  "log_satisfaction_mass": -1.6728973761814814e-10,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.2911032195064132e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 6.97517972342541
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:44-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the sack may reveal its contents and potentially yield valuable items or clues for further actions.
+Base action: open sack
+Candidate actions: ["open sack", "take bottle", "up", "east", "west"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- up: historically led to Attic
+- west: historically led to Living Room
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open sack",
+  "candidate_actions": ["open sack", "take bottle", "up", "east", "west"],
+  "decision_rationale": "Opening the sack may reveal its contents and potentially yield valuable items or clues for further actions.",
+  "inventory_items": ["brown sack", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": ["brown sack"],
+  "puzzle_clues": ["The sack smells of hot peppers; opening it may reveal something related to food or a puzzle."],
+  "state_note": "The sack's contents are unknown; investigating it may lead to discovering useful items or clues."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:44-05:00
+Base model action: open sack
+Final action after Actor RL: open sack
+RL selection details:
+{
+  "action": "open sack",
+  "candidates": [
+    "open sack",
+    "take bottle",
+    "up",
+    "east",
+    "west"
+  ],
+  "scorer_preferred_action": "open sack",
+  "corrected_preferred_action": "open sack",
+  "base_logits": [
+    0.0,
+    -23.0,
+    -25.25,
+    -24.5,
+    -21.625
+  ],
+  "adjusted_logits": [
+    0.3,
+    -22.7,
+    -24.95,
+    -24.2,
+    -20.88553809142486
+  ],
+  "conditioned_logits": [
+    0.3,
+    -22.7,
+    -25.23768207245178,
+    -24.2,
+    -20.913708968391557
+  ],
+  "probabilities": [
+    0.999999999254017,
+    1.0261879624046702e-10,
+    8.111956161912895e-12,
+    2.2897348439374496e-11,
+    6.123549798486733e-10
+  ],
+  "base_probabilities": [
+    0.9999999994578026,
+    1.0261879626137926e-10,
+    1.0815941551421317e-11,
+    2.2897348444040647e-11,
+    4.058652124275103e-10
+  ],
+  "advantages": {
+    "west": 1.8097025468490258
+  },
+  "corrections": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.7394619085751412
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    0.75,
+    1.0,
+    0.9722222222222222
+  ],
+  "satisfaction_mass": 0.9999999999798002,
+  "log_satisfaction_mass": -2.0199841799239948e-11,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 4.573679156955416e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "west": {
+        "action": "west",
+        "advantage": 1.8097025468490258,
+        "raw_advantage": 2.5852893526414653,
+        "sample_count": 7,
+        "best_similarity": 0.759375,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 5.6893645880978205
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:51-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east to the Gallery allows for the previously successful interaction of taking the art, which yielded a score increase.
+Base action: east
+Candidate actions: ["east", "up", "take garlic", "take food", "jump"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- up: historically led to Attic
+- west: historically led to Living Room
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["east", "up", "take garlic", "take food", "jump"],
+  "decision_rationale": "Moving east to the Gallery allows for the previously successful interaction of taking the art, which yielded a score increase.",
+  "inventory_items": ["brown sack", "lunch", "clove of garlic", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Heading east towards the Gallery to pursue a known score-positive opportunity."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:51-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "up",
+    "take garlic",
+    "take food",
+    "jump"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    0.0,
+    -21.625,
+    -25.0,
+    -24.125,
+    -20.375
+  ],
+  "adjusted_logits": [
+    0.3,
+    -21.325,
+    -24.7,
+    -23.825,
+    -20.075
+  ],
+  "conditioned_logits": [
+    0.3,
+    -21.61268207245178,
+    -24.7,
+    -23.825,
+    -20.075
+  ],
+  "probabilities": [
+    0.9999999982317889,
+    3.0439890894743574e-10,
+    1.3887943840407205e-11,
+    3.331544536275538e-11,
+    1.4166087841383328e-09
+  ],
+  "base_probabilities": [
+    0.9999999981303227,
+    4.0586521188873233e-10,
+    1.3887943838998048e-11,
+    3.331544535937499e-11,
+    1.4166087839945948e-09
+  ],
+  "advantages": {},
+  "corrections": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    0.75,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999998985338,
+  "log_satisfaction_mass": -1.0146616880035708e-10,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.3896056511167271e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 5.893156487076424
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:55-05:00
+Model: openai/gpt-4o-mini
+Location: Behind House
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving west to the Kitchen is a verified route that previously yielded score opportunities, and I need to explore that area further.
+Base action: west
+Candidate actions: ["west", "take lunch", "take garlic", "close sack", "shake sack"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Clearing
+- west: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "take lunch", "take garlic", "close sack", "shake sack"],
+  "decision_rationale": "Moving west to the Kitchen is a verified route that previously yielded score opportunities, and I need to explore that area further.",
+  "inventory_items": ["brown sack", "lunch", "clove of garlic", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "clove of garlic"],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Returning to the Kitchen to explore further score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:55-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "take lunch",
+    "take garlic",
+    "close sack",
+    "shake sack"
+  ],
+  "scorer_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "base_logits": [
+    -0.05210113525390625,
+    -3.0521011352539062,
+    -7.052101135253906,
+    -7.552101135253906,
+    -6.177101135253906
+  ],
+  "adjusted_logits": [
+    0.7820629433960811,
+    -2.7521011352539064,
+    -6.752101135253906,
+    -7.252101135253906,
+    -5.877101135253906
+  ],
+  "conditioned_logits": [
+    0.7820629433960811,
+    -2.7521011352539064,
+    -6.752101135253906,
+    -7.252101135253906,
+    -5.877101135253906
+  ],
+  "probabilities": [
+    0.9696273326693545,
+    0.02829677175559437,
+    0.0005182734531923993,
+    0.00031434873947633086,
+    0.0012432733823822596
+  ],
+  "base_probabilities": [
+    0.9492713871922899,
+    0.047261439453799584,
+    0.0008656234583975676,
+    0.000525027167284608,
+    0.0020765227282282805
+  ],
+  "advantages": {
+    "west": 2.0,
+    "take lunch": 0.0,
+    "take garlic": 0.0,
+    "close sack": 0.0,
+    "shake sack": 0.0
+  },
+  "corrections": [
+    0.8341640786499873,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.004993087211725213,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 27.08021926766981,
+    "samples": 6,
+    "actions": {
+      "west": {
+        "action": "west",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 6.866892052817023,
+        "raw_advantage": 12.01706109242979,
+        "sample_count": 4,
+        "confidence": 0.0,
+        "best_similarity": 0.8014172335600906,
+        "source": "historian_td"
+      },
+      "take lunch": {
+        "action": "take lunch",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take garlic": {
+        "action": "take garlic",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "close sack": {
+        "action": "close sack",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "shake sack": {
+        "action": "shake sack",
+        "q_value": null,
+        "state_value_baseline": 27.08021926766981,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 5.224493701906269
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:31:59-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the bottle may reveal its contents and potentially yield points if it is a valuable item.
+Base action: take bottle
+Candidate actions: ["take bottle", "open bottle", "take garlic", "take food", "up"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- up: historically led to Attic
+- east: historically led to Behind House
+- west: historically led to Living Room
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take bottle",
+  "candidate_actions": ["take bottle", "open bottle", "take garlic", "take food", "up"],
+  "decision_rationale": "Taking the bottle may reveal its contents and potentially yield points if it is a valuable item.",
+  "inventory_items": ["brown sack", "lunch", "clove of garlic", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "clove of garlic", "brass lantern"],
+  "useful_items": [],
+  "uncertain_items": ["bottle"],
+  "puzzle_clues": [],
+  "state_note": "Attempting to take the bottle to explore its potential value."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:31:59-05:00
+Base model action: take bottle
+Final action after Actor RL: take bottle
+RL selection details:
+{
+  "action": "take bottle",
+  "candidates": [
+    "take bottle",
+    "open bottle",
+    "take garlic",
+    "take food",
+    "up"
+  ],
+  "scorer_preferred_action": "take bottle",
+  "corrected_preferred_action": "take bottle",
+  "base_logits": [
+    -0.1602325439453125,
+    -1.9102325439453125,
+    -13.160232543945312,
+    -14.035232543945312,
+    -12.410232543945312
+  ],
+  "adjusted_logits": [
+    0.1397674560546875,
+    -1.6102325439453125,
+    -12.860232543945312,
+    -13.735232543945312,
+    -12.110232543945312
+  ],
+  "conditioned_logits": [
+    0.1397674560546875,
+    -1.6102325439453125,
+    -12.860232543945312,
+    -13.735232543945312,
+    -12.397914616397093
+  ],
+  "probabilities": [
+    0.8519478726292052,
+    0.14804634144099454,
+    1.925682829718742e-06,
+    8.0274403365678e-07,
+    3.0575029368789873e-06
+  ],
+  "base_probabilities": [
+    0.8519470043523826,
+    0.14804619055710708,
+    1.9256808671271064e-06,
+    8.02743215526867e-07,
+    4.076666427698794e-06
+  ],
+  "advantages": {},
+  "corrections": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.75
+  ],
+  "satisfaction_mass": 0.9999989808333931,
+  "log_satisfaction_mass": -1.019167126248277e-06,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.395783449227878e-07,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 6.4669311263677915
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:32:02-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Returning to the Living Room allows for potential score opportunities by interacting with the trophy case or exploring new exits.
+Base action: west
+Candidate actions: ["west", "up", "take garlic", "take food", "open bottle"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- up: historically led to Attic
+- east: historically led to Behind House
+- west: historically led to Living Room
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "up", "take garlic", "take food", "open bottle"],
+  "decision_rationale": "Returning to the Living Room allows for potential score opportunities by interacting with the trophy case or exploring new exits.",
+  "inventory_items": ["glass bottle", "brown sack", "lunch", "clove of garlic", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "clove of garlic", "glass bottle"],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The current state allows for a return to the Living Room, where further actions can be assessed."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:32:02-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "up",
+    "take garlic",
+    "take food",
+    "open bottle"
+  ],
+  "scorer_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "base_logits": [
+    -0.06606674194335938,
+    -2.8160667419433594,
+    -7.066066741943359,
+    -6.441066741943359,
+    -6.441066741943359
+  ],
+  "adjusted_logits": [
+    0.01978424141138252,
+    -2.5160667419433596,
+    -6.7660667419433596,
+    -6.1410667419433596,
+    -6.1410667419433596
+  ],
+  "conditioned_logits": [
+    -0.008386635555313816,
+    -2.8037488143951403,
+    -6.7660667419433596,
+    -6.1410667419433596,
+    -6.1410667419433596
+  ],
+  "probabilities": [
+    0.9375619587688883,
+    0.057278232568210095,
+    0.0010893734763293438,
+    0.0020352175932861834,
+    0.0020352175932861834
+  ],
+  "base_probabilities": [
+    0.9361131050543271,
+    0.05984370865369309,
+    0.0008536246582182812,
+    0.0015947808168807662,
+    0.0015947808168807662
+  ],
+  "advantages": {
+    "west": 0.03740084526812002
+  },
+  "corrections": [
+    0.0858509833547419,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    0.9722222222222222,
+    0.75,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9561324256205134,
+  "log_satisfaction_mass": -0.04485885500026815,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.00019859596066975098,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "west": {
+        "action": "west",
+        "advantage": 0.03740084526812002,
+        "raw_advantage": 0.04441350375589253,
+        "sample_count": 16,
+        "best_similarity": 0.8327114427860696,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 5.619338925444655
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:32:06-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The elvish sword above the trophy case is a unique item that may yield a score increase upon taking it.
+Base action: take sword
+Candidate actions: ["take sword", "open bottle", "open trap", "take garlic", "take lunch"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: local_world_state_changed.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take sword",
+  "candidate_actions": ["take sword", "open bottle", "open trap", "take garlic", "take lunch"],
+  "decision_rationale": "The elvish sword above the trophy case is a unique item that may yield a score increase upon taking it.",
+  "inventory_items": ["glass bottle", "brown sack", "lunch", "clove of garlic", "brass lantern"],
+  "treasure_candidates": ["elvish sword"],
+  "carried_treasures": ["elvish sword"],
+  "ordinary_items": ["glass bottle", "lunch", "clove of garlic"],
+  "useful_items": ["brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to take the elvish sword to possibly increase score."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:32:06-05:00
+Base model action: take sword
+Final action after Actor RL: take sword
+RL selection details:
+{
+  "action": "take sword",
+  "candidates": [
+    "take sword",
+    "open bottle",
+    "open trap",
+    "take garlic",
+    "take lunch"
+  ],
+  "scorer_preferred_action": "take sword",
+  "corrected_preferred_action": "take sword",
+  "base_logits": [
+    0.0,
+    -24.375,
+    -26.375,
+    -24.125,
+    -23.75
+  ],
+  "adjusted_logits": [
+    0.3,
+    -24.075,
+    -26.200359073301307,
+    -23.825,
+    -23.45
+  ],
+  "conditioned_logits": [
+    0.3,
+    -24.075,
+    -26.200359073301307,
+    -23.825,
+    -23.45
+  ],
+  "probabilities": [
+    0.9999999998891671,
+    2.5946094979888987e-11,
+    3.097706634907302e-12,
+    3.331544541797167e-11,
+    4.8473687057330076e-11
+  ],
+  "base_probabilities": [
+    0.9999999998887534,
+    2.5946094979878253e-11,
+    3.511422112985878e-12,
+    3.331544541795789e-11,
+    4.8473687057310024e-11
+  ],
+  "advantages": {
+    "open trap": -0.1071174504493475
+  },
+  "corrections": [
+    0.3,
+    0.3,
+    0.1746409266986926,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.534345353404202e-14,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "open trap": {
+        "action": "open trap",
+        "advantage": -0.1071174504493475,
+        "raw_advantage": -0.42846980179739,
+        "sample_count": 1,
+        "best_similarity": 0.7600490196078431,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 7.2839214442385485
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:32:11-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the garlic may be useful for future interactions and doesn't risk losing any score opportunities.
+Base action: take garlic
+Candidate actions: ["take garlic", "take lunch", "open bottle", "put down bottle", "put down sack"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take garlic",
+  "candidate_actions": ["take lunch", "open bottle", "put down bottle", "put down sack", "put down garlic"],
+  "decision_rationale": "Taking the garlic may be useful for future interactions and doesn't risk losing any score opportunities.",
+  "inventory_items": ["sword", "glass bottle", "brown sack", "lunch", "clove of garlic", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["glass bottle", "lunch"],
+  "useful_items": ["sword", "brass lantern"],
+  "uncertain_items": ["brown sack", "clove of garlic"],
+  "puzzle_clues": [],
+  "state_note": "Decided to take garlic for potential puzzle utility."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:32:11-05:00
+Base model action: take garlic
+Final action after Actor RL: take garlic
+RL selection details:
+{
+  "action": "take garlic",
+  "candidates": [
+    "take garlic",
+    "take lunch",
+    "open bottle",
+    "put down bottle",
+    "put down sack"
+  ],
+  "scorer_preferred_action": "take garlic",
+  "corrected_preferred_action": "take garlic",
+  "base_logits": [
+    0.0,
+    -20.875,
+    -24.25,
+    -25.0,
+    -23.75
+  ],
+  "adjusted_logits": [
+    0.3,
+    -20.575,
+    -23.95,
+    -24.7,
+    -23.45
+  ],
+  "conditioned_logits": [
+    0.3,
+    -20.575,
+    -23.95,
+    -24.7,
+    -23.45
+  ],
+  "probabilities": [
+    0.9999999990490209,
+    8.592166611003139e-10,
+    2.94007773648852e-11,
+    1.3887943851756877e-11,
+    4.847368701660509e-11
+  ],
+  "base_probabilities": [
+    0.9999999990490209,
+    8.592166611003139e-10,
+    2.94007773648852e-11,
+    1.3887943851756877e-11,
+    4.847368701660509e-11
+  ],
+  "advantages": {},
+  "corrections": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -9.043617462468952e-19,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 5.880206626452495
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:32:19-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east to the Kitchen is part of the historical route to reach the Gallery where I can take the art and gain points.
+Base action: east
+Candidate actions: ["east", "open bottle", "take lunch", "close sack", "open trap"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["open bottle", "take lunch", "close sack", "open trap", "put down bottle"],
+  "decision_rationale": "Moving east to the Kitchen is part of the historical route to reach the Gallery where I can take the art and gain points.",
+  "inventory_items": ["clove of garlic", "sword", "glass bottle", "brown sack", "lunch", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["glass bottle", "lunch"],
+  "useful_items": ["sword", "brass lantern"],
+  "uncertain_items": ["clove of garlic", "brown sack"],
+  "puzzle_clues": [],
+  "state_note": "Proceeding to the Kitchen to continue towards the Gallery, following the historical route."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:32:19-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "open bottle",
+    "take lunch",
+    "close sack",
+    "open trap"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    -0.004119873046875,
+    -12.379119873046875,
+    -10.254119873046875,
+    -13.254119873046875,
+    -5.504119873046875
+  ],
+  "adjusted_logits": [
+    0.2152216622173029,
+    -12.079119873046874,
+    -9.954119873046874,
+    -12.954119873046874,
+    -5.204119873046875
+  ],
+  "conditioned_logits": [
+    0.11991148241297801,
+    -12.079119873046874,
+    -9.954119873046874,
+    -12.954119873046874,
+    -5.204119873046875
+  ],
+  "probabilities": [
+    0.9951017473041258,
+    5.0106663690675556e-06,
+    4.19537958554095e-05,
+    2.0887565025446797e-06,
+    0.004849199477147188
+  ],
+  "base_probabilities": [
+    0.9958888591136856,
+    4.205490540515591e-06,
+    3.5212141183025964e-05,
+    1.7531092804581914e-06,
+    0.004069970145310375
+  ],
+  "advantages": {
+    "east": 0.19811867218336546
+  },
+  "corrections": [
+    0.2193415352641779,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    0.9090909090909091,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9094959037056556,
+  "log_satisfaction_mass": -0.09486478493112789,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 7.126529213418246e-05,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "east": {
+        "action": "east",
+        "advantage": 0.19811867218336546,
+        "raw_advantage": 0.3962373443667309,
+        "sample_count": 3,
+        "best_similarity": 0.8563748079877112,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 5.87816623844181
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:32:24-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving up may lead to new opportunities in the Attic, expanding the exploration beyond the Kitchen.
+Base action: up
+Candidate actions: ["up", "east", "open bottle", "take food", "close sack"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- up: historically led to Attic
+- east: historically led to Behind House
+- west: historically led to Living Room
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "up",
+  "candidate_actions": ["up", "east", "open bottle", "take food", "close sack"],
+  "decision_rationale": "Moving up may lead to new opportunities in the Attic, expanding the exploration beyond the Kitchen.",
+  "inventory_items": ["clove of garlic", "sword", "glass bottle", "brown sack", "lunch", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["glass bottle", "lunch"],
+  "useful_items": ["sword", "brass lantern"],
+  "uncertain_items": ["clove of garlic", "brown sack"],
+  "puzzle_clues": [],
+  "state_note": "Exploring upward to the Attic may reveal new interactions or treasures."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:32:24-05:00
+Base model action: up
+Final action after Actor RL: up
+RL selection details:
+{
+  "action": "up",
+  "candidates": [
+    "up",
+    "east",
+    "open bottle",
+    "take food",
+    "close sack"
+  ],
+  "scorer_preferred_action": "up",
+  "corrected_preferred_action": "up",
+  "base_logits": [
+    -0.00011444091796875,
+    -9.250114440917969,
+    -13.375114440917969,
+    -11.875114440917969,
+    -11.500114440917969
+  ],
+  "adjusted_logits": [
+    0.29988555908203124,
+    -8.950114440917968,
+    -13.075114440917968,
+    -11.575114440917968,
+    -11.200114440917968
+  ],
+  "conditioned_logits": [
+    0.012203486630250338,
+    -9.355579549026132,
+    -13.075114440917968,
+    -11.575114440917968,
+    -11.200114440917968
+  ],
+  "probabilities": [
+    0.9998897183857789,
+    8.542315796734225e-05,
+    2.0711051272637614e-06,
+    9.282049212379128e-06,
+    1.3505301914075267e-05
+  ],
+  "base_probabilities": [
+    0.9998852556172327,
+    9.610062378920217e-05,
+    1.553321912536134e-06,
+    6.961505838129812e-06,
+    1.0128931227293362e-05
+  ],
+  "advantages": {},
+  "corrections": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    0.75,
+    0.6666666666666666,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.7499966525544287,
+  "log_satisfaction_mass": -0.28768653572250297,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.5532040744082986e-06,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 5.717620693860523
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:32:28-05:00
+Model: openai/gpt-4o-mini
+Location: Attic
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Descending to the Kitchen is a historically verified route that previously led to score opportunities.
+Base action: down
+Candidate actions: ["down", "take rope", "take knife", "take lunch", "take all"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- down: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "down",
+  "candidate_actions": ["take rope", "take knife", "take lunch", "take all", "open bottle"],
+  "decision_rationale": "Descending to the Kitchen is a historically verified route that previously led to score opportunities.",
+  "inventory_items": ["clove of garlic", "sword", "glass bottle", "brown sack", "lunch", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["clove of garlic", "lunch", "glass bottle"],
+  "useful_items": ["sword", "brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Preparing to explore the Kitchen for potential score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:32:28-05:00
+Base model action: down
+Final action after Actor RL: down
+RL selection details:
+{
+  "action": "down",
+  "candidates": [
+    "down",
+    "take rope",
+    "take knife",
+    "take lunch",
+    "take all"
+  ],
+  "scorer_preferred_action": "down",
+  "corrected_preferred_action": "down",
+  "base_logits": [
+    0.0,
+    -21.375,
+    -25.125,
+    -21.125,
+    -21.875
+  ],
+  "adjusted_logits": [
+    0.3,
+    -21.075,
+    -24.825,
+    -20.825,
+    -21.575
+  ],
+  "conditioned_logits": [
+    0.012317927548219088,
+    -21.075,
+    -24.825,
+    -20.825,
+    -21.575
+  ],
+  "probabilities": [
+    0.9999999979751413,
+    6.948549969781547e-10,
+    1.634142322571022e-11,
+    8.922114770324345e-10,
+    4.214508597217801e-10
+  ],
+  "base_probabilities": [
+    0.9999999984813559,
+    5.211412479974258e-10,
+    1.2256067425486879e-11,
+    6.691586081130643e-10,
+    3.1608814495134384e-10
+  ],
+  "advantages": {},
+  "corrections": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    0.75,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.750000000379661,
+  "log_satisfaction_mass": -0.2876820719455663,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 7.63009346478418e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 5.591265507475571
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:32:32-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Returning to the Living Room is essential to check for new opportunities and assess inventory against previous score-positive actions.
+Base action: west
+Candidate actions: ["west", "up", "east", "open bottle", "take food"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- up: historically led to Attic
+- east: historically led to Behind House
+- west: historically led to Living Room
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "up", "east", "open bottle", "take food"],
+  "decision_rationale": "Returning to the Living Room is essential to check for new opportunities and assess inventory against previous score-positive actions.",
+  "inventory_items": ["clove of garlic", "sword", "glass bottle", "brown sack", "lunch", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["clove of garlic", "lunch", "glass bottle"],
+  "useful_items": ["sword", "brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Moving west to the Living Room to evaluate potential score-positive actions."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:32:32-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "up",
+    "east",
+    "open bottle",
+    "take food"
+  ],
+  "scorer_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "base_logits": [
+    -6.4849853515625e-05,
+    -10.000064849853516,
+    -11.625064849853516,
+    -13.250064849853516,
+    -11.500064849853516
+  ],
+  "adjusted_logits": [
+    -0.3718093081624649,
+    -9.800628021799799,
+    -11.325064849853515,
+    -12.950064849853515,
+    -11.200064849853515
+  ],
+  "conditioned_logits": [
+    -0.3718093081624649,
+    -9.800628021799799,
+    -11.730529957961679,
+    -12.950064849853515,
+    -11.200064849853515
+  ],
+  "probabilities": [
+    0.9998846945975756,
+    8.036482112822083e-05,
+    1.1665952960251447e-05,
+    3.4457435103846563e-06,
+    1.9828884825688922e-05
+  ],
+  "base_probabilities": [
+    0.9999337742402449,
+    4.53969231176435e-05,
+    8.939184180211186e-06,
+    1.7602297318842146e-06,
+    1.012942272548575e-05
+  ],
+  "advantages": {
+    "west": -1.2587690813431938,
+    "up": -0.03627201800642066
+  },
+  "corrections": [
+    -0.37174445830894925,
+    0.19943682805371699,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    0.6666666666666666,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999941670575432,
+  "log_satisfaction_mass": -5.832959468488053e-06,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.555978906223249e-05,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "west": {
+        "action": "west",
+        "advantage": -1.2587690813431938,
+        "raw_advantage": -1.4685639282337262,
+        "sample_count": 18,
+        "best_similarity": 0.8935370765221511,
+        "source": "historian_td"
+      },
+      "up": {
+        "action": "up",
+        "advantage": -0.03627201800642066,
+        "raw_advantage": -0.14508807202568264,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 5.7177916737933545
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-09T22:32:36-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Gallery: the interaction 'take art' produced an observed total gain of +4 (4.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east to the Kitchen may allow me to explore more treasure opportunities, particularly since the Gallery interaction previously yielded points.
+Base action: east
+Candidate actions: ["east", "open trap", "take lunch", "open bottle", "wait"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: planned_action_unavailable.
+Last route destination: Gallery.
+Last route type: historical candidate.
+Unexecuted route commands at handoff: down -> south -> east.
+Edges blocked during this episode: Living Room --[down]--> Cellar
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["open trap", "take lunch", "open bottle", "wait", "close sack"],
+  "decision_rationale": "Moving east to the Kitchen may allow me to explore more treasure opportunities, particularly since the Gallery interaction previously yielded points.",
+  "inventory_items": ["clove of garlic", "sword", "glass bottle", "brown sack", "lunch", "brass lantern"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["clove of garlic", "lunch", "glass bottle"],
+  "useful_items": ["sword", "brass lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Moving to explore the Kitchen may yield new interactions or treasures."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-09T22:32:36-05:00
+Base model action: east
+Final action after Actor RL: open trap
+RL selection details:
+{
+  "action": "open trap",
+  "candidates": [
+    "east",
+    "open trap",
+    "take lunch",
+    "open bottle",
+    "wait"
+  ],
+  "scorer_preferred_action": "open trap",
+  "corrected_preferred_action": "open trap",
+  "base_logits": [
+    -7.5007781982421875,
+    -0.0007781982421875,
+    -8.500778198242188,
+    -12.125778198242188,
+    -11.125778198242188
+  ],
+  "adjusted_logits": [
+    -7.323998372743772,
+    0.2992218017578125,
+    -8.200778198242187,
+    -11.825778198242187,
+    -10.825778198242187
+  ],
+  "conditioned_logits": [
+    -7.323998372743772,
+    0.2992218017578125,
+    -8.200778198242187,
+    -11.825778198242187,
+    -10.825778198242187
+  ],
+  "probabilities": [
+    0.0004886165559325157,
+    0.999287912871385,
+    0.0002033234818039914,
+    5.41838725736127e-06,
+    1.4728703621239185e-05
+  ],
+  "base_probabilities": [
+    0.0005526551150795745,
+    0.9992238886299672,
+    0.000203310454896013,
+    5.418040102022562e-06,
+    1.4727759955190323e-05
+  ],
+  "advantages": {
+    "east": 0.12175927670979356
+  },
+  "corrections": [
+    0.1767798254984151,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.86450001876931e-06,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "east": {
+        "action": "east",
+        "advantage": 0.12175927670979356,
+        "raw_advantage": 0.21307873424213872,
+        "sample_count": 4,
+        "best_similarity": 0.9969696969696968,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 6.03150167734392
+  }
+}
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:36-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: down
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: down -> south -> east
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:36-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 2 of 3
+Remaining commands: south -> east
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:37-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: east
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 3 of 3
+Remaining commands: east
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:37-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:37-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:37-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:37-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:38-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:38-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:38-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:38-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:39-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:39-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:39-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:39-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:39-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:40-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:40-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:40-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:40-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:41-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:41-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:41-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:41-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:42-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:42-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:42-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:42-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:43-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:43-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:43-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:43-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:44-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:44-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:44-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:44-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:45-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:45-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:45-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:45-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:46-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:46-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:46-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:46-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:47-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:47-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:47-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:47-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:48-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:48-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:48-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:48-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:48-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:49-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:49-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:49-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:49-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:50-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:50-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:50-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:50-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:51-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:51-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:51-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:51-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:52-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:52-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:52-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:52-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:52-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:53-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:53-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:53-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:54-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:54-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:54-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:54-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:55-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:55-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:55-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:55-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:56-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:56-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:56-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:56-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:57-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:57-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:57-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:57-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:58-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:58-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:58-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:58-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:59-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:59-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:59-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:32:59-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:00-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:00-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:00-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:00-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:01-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:01-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:01-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:01-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:01-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:02-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:02-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:02-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:02-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:03-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:03-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:03-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:03-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:04-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:04-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:04-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:04-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:05-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:05-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:05-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:05-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:06-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:06-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:06-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:06-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:07-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:07-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:07-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:07-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:08-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:08-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:08-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:08-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:09-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:09-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:09-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:09-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:10-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:10-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:10-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:10-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:11-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:11-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:11-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:11-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:12-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:12-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:12-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:12-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:12-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:13-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:13-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:13-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:13-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:13-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:14-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:14-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:14-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:14-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:15-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:15-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:15-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: south
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Gallery
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 1
+Remaining commands: south
+The navigator executes only the next command and validates its result.
+
+==================== NON_LLM_ACTION_SELECTION ====================
+Timestamp: 2026-11-09T22:33:15-05:00
+No LLM rationale: this command was selected by a deterministic component.
+Action source: symbolic_navigation
+Selected action: north
+Navigation context:
+ACTIVE SYMBOLIC ROUTE
+Destination: Living Room
+Route type: historical candidate; not yet verified in this episode
+Progress: transition 1 of 3
+Remaining commands: north -> up -> west
+The navigator executes only the next command and validates its result.
