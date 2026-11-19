@@ -40,7 +40,8 @@ class AdaptiveSystem:
         self.policy.beta, self.policy.exploration_coefficient = cfg["actor_beta"], cfg["exploration"]
         self.policy.top_k, self.policy.min_similarity = cfg["retrieval_top_k"], cfg["retrieval_min_similarity"]
         self.critic.learning_rate = cfg["critic_learning_rate"]
-        self.navigator.risk_weight = cfg["route_risk_weight"] if self.args.nsi else 0.0
+        if self.navigator is not None:
+            self.navigator.risk_weight = cfg["route_risk_weight"] if self.args.nsi else 0.0
         event_logger("active_configuration", {"id": self.configuration_id, "configuration": cfg})
 
     def finish_episode(self, episode, *, info, reason, event_logger, api_requests=None, episode_number=None):
@@ -58,6 +59,7 @@ class AdaptiveSystem:
                   "control_metrics": episode.get("control_metrics", {}),
                   "api_requests_before_evolution": api_requests,
                   "policy_mode": self.args.actor_policy_mode,
+                  "map_navigation": self.navigator is not None,
                   "nsi": self.args.nsi, "actor_rl": self.args.actor_rl,
                   "historian_critic": self.args.historian_critic, "evolve": self.args.evolve}
         with (self.output_dir / "metrics.jsonl").open("a", encoding="utf-8") as file:

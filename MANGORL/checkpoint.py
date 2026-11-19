@@ -108,6 +108,7 @@ def restore_arguments(args, argv):
     resume = str(path.parent)
     # Resume the original experimental configuration, with current credentials.
     # Only the requested total episode count may be extended.
+    args.map_navigation = True  # Checkpoints written before the ablation always used the map.
     for key, value in saved['arguments'].items():
         if 'api_key' not in key and 'secret' not in key:
             setattr(args, key, value)

@@ -1,0 +1,5169 @@
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:09:38-05:00
+Model: openai/gpt-4o-mini
+Location: West House
+Score: 0
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the mailbox may yield score-producing items or clues, as it is a unique object in the environment.
+Base action: open mailbox
+Candidate actions: ["open mailbox", "north", "south", "west"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open mailbox",
+  "candidate_actions": ["open mailbox", "north", "south", "west"],
+  "decision_rationale": "Opening the mailbox may yield score-producing items or clues, as it is a unique object in the environment.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Investigating the mailbox could provide valuable information or items to aid in scoring."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:09:38-05:00
+Base model action: open mailbox
+Final action after Actor RL: open mailbox
+RL selection details:
+{
+  "action": "open mailbox",
+  "candidates": [
+    "open mailbox",
+    "north",
+    "south",
+    "west"
+  ],
+  "scorer_preferred_action": "open mailbox",
+  "corrected_preferred_action": "open mailbox",
+  "base_logits": [
+    0.0,
+    -21.5,
+    -24.375,
+    -22.375
+  ],
+  "adjusted_logits": [
+    -0.10779171199068459,
+    -20.885848543625293,
+    -24.225,
+    -21.689013971270803
+  ],
+  "conditioned_logits": [
+    -0.10779171199068459,
+    -20.885848543625293,
+    -24.225,
+    -21.689013971270803
+  ],
+  "probabilities": [
+    0.9999999985957133,
+    9.466829877217349e-10,
+    3.357604366506763e-11,
+    4.240277305119449e-10
+  ],
+  "base_probabilities": [
+    0.9999999993224311,
+    4.5990553755361396e-10,
+    2.59460949651844e-11,
+    1.917171512459296e-10
+  ],
+  "advantages": {
+    "open mailbox": -0.3216494411593513,
+    "north": 1.0941388340994245,
+    "south": 0.0,
+    "west": 1.2219720574583908
+  },
+  "corrections": [
+    -0.10779171199068459,
+    0.6141514563747059,
+    0.15,
+    0.6859860287291953
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.01972917034056e-10,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 10.92887848951282,
+    "samples": 25,
+    "actions": {
+      "open mailbox": {
+        "action": "open mailbox",
+        "q_value": 10.307120413881146,
+        "state_value_baseline": 10.92887848951282,
+        "advantage": -0.3216494411593513,
+        "raw_advantage": -0.2972403276807573,
+        "sample_count": 7,
+        "confidence": 0.7,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": 13.085333918471054,
+        "state_value_baseline": 10.92887848951282,
+        "advantage": 1.0941388340994245,
+        "raw_advantage": 1.4708627939249177,
+        "sample_count": 4,
+        "confidence": 0.625,
+        "best_similarity": 0.92125,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": 10.92887848951282,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "west": {
+        "action": "west",
+        "q_value": 15.799635943965189,
+        "state_value_baseline": 10.92887848951282,
+        "advantage": 1.2219720574583908,
+        "raw_advantage": 0.01713077538119485,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 2.046741888661732
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:09:41-05:00
+Model: openai/gpt-4o-mini
+Location: West House
+Score: 0
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving north may lead to new opportunities for score-producing actions or valuable items, as the current location has yielded no score.
+Base action: north
+Candidate actions: ["north", "south", "west", "take leaflet", "close mailbox"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "south", "west", "take leaflet", "close mailbox"],
+  "decision_rationale": "Moving north may lead to new opportunities for score-producing actions or valuable items, as the current location has yielded no score.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring north to seek new opportunities after finding no score in the current location."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:09:41-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "south",
+    "west",
+    "take leaflet",
+    "close mailbox"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    0.0,
+    -14.0,
+    -15.75,
+    -16.0,
+    -17.625
+  ],
+  "adjusted_logits": [
+    0.6637578554320541,
+    -13.85,
+    -15.275588158648183,
+    -16.198501477789907,
+    -18.101487684235835
+  ],
+  "conditioned_logits": [
+    0.6637578554320541,
+    -13.85,
+    -15.275588158648183,
+    -16.198501477789907,
+    -18.101487684235835
+  ],
+  "probabilities": [
+    0.9999993283734477,
+    4.974560991983227e-07,
+    1.1957205390834669e-07,
+    4.7513117561145276e-08,
+    7.085281652125141e-09
+  ],
+  "base_probabilities": [
+    0.9999988892798255,
+    8.315277955078439e-07,
+    1.4449786411405337e-07,
+    1.1253504972417022e-07,
+    2.215946516037363e-08
+  ],
+  "advantages": {
+    "north": 1.1933516322141209,
+    "south": 0.0,
+    "west": 0.7988236827036336,
+    "take leaflet": -0.49700295557981444,
+    "close mailbox": -1.1651074028276303
+  },
+  "corrections": [
+    0.6637578554320541,
+    0.15,
+    0.4744118413518168,
+    -0.19850147778990723,
+    -0.476487684235833
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.1183395316050733e-07,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 10.723175324875852,
+    "samples": 25,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": 13.198804308428695,
+        "state_value_baseline": 10.723175324875852,
+        "advantage": 1.1933516322141209,
+        "raw_advantage": 1.4690115119885006,
+        "sample_count": 4,
+        "confidence": 0.625,
+        "best_similarity": 0.9839285714285715,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": 10.723175324875852,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "west": {
+        "action": "west",
+        "q_value": 13.871388021216736,
+        "state_value_baseline": 10.723175324875852,
+        "advantage": 0.7988236827036336,
+        "raw_advantage": 0.04708203447364981,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take leaflet": {
+        "action": "take leaflet",
+        "q_value": 9.623485659554413,
+        "state_value_baseline": 10.723175324875852,
+        "advantage": -0.49700295557981444,
+        "raw_advantage": -0.26706846252305116,
+        "sample_count": 8,
+        "confidence": 0.7272727272727273,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "close mailbox": {
+        "action": "close mailbox",
+        "q_value": 4.90023658528606,
+        "state_value_baseline": 10.723175324875852,
+        "advantage": -1.1651074028276303,
+        "raw_advantage": -0.004157239277374325,
+        "sample_count": 1,
+        "confidence": 0.4,
+        "best_similarity": 0.8518518518518517,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 1.7488624830087318
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:09:44-05:00
+Model: openai/gpt-4o-mini
+Location: North House
+Score: 0
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east is the most promising option as it may lead to new opportunities or interactions based on previous observations.
+Base action: east
+Candidate actions: ["east", "north", "west"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["east", "north", "west"],
+  "decision_rationale": "Moving east is the most promising option as it may lead to new opportunities or interactions based on previous observations.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring east may reveal new areas or items that could contribute to score."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:09:45-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "north",
+    "west"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    0.0,
+    -17.5,
+    -16.75
+  ],
+  "adjusted_logits": [
+    0.5984604808767033,
+    -17.890071549858575,
+    -16.6
+  ],
+  "conditioned_logits": [
+    0.5984604808767033,
+    -17.890071549858575,
+    -16.6
+  ],
+  "probabilities": [
+    0.9999999567088423,
+    9.343993803379912e-09,
+    3.3947163893839507e-08
+  ],
+  "base_probabilities": [
+    0.9999999217321619,
+    2.5109989592135065e-08,
+    5.3157848383694023e-08
+  ],
+  "advantages": {
+    "east": 1.1064675583800776,
+    "north": -0.8935324416199223,
+    "west": 0.0
+  },
+  "corrections": [
+    0.5984604808767033,
+    -0.39007154985857706,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.0515883933206981e-08,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 9.335342562537237,
+    "samples": 18,
+    "actions": {
+      "east": {
+        "action": "east",
+        "q_value": 16.278055519454828,
+        "state_value_baseline": 9.335342562537237,
+        "advantage": 2.8551524256005605,
+        "raw_advantage": 0.4806833496438661,
+        "sample_count": 10,
+        "confidence": 0.7692307692307693,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": 2.827717852387471,
+        "state_value_baseline": 9.335342562537237,
+        "advantage": -2.3056901205300147,
+        "raw_advantage": -0.40944565144027767,
+        "sample_count": 6,
+        "confidence": 0.6666666666666666,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "west": {
+        "action": "west",
+        "q_value": null,
+        "state_value_baseline": 9.335342562537237,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 3.107820023595634
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:09:49-05:00
+Model: openai/gpt-4o-mini
+Location: Behind House
+Score: 0
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The window is slightly ajar, suggesting a potential entry point that may lead to score-producing opportunities.
+Base action: open window
+Candidate actions: ["open window", "south", "north", "east"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open window",
+  "candidate_actions": ["open window", "south", "north", "east"],
+  "decision_rationale": "The window is slightly ajar, suggesting a potential entry point that may lead to score-producing opportunities.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["The window is slightly ajar, indicating a possible way to enter the house."],
+  "state_note": "Attempting to open the window to explore further for potential treasures or score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:09:49-05:00
+Base model action: open window
+Final action after Actor RL: open window
+RL selection details:
+{
+  "action": "open window",
+  "candidates": [
+    "open window",
+    "south",
+    "north",
+    "east"
+  ],
+  "scorer_preferred_action": "open window",
+  "corrected_preferred_action": "open window",
+  "base_logits": [
+    0.0,
+    -26.75,
+    -29.75,
+    -27.375
+  ],
+  "adjusted_logits": [
+    -0.08086544255504988,
+    -27.320292582464955,
+    -30.329962751592273,
+    -26.753695930252555
+  ],
+  "conditioned_logits": [
+    -0.08086544255504988,
+    -27.320292582464955,
+    -30.329962751592273,
+    -26.753695930252555
+  ],
+  "probabilities": [
+    0.9999999999958407,
+    1.479336943165802e-12,
+    7.294305628568039e-14,
+    2.6069752160870905e-12
+  ],
+  "base_probabilities": [
+    0.9999999999961746,
+    2.413362771823982e-12,
+    1.2015425731725823e-13,
+    1.2917800047810546e-12
+  ],
+  "advantages": {
+    "open window": -0.2751202270128679,
+    "south": -1.3527171992858769,
+    "north": -1.3720575375405126,
+    "east": 1.0694030587380023
+  },
+  "corrections": [
+    -0.08086544255504988,
+    -0.5702925824649563,
+    -0.5799627515922742,
+    0.621304069747445
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 7.3615009807952e-13,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 16.230790779179983,
+    "samples": 14,
+    "actions": {
+      "open window": {
+        "action": "open window",
+        "q_value": 15.79119785124438,
+        "state_value_baseline": 16.230790779179983,
+        "advantage": -0.40923809571706926,
+        "raw_advantage": -0.7881213592156047,
+        "sample_count": 6,
+        "confidence": 0.6666666666666666,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": 0.030393806855789025,
+        "state_value_baseline": 16.230790779179983,
+        "advantage": -2.012150893774842,
+        "raw_advantage": 0.10318982212546056,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.6777777777777777,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": 0.030090628632402524,
+        "state_value_baseline": 16.230790779179983,
+        "advantage": -2.0409194190257347,
+        "raw_advantage": -0.12665520165829625,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.6747289972899728,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "east": {
+        "action": "east",
+        "q_value": 24.940478944802,
+        "state_value_baseline": 16.230790779179983,
+        "advantage": 1.590724448229973,
+        "raw_advantage": -0.7560659244721512,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.953125,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 3.5199950854594393
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:09:52-05:00
+Model: openai/gpt-4o-mini
+Location: Behind House
+Score: 0
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving west into the Kitchen is a known route that previously yielded a score increase and is the most promising next step.
+Base action: west
+Candidate actions: ["west", "close window", "south", "north", "east"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "close window", "south", "north", "east"],
+  "decision_rationale": "Moving west into the Kitchen is a known route that previously yielded a score increase and is the most promising next step.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The window is open, allowing for entry into the house."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:09:52-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "close window",
+    "south",
+    "north",
+    "east"
+  ],
+  "scorer_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "base_logits": [
+    0.0,
+    -24.5,
+    -28.25,
+    -26.375,
+    -25.0
+  ],
+  "adjusted_logits": [
+    0.9196916975289708,
+    -24.35,
+    -28.679755295240902,
+    -26.008668175278597,
+    -24.96514345166545
+  ],
+  "conditioned_logits": [
+    0.9196916975289708,
+    -24.35,
+    -28.679755295240902,
+    -26.008668175278597,
+    -24.96514345166545
+  ],
+  "probabilities": [
+    0.9999999999815035,
+    1.0605040621092606e-11,
+    1.39676551347707e-13,
+    2.0191189302179136e-12,
+    5.7326962323695046e-12
+  ],
+  "base_probabilities": [
+    0.9999999999591649,
+    2.2897348455520515e-11,
+    5.384940217534141e-13,
+    3.5114221132331223e-12,
+    1.3887943864396905e-11
+  ],
+  "advantages": {
+    "west": 1.6893833950579418,
+    "close window": 0.0,
+    "south": -1.071642624837767,
+    "north": 0.52053161508684,
+    "east": -0.08028690333090172
+  },
+  "corrections": [
+    0.9196916975289708,
+    0.15,
+    -0.4297552952409014,
+    0.36633182472140213,
+    0.03485654833454914
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 7.797687092220228e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 19.18219002316016,
+    "samples": 11,
+    "actions": {
+      "west": {
+        "action": "west",
+        "q_value": 23.137406852578376,
+        "state_value_baseline": 19.18219002316016,
+        "advantage": 3.8196793038704375,
+        "raw_advantage": 11.323500386063532,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 0.6010714285714286,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "close window": {
+        "action": "close window",
+        "q_value": null,
+        "state_value_baseline": 19.18219002316016,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": 0.012919381500864404,
+        "state_value_baseline": 19.18219002316016,
+        "advantage": -2.42297347494517,
+        "raw_advantage": -0.21451715790206505,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.6260714285714285,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": 29.09070122911924,
+        "state_value_baseline": 19.18219002316016,
+        "advantage": 1.1769168816112714,
+        "raw_advantage": -0.4931761530689096,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.6260714285714285,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "east": {
+        "action": "east",
+        "q_value": 19.281834933050998,
+        "state_value_baseline": 19.18219002316016,
+        "advantage": -0.18152790179068481,
+        "raw_advantage": -0.8257565170535771,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 0.8888888888888888,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 2.5853553940142344
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:09:55-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The elongated brown sack may contain something valuable, and taking it could lead to a score increase.
+Base action: take sack
+Candidate actions: ["take sack", "open bottle", "take bottle", "open sack", "up"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take sack",
+  "candidate_actions": ["take sack", "open bottle", "take bottle", "open sack", "up"],
+  "decision_rationale": "The elongated brown sack may contain something valuable, and taking it could lead to a score increase.",
+  "inventory_items": ["sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["water"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["The sack smells of hot peppers, suggesting it may contain something of interest."],
+  "state_note": "Taking the sack may provide new opportunities for score or valuable items."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:09:56-05:00
+Base model action: take sack
+Final action after Actor RL: take sack
+RL selection details:
+{
+  "action": "take sack",
+  "candidates": [
+    "take sack",
+    "open bottle",
+    "take bottle",
+    "open sack",
+    "up"
+  ],
+  "scorer_preferred_action": "take sack",
+  "corrected_preferred_action": "take sack",
+  "base_logits": [
+    -3.814697265625e-06,
+    -18.375003814697266,
+    -19.125003814697266,
+    -13.250003814697266,
+    -15.750003814697266
+  ],
+  "adjusted_logits": [
+    0.14999618530273437,
+    -18.225003814697267,
+    -18.975003814697267,
+    -13.73882911275664,
+    -15.600003814697265
+  ],
+  "conditioned_logits": [
+    0.14999618530273437,
+    -18.225003814697267,
+    -18.975003814697267,
+    -13.73882911275664,
+    -15.600003814697265
+  ],
+  "probabilities": [
+    0.9999989107830161,
+    1.0467390393472846e-08,
+    4.9444451163591815e-09,
+    9.293072811926838e-07,
+    1.4449786722122192e-07
+  ],
+  "base_probabilities": [
+    0.9999980797474982,
+    1.0467381694690175e-08,
+    4.944441007345198e-09,
+    1.7603429318467595e-06,
+    1.444977471382312e-07
+  ],
+  "advantages": {
+    "take sack": 0.0,
+    "open bottle": 0.0,
+    "take bottle": 0.0,
+    "open sack": -1.1897826304747152,
+    "up": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    -0.48882529805937547,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.3737176744562043e-07,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 9.516629605422185,
+    "samples": 4,
+    "actions": {
+      "take sack": {
+        "action": "take sack",
+        "q_value": null,
+        "state_value_baseline": 9.516629605422185,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "open bottle": {
+        "action": "open bottle",
+        "q_value": null,
+        "state_value_baseline": 9.516629605422185,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take bottle": {
+        "action": "take bottle",
+        "q_value": null,
+        "state_value_baseline": 9.516629605422185,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "open sack": {
+        "action": "open sack",
+        "q_value": 0.5748299170272,
+        "state_value_baseline": 9.516629605422185,
+        "advantage": -1.1897826304747152,
+        "raw_advantage": -0.5764613554027358,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.8861111111111111,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "up": {
+        "action": "up",
+        "q_value": null,
+        "state_value_baseline": 9.516629605422185,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 4.649218013025894
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:09:59-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the bottle may reveal its contents, which could be valuable or useful for scoring.
+Base action: open bottle
+Candidate actions: ["open bottle", "take bottle", "up", "close window", "put down sack"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open bottle",
+  "candidate_actions": ["open bottle", "take bottle", "up", "close window", "put down sack"],
+  "decision_rationale": "Opening the bottle may reveal its contents, which could be valuable or useful for scoring.",
+  "inventory_items": ["brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["bottle of water"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": ["The glass bottle contains a quantity of water."],
+  "state_note": "Investigating the contents of the bottle may provide new insights or opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:09:59-05:00
+Base model action: open bottle
+Final action after Actor RL: open bottle
+RL selection details:
+{
+  "action": "open bottle",
+  "candidates": [
+    "open bottle",
+    "take bottle",
+    "up",
+    "close window",
+    "put down sack"
+  ],
+  "scorer_preferred_action": "open bottle",
+  "corrected_preferred_action": "open bottle",
+  "base_logits": [
+    -7.62939453125e-06,
+    -11.750007629394531,
+    -15.375007629394531,
+    -20.00000762939453,
+    -19.62500762939453
+  ],
+  "adjusted_logits": [
+    0.14999237060546874,
+    -11.600007629394531,
+    -15.225007629394531,
+    -19.850007629394533,
+    -19.475007629394533
+  ],
+  "conditioned_logits": [
+    0.14999237060546874,
+    -11.600007629394531,
+    -15.225007629394531,
+    -19.850007629394533,
+    -19.475007629394533
+  ],
+  "probabilities": [
+    0.9999918954373576,
+    7.889260887672954e-06,
+    2.1024168130749884e-07,
+    2.0611369176899092e-09,
+    2.99893651959144e-09
+  ],
+  "base_probabilities": [
+    0.9999918954373576,
+    7.889260887672954e-06,
+    2.1024168130749884e-07,
+    2.0611369176899092e-09,
+    2.99893651959144e-09
+  ],
+  "advantages": {
+    "open bottle": 0.0,
+    "take bottle": 0.0,
+    "up": 0.0,
+    "close window": 0.0,
+    "put down sack": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -1.0101456456695522e-17,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 8.960717043242681,
+    "samples": 4,
+    "actions": {
+      "open bottle": {
+        "action": "open bottle",
+        "q_value": null,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take bottle": {
+        "action": "take bottle",
+        "q_value": null,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "up": {
+        "action": "up",
+        "q_value": null,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "close window": {
+        "action": "close window",
+        "q_value": null,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 3.173854892021892
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:02-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the sack may reveal a treasure or useful item, which could increase the score.
+Base action: open sack
+Candidate actions: ["open sack", "take bottle", "up", "east", "west"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open sack",
+  "candidate_actions": ["open sack", "take bottle", "up", "east", "west"],
+  "decision_rationale": "Opening the sack may reveal a treasure or useful item, which could increase the score.",
+  "inventory_items": ["brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["The sack smells of hot peppers, suggesting it may contain something of interest."],
+  "state_note": "Investigating the contents of the sack could provide valuable information or items."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:02-05:00
+Base model action: open sack
+Final action after Actor RL: open sack
+RL selection details:
+{
+  "action": "open sack",
+  "candidates": [
+    "open sack",
+    "take bottle",
+    "up",
+    "east",
+    "west"
+  ],
+  "scorer_preferred_action": "open sack",
+  "corrected_preferred_action": "open sack",
+  "base_logits": [
+    0.0,
+    -17.375,
+    -15.75,
+    -18.375,
+    -15.75
+  ],
+  "adjusted_logits": [
+    -0.33179892271484446,
+    -17.225,
+    -15.6,
+    -18.225,
+    -15.112864939892827
+  ],
+  "conditioned_logits": [
+    -0.33179892271484446,
+    -17.225,
+    -15.6,
+    -18.225,
+    -15.112864939892827
+  ],
+  "probabilities": [
+    0.9999993222767215,
+    4.60654901055019e-08,
+    2.339398619088115e-07,
+    1.6946546757300643e-08,
+    3.807713798154045e-07
+  ],
+  "base_probabilities": [
+    0.9999996720833085,
+    2.8453338759506232e-08,
+    1.4449797722761032e-07,
+    1.0467398362308893e-08,
+    1.4449797722761032e-07
+  ],
+  "advantages": {
+    "open sack": -0.8757298797856532,
+    "take bottle": 0.0,
+    "up": 0.0,
+    "east": 0.0,
+    "west": 1.1242701202143468
+  },
+  "corrections": [
+    -0.33179892271484446,
+    0.15,
+    0.15,
+    0.15,
+    0.6371350601071734
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.6220667164686259e-07,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 8.960717043242681,
+    "samples": 4,
+    "actions": {
+      "open sack": {
+        "action": "open sack",
+        "q_value": 0.5748299170272,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": -1.1178326823804956,
+        "raw_advantage": -0.5567743328284838,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7775,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take bottle": {
+        "action": "take bottle",
+        "q_value": null,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "up": {
+        "action": "up",
+        "q_value": null,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "west": {
+        "action": "west",
+        "q_value": 13.2767224207777,
+        "state_value_baseline": 8.960717043242681,
+        "advantage": 1.4350839376487317,
+        "raw_advantage": 1.424330373059908,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 0.6275,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 3.174571164077637
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:06-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the clove of garlic may reveal its value or utility, and it is a distinct item that could potentially contribute to score or puzzles.
+Base action: take garlic
+Candidate actions: ["take garlic", "take food", "take bottle", "up", "west"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take garlic",
+  "candidate_actions": ["take garlic", "take food", "take bottle", "up", "west"],
+  "decision_rationale": "Taking the clove of garlic may reveal its value or utility, and it is a distinct item that could potentially contribute to score or puzzles.",
+  "inventory_items": ["brown sack", "lunch", "clove of garlic"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": ["clove of garlic"],
+  "puzzle_clues": [],
+  "state_note": "Exploring the kitchen further by taking the garlic to assess its potential value."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:06-05:00
+Base model action: take garlic
+Final action after Actor RL: take garlic
+RL selection details:
+{
+  "action": "take garlic",
+  "candidates": [
+    "take garlic",
+    "take food",
+    "take bottle",
+    "up",
+    "west"
+  ],
+  "scorer_preferred_action": "take garlic",
+  "corrected_preferred_action": "take garlic",
+  "base_logits": [
+    -0.00011444091796875,
+    -10.500114440917969,
+    -13.250114440917969,
+    -9.500114440917969,
+    -11.500114440917969
+  ],
+  "adjusted_logits": [
+    0.14988555908203124,
+    -10.350114440917968,
+    -13.100114440917968,
+    -9.350114440917968,
+    -10.726069733500342
+  ],
+  "conditioned_logits": [
+    0.14988555908203124,
+    -10.350114440917968,
+    -13.100114440917968,
+    -9.350114440917968,
+    -10.726069733500342
+  ],
+  "probabilities": [
+    0.9998769590797304,
+    2.7533061239678207e-05,
+    1.7601297175259283e-06,
+    7.484262004966734e-05,
+    1.8905109262681642e-05
+  ],
+  "base_probabilities": [
+    0.9998857343389852,
+    2.753330287916021e-05,
+    1.7601451650211959e-06,
+    7.484327689388032e-05,
+    1.012893607678952e-05
+  ],
+  "advantages": {
+    "take garlic": 0.0,
+    "take food": 0.0,
+    "take bottle": 0.0,
+    "up": 0.0,
+    "west": 1.398089414835252
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.774044707417626
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.0213327866955097e-06,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 8.817464756305052,
+    "samples": 4,
+    "actions": {
+      "take garlic": {
+        "action": "take garlic",
+        "q_value": null,
+        "state_value_baseline": 8.817464756305052,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take food": {
+        "action": "take food",
+        "q_value": null,
+        "state_value_baseline": 8.817464756305052,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take bottle": {
+        "action": "take bottle",
+        "q_value": null,
+        "state_value_baseline": 8.817464756305052,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "up": {
+        "action": "up",
+        "q_value": null,
+        "state_value_baseline": 8.817464756305052,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "west": {
+        "action": "west",
+        "q_value": 12.98243167645602,
+        "state_value_baseline": 8.817464756305052,
+        "advantage": 1.398089414835252,
+        "raw_advantage": 1.4273907391900398,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 0.63578125,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 3.6069607731983737
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:10-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the bottle may provide useful water for future interactions or puzzles, and it is a distinct object that hasn't been explored yet.
+Base action: take bottle
+Candidate actions: ["take bottle", "take food", "up", "east", "jump"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take bottle",
+  "candidate_actions": ["take bottle", "take food", "up", "east", "jump"],
+  "decision_rationale": "Taking the bottle may provide useful water for future interactions or puzzles, and it is a distinct object that hasn't been explored yet.",
+  "inventory_items": ["clove of garlic", "brown sack", "lunch"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brown sack", "lunch"],
+  "uncertain_items": ["glass bottle"],
+  "puzzle_clues": [],
+  "state_note": "Attempting to take the bottle to explore its potential usefulness."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:10-05:00
+Base model action: take bottle
+Final action after Actor RL: take bottle
+RL selection details:
+{
+  "action": "take bottle",
+  "candidates": [
+    "take bottle",
+    "take food",
+    "up",
+    "east",
+    "jump"
+  ],
+  "scorer_preferred_action": "take bottle",
+  "corrected_preferred_action": "take bottle",
+  "base_logits": [
+    -3.814697265625e-06,
+    -15.000003814697266,
+    -12.750003814697266,
+    -17.125003814697266,
+    -17.875003814697266
+  ],
+  "adjusted_logits": [
+    0.14999618530273437,
+    -14.850003814697265,
+    -12.600003814697265,
+    -16.975003814697267,
+    -17.725003814697267
+  ],
+  "conditioned_logits": [
+    0.14999618530273437,
+    -14.850003814697265,
+    -12.600003814697265,
+    -16.975003814697267,
+    -17.725003814697267
+  ],
+  "probabilities": [
+    0.9999967379952613,
+    3.0590132264700674e-07,
+    2.902310941267478e-06,
+    3.6534702960447516e-08,
+    1.7257771692843538e-08
+  ],
+  "base_probabilities": [
+    0.9999967379952613,
+    3.0590132264700674e-07,
+    2.902310941267478e-06,
+    3.6534702960447516e-08,
+    1.7257771692843538e-08
+  ],
+  "advantages": {
+    "take bottle": 0.0,
+    "take food": 0.0,
+    "up": 0.0,
+    "east": 0.0,
+    "jump": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 9.089445577777185e-19,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 9.242087322855896,
+    "samples": 4,
+    "actions": {
+      "take bottle": {
+        "action": "take bottle",
+        "q_value": null,
+        "state_value_baseline": 9.242087322855896,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take food": {
+        "action": "take food",
+        "q_value": null,
+        "state_value_baseline": 9.242087322855896,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "up": {
+        "action": "up",
+        "q_value": null,
+        "state_value_baseline": 9.242087322855896,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 9.242087322855896,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "jump": {
+        "action": "jump",
+        "q_value": null,
+        "state_value_baseline": 9.242087322855896,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 3.363620867606747
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:13-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving up may lead to new areas or score opportunities, and I have already explored the kitchen thoroughly.
+Base action: up
+Candidate actions: ["up", "east", "jump", "take food", "close bottle"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "up",
+  "candidate_actions": ["up", "east", "jump", "take food", "close bottle"],
+  "decision_rationale": "Moving up may lead to new areas or score opportunities, and I have already explored the kitchen thoroughly.",
+  "inventory_items": ["glass bottle", "clove of garlic", "brown sack", "lunch"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["glass bottle", "lunch", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring upward may reveal new paths or score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:13-05:00
+Base model action: up
+Final action after Actor RL: up
+RL selection details:
+{
+  "action": "up",
+  "candidates": [
+    "up",
+    "east",
+    "jump",
+    "take food",
+    "close bottle"
+  ],
+  "scorer_preferred_action": "up",
+  "corrected_preferred_action": "up",
+  "base_logits": [
+    0.0,
+    -23.125,
+    -26.375,
+    -24.25,
+    -23.125
+  ],
+  "adjusted_logits": [
+    0.15,
+    -22.975,
+    -26.225,
+    -24.1,
+    -22.975
+  ],
+  "conditioned_logits": [
+    0.15,
+    -22.975,
+    -26.225,
+    -24.1,
+    -22.975
+  ],
+  "probabilities": [
+    0.9999999997859663,
+    9.056076987734562e-11,
+    3.511422112624949e-12,
+    2.940077738655197e-11,
+    9.056076987734562e-11
+  ],
+  "base_probabilities": [
+    0.9999999997859663,
+    9.056076987734562e-11,
+    3.511422112624949e-12,
+    2.940077738655197e-11,
+    9.056076987734562e-11
+  ],
+  "advantages": {
+    "up": 0.0,
+    "east": 0.0,
+    "jump": 0.0,
+    "take food": 0.0,
+    "close bottle": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -4.5810304641552306e-20,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 9.231828255088752,
+    "samples": 4,
+    "actions": {
+      "up": {
+        "action": "up",
+        "q_value": null,
+        "state_value_baseline": 9.231828255088752,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 9.231828255088752,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "jump": {
+        "action": "jump",
+        "q_value": null,
+        "state_value_baseline": 9.231828255088752,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take food": {
+        "action": "take food",
+        "q_value": null,
+        "state_value_baseline": 9.231828255088752,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "close bottle": {
+        "action": "close bottle",
+        "q_value": null,
+        "state_value_baseline": 9.231828255088752,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 3.1187930629951577
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:17-05:00
+Model: openai/gpt-4o-mini
+Location: Attic
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Closing the sack may help organize my inventory and prepare for future actions, as I cannot move in the dark.
+Base action: close sack
+Candidate actions: ["close sack", "put down bottle", "put down lunch", "put down garlic", "put down all"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "close sack",
+  "candidate_actions": ["close sack", "put down bottle", "put down lunch", "put down garlic", "put down all"],
+  "decision_rationale": "Closing the sack may help organize my inventory and prepare for future actions, as I cannot move in the dark.",
+  "inventory_items": ["glass bottle", "clove of garlic", "brown sack", "lunch"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["glass bottle", "lunch", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "I am in a pitch-black room and cannot move; organizing inventory is the only viable action."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:17-05:00
+Base model action: close sack
+Final action after Actor RL: close sack
+RL selection details:
+{
+  "action": "close sack",
+  "candidates": [
+    "close sack",
+    "put down bottle",
+    "put down lunch",
+    "put down garlic",
+    "put down all"
+  ],
+  "scorer_preferred_action": "close sack",
+  "corrected_preferred_action": "close sack",
+  "base_logits": [
+    0.0,
+    -16.75,
+    -18.625,
+    -19.625,
+    -15.0
+  ],
+  "adjusted_logits": [
+    0.15,
+    -16.6,
+    -18.475,
+    -19.475,
+    -14.85
+  ],
+  "conditioned_logits": [
+    0.15,
+    -16.6,
+    -18.475,
+    -19.475,
+    -14.85
+  ],
+  "probabilities": [
+    0.9999996297889824,
+    5.315783286462153e-08,
+    8.152017696502283e-09,
+    2.998959714608969e-09,
+    3.0590220725341645e-07
+  ],
+  "base_probabilities": [
+    0.9999996297889824,
+    5.315783286462153e-08,
+    8.152017696502283e-09,
+    2.998959714608969e-09,
+    3.0590220725341645e-07
+  ],
+  "advantages": {},
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -5.472725880113927e-17,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 1.8058489606129844
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:21-05:00
+Model: openai/gpt-4o-mini
+Location: Attic
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the sack may reveal more useful items or clues in this dark environment, which is critical since I cannot move safely in pitch black.
+Base action: open sack
+Candidate actions: ["open sack", "down", "put down bottle", "put down sack", "put down garlic"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open sack",
+  "candidate_actions": ["open sack", "down", "put down bottle", "put down sack", "put down garlic"],
+  "decision_rationale": "Opening the sack may reveal more useful items or clues in this dark environment, which is critical since I cannot move safely in pitch black.",
+  "inventory_items": ["glass bottle", "quantity of water", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["glass bottle", "quantity of water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The room is pitch black, making movement dangerous; I need to gather more information."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:21-05:00
+Base model action: open sack
+Final action after Actor RL: open sack
+RL selection details:
+{
+  "action": "open sack",
+  "candidates": [
+    "open sack",
+    "down",
+    "put down bottle",
+    "put down sack",
+    "put down garlic"
+  ],
+  "scorer_preferred_action": "open sack",
+  "corrected_preferred_action": "open sack",
+  "base_logits": [
+    0.0,
+    -14.5,
+    -19.25,
+    -19.625,
+    -20.25
+  ],
+  "adjusted_logits": [
+    0.15,
+    -14.35,
+    -19.1,
+    -19.475,
+    -20.1
+  ],
+  "conditioned_logits": [
+    0.15,
+    -14.35,
+    -19.1,
+    -19.475,
+    -20.1
+  ],
+  "probabilities": [
+    0.9999994866849496,
+    5.043474036786423e-07,
+    4.363460013112856e-09,
+    2.9989592854455805e-09,
+    1.6052272311978916e-09
+  ],
+  "base_probabilities": [
+    0.9999994866849496,
+    5.043474036786423e-07,
+    4.363460013112856e-09,
+    2.9989592854455805e-09,
+    1.6052272311978916e-09
+  ],
+  "advantages": {},
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -3.655256939300392e-17,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "critic_state_value": 1.5133210343264665
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:25-05:00
+Model: openai/gpt-4o-mini
+Location: Attic
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the lunch may reveal additional score opportunities or clues, and I need to explore all items in this dark environment before proceeding.
+Base action: take lunch
+Candidate actions: ["take lunch", "down", "close sack", "put down bottle", "put down garlic"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take lunch",
+  "candidate_actions": ["take lunch", "down", "close sack", "put down bottle", "put down garlic"],
+  "decision_rationale": "Taking the lunch may reveal additional score opportunities or clues, and I need to explore all items in this dark environment before proceeding.",
+  "inventory_items": ["glass bottle", "quantity of water", "clove of garlic", "brown sack", "lunch"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["glass bottle", "quantity of water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": ["lunch"],
+  "puzzle_clues": [],
+  "state_note": "I am currently in a pitch-black attic, and I need to explore all items before deciding on further actions."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:25-05:00
+Base model action: take lunch
+Final action after Actor RL: take lunch
+RL selection details:
+{
+  "action": "take lunch",
+  "candidates": [
+    "take lunch",
+    "down",
+    "close sack",
+    "put down bottle",
+    "put down garlic"
+  ],
+  "scorer_preferred_action": "take lunch",
+  "corrected_preferred_action": "take lunch",
+  "base_logits": [
+    -0.0001220703125,
+    -9.0001220703125,
+    -14.6251220703125,
+    -17.0001220703125,
+    -17.3751220703125
+  ],
+  "adjusted_logits": [
+    0.1498779296875,
+    -8.8501220703125,
+    -14.555033516549589,
+    -16.8501220703125,
+    -17.2251220703125
+  ],
+  "conditioned_logits": [
+    0.1498779296875,
+    -8.8501220703125,
+    -14.555033516549589,
+    -16.8501220703125,
+    -17.2251220703125
+  ],
+  "probabilities": [
+    0.999876124788302,
+    0.0001233945166710727,
+    4.108509545894155e-07,
+    4.139424883123836e-08,
+    2.8449823425315856e-08
+  ],
+  "base_probabilities": [
+    0.9998760906133769,
+    0.0001233945124535519,
+    4.450300998016142e-07,
+    4.1394247416417745e-08,
+    2.8449822452924815e-08
+  ],
+  "advantages": {
+    "close sack": -0.07195492683014215
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.07008855376291104,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.347465710598664e-09,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "close sack": {
+        "action": "close sack",
+        "advantage": -0.07195492683014215,
+        "raw_advantage": -0.2878197073205686,
+        "sample_count": 1,
+        "best_similarity": 0.9700854700854701,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 1.8257086112550462
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:30-05:00
+Model: openai/gpt-4o-mini
+Location: Attic
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Descending from the attic is the only viable action to escape the pitch black and avoid the danger of a grue.
+Base action: down
+Candidate actions: ["down", "close sack", "put down all", "put bottle in sack", "put garlic in sack"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "down",
+  "candidate_actions": ["down", "close sack", "put down all", "put bottle in sack", "put garlic in sack"],
+  "decision_rationale": "Descending from the attic is the only viable action to escape the pitch black and avoid the danger of a grue.",
+  "inventory_items": ["lunch", "glass bottle", "quantity of water", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "quantity of water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Currently in a pitch black room; moving down is necessary to avoid danger."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:30-05:00
+Base model action: down
+Final action after Actor RL: down
+RL selection details:
+{
+  "action": "down",
+  "candidates": [
+    "down",
+    "close sack",
+    "put down all",
+    "put bottle in sack",
+    "put garlic in sack"
+  ],
+  "scorer_preferred_action": "down",
+  "corrected_preferred_action": "down",
+  "base_logits": [
+    0.0,
+    -24.125,
+    -28.25,
+    -22.125,
+    -25.625
+  ],
+  "adjusted_logits": [
+    0.15,
+    -24.0545553867333,
+    -28.1,
+    -21.975,
+    -25.475
+  ],
+  "conditioned_logits": [
+    0.15,
+    -24.0545553867333,
+    -28.1,
+    -21.975,
+    -25.475
+  ],
+  "probabilities": [
+    0.9999999997150903,
+    3.0767708938063336e-11,
+    5.384940216219814e-13,
+    2.4616969511140233e-10,
+    7.43368067023426e-12
+  ],
+  "base_probabilities": [
+    0.9999999997125426,
+    3.3315445412087347e-11,
+    5.384940216206095e-13,
+    2.461696951107752e-10,
+    7.433680670215322e-12
+  ],
+  "advantages": {
+    "close sack": -0.07124280782256426
+  },
+  "corrections": [
+    0.15,
+    0.07044461326669998,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.000027315419825e-13,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {
+      "close sack": {
+        "action": "close sack",
+        "advantage": -0.07124280782256426,
+        "raw_advantage": -0.28497123129025703,
+        "sample_count": 1,
+        "best_similarity": 0.9736842105263157,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 1.5101113427115158
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:34-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving west has previously yielded a score increase, and I should pursue this known route to further explore for score opportunities.
+Base action: west
+Candidate actions: ["west", "up", "east", "put food on table", "put garlic on table"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "up", "east", "put food on table", "put garlic on table"],
+  "decision_rationale": "Moving west has previously yielded a score increase, and I should pursue this known route to further explore for score opportunities.",
+  "inventory_items": ["lunch", "glass bottle", "quantity of water", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "quantity of water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring the west route again to seek additional score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:34-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "up",
+    "east",
+    "put food on table",
+    "put garlic on table"
+  ],
+  "scorer_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "base_logits": [
+    0.0,
+    -16.25,
+    -19.375,
+    -20.0,
+    -19.375
+  ],
+  "adjusted_logits": [
+    0.8427409802595501,
+    -16.30026277471673,
+    -19.225,
+    -19.85,
+    -19.225
+  ],
+  "conditioned_logits": [
+    0.8427409802595501,
+    -16.30026277471673,
+    -19.225,
+    -19.85,
+    -19.225
+  ],
+  "probabilities": [
+    0.999999959233756,
+    3.588294242464051e-08,
+    1.926153127988009e-09,
+    1.0309954748331832e-09,
+    1.926153127988009e-09
+  ],
+  "base_probabilities": [
+    0.9999999025948897,
+    8.764247365761072e-08,
+    3.850741547685675e-09,
+    2.061153421671662e-09,
+    3.850741547685675e-09
+  ],
+  "advantages": {
+    "west": 1.5354819605191004,
+    "up": -0.31265758378942904,
+    "east": 0.0,
+    "put food on table": 0.0,
+    "put garlic on table": 0.0
+  },
+  "corrections": [
+    0.8427409802595501,
+    -0.050262774716732406,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.1212404573093537e-08,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 9.235341561789305,
+    "samples": 4,
+    "actions": {
+      "west": {
+        "action": "west",
+        "q_value": 13.95849437519369,
+        "state_value_baseline": 9.235341561789305,
+        "advantage": 1.5354819605191004,
+        "raw_advantage": 1.4187750286720169,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 0.6871863799283153,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "up": {
+        "action": "up",
+        "q_value": null,
+        "state_value_baseline": 9.235341561789305,
+        "advantage": -0.31265758378942904,
+        "raw_advantage": -1.2506303351577162,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.9970238095238094,
+        "source": "historian_td"
+      },
+      "east": {
+        "action": "east",
+        "q_value": null,
+        "state_value_baseline": 9.235341561789305,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put food on table": {
+        "action": "put food on table",
+        "q_value": null,
+        "state_value_baseline": 9.235341561789305,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put garlic on table": {
+        "action": "put garlic on table",
+        "q_value": null,
+        "state_value_baseline": 9.235341561789305,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.961067983653047
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:38-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Pushing the rug may reveal the trap door, which could provide a score-positive opportunity based on prior evidence.
+Base action: push rug
+Candidate actions: ["push rug", "turn on lantern", "take lantern", "open case", "take sword"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "push rug",
+  "candidate_actions": ["push rug", "turn on lantern", "take lantern", "open case", "take sword"],
+  "decision_rationale": "Pushing the rug may reveal the trap door, which could provide a score-positive opportunity based on prior evidence.",
+  "inventory_items": ["lunch", "glass bottle", "water", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": ["A closed trap door is revealed under the rug."],
+  "state_note": "Attempting to reveal the trap door for potential exploration."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:38-05:00
+Base model action: push rug
+Final action after Actor RL: push rug
+RL selection details:
+{
+  "action": "push rug",
+  "candidates": [
+    "push rug",
+    "turn on lantern",
+    "take lantern",
+    "open case",
+    "take sword"
+  ],
+  "scorer_preferred_action": "push rug",
+  "corrected_preferred_action": "push rug",
+  "base_logits": [
+    0.0,
+    -21.375,
+    -24.625,
+    -23.75,
+    -21.625
+  ],
+  "adjusted_logits": [
+    0.08893605724242946,
+    -21.305387132715236,
+    -24.475,
+    -24.145154601257588,
+    -21.581682374054953
+  ],
+  "conditioned_logits": [
+    0.08893605724242946,
+    -21.305387132715236,
+    -24.475,
+    -24.145154601257588,
+    -21.581682374054953
+  ],
+  "probabilities": [
+    0.9999999990497146,
+    5.111678066383065e-10,
+    2.147920070315601e-11,
+    2.9872264956222556e-11,
+    3.877662399398717e-10
+  ],
+  "base_probabilities": [
+    0.9999999990043129,
+    5.211412482699603e-10,
+    2.0206839070102482e-11,
+    4.847368701443793e-11,
+    4.058652122434546e-10
+  ],
+  "advantages": {
+    "push rug": 0.004667033727971191,
+    "turn on lantern": -0.010774265430471872,
+    "take lantern": 0.0,
+    "open case": -0.9403092025151742,
+    "take sword": -0.12549678246587054
+  },
+  "corrections": [
+    0.08893605724242946,
+    0.06961286728476407,
+    0.15,
+    -0.3951546012575871,
+    0.043317625945046845
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 4.685721531023048e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 15.178404435979006,
+    "samples": 14,
+    "actions": {
+      "push rug": {
+        "action": "push rug",
+        "q_value": 14.89987625,
+        "state_value_baseline": 15.178404435979006,
+        "advantage": 0.004667033727971191,
+        "raw_advantage": 0.30186335461886205,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.8373563218390804,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 14.788313426578128,
+        "state_value_baseline": 15.178404435979006,
+        "advantage": -0.010774265430471872,
+        "raw_advantage": 0.26897574579881517,
+        "sample_count": 3,
+        "confidence": 0.4,
+        "best_similarity": 0.8522598870056497,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": null,
+        "state_value_baseline": 15.178404435979006,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": 13.270740539319805,
+        "state_value_baseline": 15.178404435979006,
+        "advantage": -0.9403092025151742,
+        "raw_advantage": -1.8535729134014953,
+        "sample_count": 3,
+        "confidence": 0.5,
+        "best_similarity": 0.7194444444444444,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 14.825376868749998,
+        "state_value_baseline": 15.178404435979006,
+        "advantage": -0.12549678246587054,
+        "raw_advantage": -0.6509466924979566,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7670338983050847,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 4.9333088190229875
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:43-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Turning on the lantern will ensure I have light for potential exploration down the trap door, which has previously yielded a score increase.
+Base action: turn on lantern
+Candidate actions: ["turn on lantern", "open trap", "take sword", "open case", "take lantern"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "turn on lantern",
+  "candidate_actions": ["turn on lantern", "open trap", "take sword", "open case", "take lantern"],
+  "decision_rationale": "Turning on the lantern will ensure I have light for potential exploration down the trap door, which has previously yielded a score increase.",
+  "inventory_items": ["lunch", "glass bottle", "water", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": ["The lantern is battery-powered and can provide light when turned on."],
+  "state_note": "The trap door is now accessible for opening; turning on the lantern is the next logical step before exploring further."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:43-05:00
+Base model action: turn on lantern
+Final action after Actor RL: turn on lantern
+RL selection details:
+{
+  "action": "turn on lantern",
+  "candidates": [
+    "turn on lantern",
+    "open trap",
+    "take sword",
+    "open case",
+    "take lantern"
+  ],
+  "scorer_preferred_action": "turn on lantern",
+  "corrected_preferred_action": "turn on lantern",
+  "base_logits": [
+    0.0,
+    -15.125,
+    -19.0,
+    -20.25,
+    -17.5
+  ],
+  "adjusted_logits": [
+    0.10096628634624161,
+    -15.07620211931355,
+    -18.940473846515513,
+    -20.1,
+    -17.35
+  ],
+  "conditioned_logits": [
+    0.10096628634624161,
+    -15.07620211931355,
+    -18.940473846515513,
+    -20.1,
+    -17.35
+  ],
+  "probabilities": [
+    0.999999710331285,
+    2.5623555076848533e-07,
+    5.375359279168726e-09,
+    1.6858995196733204e-09,
+    2.6371905579979406e-08
+  ],
+  "base_probabilities": [
+    0.999999697724225,
+    2.69957768734583e-07,
+    5.6027947439476325e-09,
+    1.6052275699640573e-09,
+    2.5109983967297662e-08
+  ],
+  "advantages": {
+    "turn on lantern": 0.02872749193559549,
+    "open trap": -0.07560931938398742,
+    "take sword": -0.09307972738698894,
+    "open case": 0.0,
+    "take lantern": 0.0
+  },
+  "corrections": [
+    0.10096628634624161,
+    0.048797880686450155,
+    0.05952615348448764,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0000000000000002,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.926863049159962e-10,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.922822888081337,
+    "samples": 9,
+    "actions": {
+      "turn on lantern": {
+        "action": "turn on lantern",
+        "q_value": 14.788313426578124,
+        "state_value_baseline": 14.922822888081337,
+        "advantage": 0.02872749193559549,
+        "raw_advantage": 0.27814692118118955,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.732037037037037,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open trap": {
+        "action": "open trap",
+        "q_value": 14.974750000000002,
+        "state_value_baseline": 14.922822888081337,
+        "advantage": -0.07560931938398742,
+        "raw_advantage": -0.42997370883860264,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.857987012987013,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 14.82537686875,
+        "state_value_baseline": 14.922822888081337,
+        "advantage": -0.09307972738698894,
+        "raw_advantage": -0.6471917997645753,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.732037037037037,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 14.922822888081337,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": null,
+        "state_value_baseline": 14.922822888081337,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 4.169363745097207
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:47-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the trap door is a known productive action that previously yielded a score increase.
+Base action: open trap
+Candidate actions: ["open trap", "take sword", "open case", "blow out lantern", "take lantern"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open trap",
+  "candidate_actions": ["open trap", "take sword", "open case", "blow out lantern", "take lantern"],
+  "decision_rationale": "Opening the trap door is a known productive action that previously yielded a score increase.",
+  "inventory_items": ["lunch", "glass bottle", "water", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": ["The trap door is now accessible for opening."],
+  "state_note": "The trap door has been revealed and is ready to be opened."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:47-05:00
+Base model action: open trap
+Final action after Actor RL: open trap
+RL selection details:
+{
+  "action": "open trap",
+  "candidates": [
+    "open trap",
+    "take sword",
+    "open case",
+    "blow out lantern",
+    "take lantern"
+  ],
+  "scorer_preferred_action": "open trap",
+  "corrected_preferred_action": "open trap",
+  "base_logits": [
+    0.0,
+    -24.625,
+    -26.625,
+    -25.75,
+    -24.125
+  ],
+  "adjusted_logits": [
+    0.05033565387366257,
+    -24.564780818430695,
+    -26.475,
+    -25.6,
+    -23.975
+  ],
+  "conditioned_logits": [
+    0.05033565387366257,
+    -24.564780818430695,
+    -26.475,
+    -25.6,
+    -23.975
+  ],
+  "probabilities": [
+    0.9999999999325166,
+    2.0407544145823843e-11,
+    3.0212947418770495e-12,
+    7.2477093120815545e-12,
+    3.680690494642231e-11
+  ],
+  "base_probabilities": [
+    0.9999999999371829,
+    2.0206839088952836e-11,
+    2.7346982914200888e-12,
+    6.560200167741686e-12,
+    3.331544541957134e-11
+  ],
+  "advantages": {
+    "open trap": -0.0725337730095626,
+    "take sword": -0.09169367121735317,
+    "open case": 0.0,
+    "blow out lantern": 0.0,
+    "take lantern": 0.0
+  },
+  "corrections": [
+    0.05033565387366257,
+    0.06021918156930553,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.2722083984156688e-13,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.915582394826815,
+    "samples": 9,
+    "actions": {
+      "open trap": {
+        "action": "open trap",
+        "q_value": 14.974749999999998,
+        "state_value_baseline": 14.915582394826815,
+        "advantage": -0.0725337730095626,
+        "raw_advantage": -0.421836470220996,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.7411538461538462,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 14.82537686875,
+        "state_value_baseline": 14.915582394826815,
+        "advantage": -0.09169367121735317,
+        "raw_advantage": -0.6433438436620103,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7402702702702703,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 14.915582394826815,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "blow out lantern": {
+        "action": "blow out lantern",
+        "q_value": null,
+        "state_value_baseline": 14.915582394826815,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": null,
+        "state_value_baseline": 14.915582394826815,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 3.58696599871504
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:51-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Descending into the darkness with the lantern lit is a confirmed path that previously yielded a score increase.
+Base action: down
+Candidate actions: ["down", "open case", "take lantern", "take sword", "put down all"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "down",
+  "candidate_actions": ["down", "open case", "take lantern", "take sword", "put down all"],
+  "decision_rationale": "Descending into the darkness with the lantern lit is a confirmed path that previously yielded a score increase.",
+  "inventory_items": ["lunch", "glass bottle", "water", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": ["The lantern is lit and carried, allowing safe descent."],
+  "state_note": "Preparing to descend into the Cellar, which previously provided a score increase."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:51-05:00
+Base model action: down
+Final action after Actor RL: down
+RL selection details:
+{
+  "action": "down",
+  "candidates": [
+    "down",
+    "open case",
+    "take lantern",
+    "take sword",
+    "put down all"
+  ],
+  "scorer_preferred_action": "down",
+  "corrected_preferred_action": "down",
+  "base_logits": [
+    0.0,
+    -24.625,
+    -28.625,
+    -23.625,
+    -25.875
+  ],
+  "adjusted_logits": [
+    1.066847953979357,
+    -24.475,
+    -28.475,
+    -23.538688569221105,
+    -25.725
+  ],
+  "conditioned_logits": [
+    1.066847953979357,
+    -24.475,
+    -28.475,
+    -23.538688569221105,
+    -25.725
+  ],
+  "probabilities": [
+    0.9999999999688554,
+    8.078233011467764e-12,
+    1.479579986970952e-13,
+    2.0603986833916372e-11,
+    2.3144525079398538e-12
+  ],
+  "base_probabilities": [
+    0.9999999999187059,
+    2.0206839088579474e-11,
+    3.701011678291802e-13,
+    5.492788350508152e-11,
+    5.789356328260011e-12
+  ],
+  "advantages": {
+    "down": 1.960490827201826,
+    "open case": 0.0,
+    "take lantern": 0.0,
+    "take sword": -0.039509172798174036,
+    "put down all": 0.0
+  },
+  "corrections": [
+    1.066847953979357,
+    0.15,
+    0.15,
+    0.0863114307788951,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.028231109494723e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.92289802880263,
+    "samples": 9,
+    "actions": {
+      "down": {
+        "action": "down",
+        "q_value": 15.050000000000002,
+        "state_value_baseline": 14.92289802880263,
+        "advantage": 4.5999388536308405,
+        "raw_advantage": 22.87259229695683,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.8565384615384616,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open case": {
+        "action": "open case",
+        "q_value": null,
+        "state_value_baseline": 14.92289802880263,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": null,
+        "state_value_baseline": 14.92289802880263,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take sword": {
+        "action": "take sword",
+        "q_value": 14.82537686875,
+        "state_value_baseline": 14.92289802880263,
+        "advantage": -0.09270116264126033,
+        "raw_advantage": -0.6440881410774533,
+        "sample_count": 1,
+        "confidence": 0.25,
+        "best_similarity": 0.7291463414634146,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "put down all": {
+        "action": "put down all",
+        "q_value": null,
+        "state_value_baseline": 14.92289802880263,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 3.687107404792078
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:54-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Closing the sack may help manage inventory and prepare for future actions, especially since I cannot move in the dark.
+Base action: close sack
+Candidate actions: ["close sack", "put down all", "put down bottle", "put down sack", "put down garlic"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "close sack",
+  "candidate_actions": ["close sack", "put down all", "put down bottle", "put down sack", "put down garlic"],
+  "decision_rationale": "Closing the sack may help manage inventory and prepare for future actions, especially since I cannot move in the dark.",
+  "inventory_items": ["lunch", "glass bottle", "water", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Currently in pitch black; cannot move without light."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:54-05:00
+Base model action: close sack
+Final action after Actor RL: close sack
+RL selection details:
+{
+  "action": "close sack",
+  "candidates": [
+    "close sack",
+    "put down all",
+    "put down bottle",
+    "put down sack",
+    "put down garlic"
+  ],
+  "scorer_preferred_action": "close sack",
+  "corrected_preferred_action": "close sack",
+  "base_logits": [
+    0.0,
+    -17.25,
+    -19.0,
+    -18.0,
+    -17.625
+  ],
+  "adjusted_logits": [
+    0.15,
+    -17.1,
+    -18.85,
+    -17.85,
+    -17.475
+  ],
+  "conditioned_logits": [
+    0.15,
+    -17.1,
+    -18.85,
+    -17.85,
+    -17.475
+  ],
+  "probabilities": [
+    0.9999999247658723,
+    3.2241864946878565e-08,
+    5.602796016015765e-09,
+    1.522997859889839e-08,
+    2.2159488106216095e-08
+  ],
+  "base_probabilities": [
+    0.9999999247658723,
+    3.2241864946878565e-08,
+    5.602796016015765e-09,
+    1.522997859889839e-08,
+    2.2159488106216095e-08
+  ],
+  "advantages": {
+    "close sack": 0.0,
+    "put down all": 0.0,
+    "put down bottle": 0.0,
+    "put down sack": 0.0,
+    "put down garlic": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.9630628381905636e-18,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 2,
+    "actions": {
+      "close sack": {
+        "action": "close sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down all": {
+        "action": "put down all",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down bottle": {
+        "action": "put down bottle",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.6357329631992363
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:10:58-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the sack may reveal more useful items or clues in this dark environment, which is critical since I cannot move safely.
+Base action: open sack
+Candidate actions: ["open sack", "put down sack", "put down garlic", "put down lunch", "put down all"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open sack",
+  "candidate_actions": ["open sack", "put down sack", "put down garlic", "put down lunch", "put down all"],
+  "decision_rationale": "Opening the sack may reveal more useful items or clues in this dark environment, which is critical since I cannot move safely.",
+  "inventory_items": ["lunch", "glass bottle", "water", "garlic", "sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "water", "garlic"],
+  "useful_items": ["sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The current environment is pitch black, preventing movement; investigating the sack is the best option."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:10:58-05:00
+Base model action: open sack
+Final action after Actor RL: open sack
+RL selection details:
+{
+  "action": "open sack",
+  "candidates": [
+    "open sack",
+    "put down sack",
+    "put down garlic",
+    "put down lunch",
+    "put down all"
+  ],
+  "scorer_preferred_action": "open sack",
+  "corrected_preferred_action": "open sack",
+  "base_logits": [
+    0.0,
+    -23.125,
+    -25.75,
+    -25.375,
+    -23.0
+  ],
+  "adjusted_logits": [
+    0.15,
+    -22.975,
+    -25.6,
+    -25.225,
+    -22.85
+  ],
+  "conditioned_logits": [
+    0.15,
+    -22.975,
+    -25.6,
+    -25.225,
+    -22.85
+  ],
+  "probabilities": [
+    0.9999999997907152,
+    9.056076987777568e-11,
+    6.5602001667808284e-12,
+    9.545034920842997e-12,
+    1.0261879629554235e-10
+  ],
+  "base_probabilities": [
+    0.9999999997907152,
+    9.056076987777568e-11,
+    6.5602001667808284e-12,
+    9.545034920842997e-12,
+    1.0261879629554235e-10
+  ],
+  "advantages": {
+    "open sack": 0.0,
+    "put down sack": 0.0,
+    "put down garlic": 0.0,
+    "put down lunch": 0.0,
+    "put down all": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -4.37998187143615e-20,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 2,
+    "actions": {
+      "open sack": {
+        "action": "open sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lunch": {
+        "action": "put down lunch",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down all": {
+        "action": "put down all",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.0910957252328335
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:02-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Closing the sack may help organize my inventory and prepare for future actions, especially since I am in a dark room.
+Base action: close sack
+Candidate actions: ["close sack", "put down bottle", "put down sack", "put down garlic", "put down lunch"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "close sack",
+  "candidate_actions": ["close sack", "put down bottle", "put down sack", "put down garlic", "put down lunch"],
+  "decision_rationale": "Closing the sack may help organize my inventory and prepare for future actions, especially since I am in a dark room.",
+  "inventory_items": ["lunch", "glass bottle", "water", "garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "water", "garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "No new score-producing opportunities identified; focusing on inventory management."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:02-05:00
+Base model action: close sack
+Final action after Actor RL: close sack
+RL selection details:
+{
+  "action": "close sack",
+  "candidates": [
+    "close sack",
+    "put down bottle",
+    "put down sack",
+    "put down garlic",
+    "put down lunch"
+  ],
+  "scorer_preferred_action": "close sack",
+  "corrected_preferred_action": "close sack",
+  "base_logits": [
+    0.0,
+    -14.25,
+    -14.375,
+    -16.625,
+    -16.5
+  ],
+  "adjusted_logits": [
+    0.04005930910642633,
+    -14.1,
+    -14.225,
+    -16.475,
+    -16.35
+  ],
+  "conditioned_logits": [
+    0.04005930910642633,
+    -14.1,
+    -14.225,
+    -16.475,
+    -16.35
+  ],
+  "probabilities": [
+    0.9999984958088093,
+    7.228523795489242e-07,
+    6.3791498597783e-07,
+    6.723574485845584e-08,
+    7.618808027715506e-08
+  ],
+  "base_probabilities": [
+    0.9999986524140526,
+    6.475943448940061e-07,
+    5.715000035002606e-07,
+    6.023565720603021e-08,
+    6.825594178247678e-08
+  ],
+  "advantages": {
+    "close sack": -0.13201341614311157,
+    "put down bottle": 0.0,
+    "put down sack": 0.0,
+    "put down garlic": 0.0,
+    "put down lunch": 0.0
+  },
+  "corrections": [
+    0.04005930910642633,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 8.766352108136218e-09,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 2,
+    "actions": {
+      "close sack": {
+        "action": "close sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": -0.13201341614311157,
+        "raw_advantage": -0.5280536645724463,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.8543478260869565,
+        "source": "historian_td"
+      },
+      "put down bottle": {
+        "action": "put down bottle",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lunch": {
+        "action": "put down lunch",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 2.0730842715478413
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:06-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: The previous objective stalled. Preserve valuables and investigate a new exit or local prerequisite. Reconsider it when observed evidence changes.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the sack may reveal additional items or clues that could help in this dark environment.
+Base action: open sack
+Candidate actions: ["open sack", "put down bottle", "put down sack", "put down garlic", "put down lunch"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open sack",
+  "candidate_actions": ["open sack", "put down bottle", "put down sack", "put down garlic", "put down lunch"],
+  "decision_rationale": "Opening the sack may reveal additional items or clues that could help in this dark environment.",
+  "inventory_items": ["lunch", "glass bottle", "water", "garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "water", "garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The environment remains pitch black, and I need to gather more information or items to proceed safely."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:06-05:00
+Base model action: open sack
+Final action after Actor RL: open sack
+RL selection details:
+{
+  "action": "open sack",
+  "candidates": [
+    "open sack",
+    "put down bottle",
+    "put down sack",
+    "put down garlic",
+    "put down lunch"
+  ],
+  "scorer_preferred_action": "open sack",
+  "corrected_preferred_action": "open sack",
+  "base_logits": [
+    0.0,
+    -13.75,
+    -15.125,
+    -16.75,
+    -15.375
+  ],
+  "adjusted_logits": [
+    0.10268927237096695,
+    -13.6,
+    -14.975,
+    -16.6,
+    -15.225
+  ],
+  "conditioned_logits": [
+    0.10268927237096695,
+    -13.6,
+    -14.975,
+    -16.6,
+    -15.225
+  ],
+  "probabilities": [
+    0.9999983213718306,
+    1.1194299773609347e-06,
+    2.830362230076552e-07,
+    5.5733136815905145e-08,
+    2.204288321159347e-07
+  ],
+  "base_probabilities": [
+    0.9999983989394653,
+    1.0677023005760295e-06,
+    2.699574181174412e-07,
+    5.31577674353044e-08,
+    2.1024304862579787e-07
+  ],
+  "advantages": {
+    "open sack": -0.006753489614030329,
+    "put down bottle": 0.0,
+    "put down sack": 0.0,
+    "put down garlic": 0.0,
+    "put down lunch": 0.0
+  },
+  "corrections": [
+    0.10268927237096695,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.849358255418395e-09,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 1,
+    "actions": {
+      "open sack": {
+        "action": "open sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": -0.006753489614030329,
+        "raw_advantage": -0.027013958456121315,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.8333333333333333,
+        "source": "historian_td"
+      },
+      "put down bottle": {
+        "action": "put down bottle",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lunch": {
+        "action": "put down lunch",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.3279482909007354
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:10-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: The previous objective stalled. Preserve valuables and investigate a new exit or local prerequisite. Reconsider it when observed evidence changes.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Storing the bottle in the sack may free up inventory space and could be useful for future interactions.
+Base action: put bottle in sack
+Candidate actions: ["put bottle in sack", "put garlic in sack", "put lunch in sack", "put down bottle", "put down all"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "put bottle in sack",
+  "candidate_actions": ["put bottle in sack", "put garlic in sack", "put lunch in sack", "put down bottle", "put down all"],
+  "decision_rationale": "Storing the bottle in the sack may free up inventory space and could be useful for future interactions.",
+  "inventory_items": ["lunch", "glass bottle", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "quantity of water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "No immediate score-producing actions available; focusing on inventory management."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:10-05:00
+Base model action: put bottle in sack
+Final action after Actor RL: put bottle in sack
+RL selection details:
+{
+  "action": "put bottle in sack",
+  "candidates": [
+    "put bottle in sack",
+    "put garlic in sack",
+    "put lunch in sack",
+    "put down bottle",
+    "put down all"
+  ],
+  "scorer_preferred_action": "put bottle in sack",
+  "corrected_preferred_action": "put bottle in sack",
+  "base_logits": [
+    -0.000614166259765625,
+    -10.250614166259766,
+    -12.250614166259766,
+    -7.500614166259766,
+    -11.000614166259766
+  ],
+  "adjusted_logits": [
+    0.14938583374023437,
+    -10.100614166259765,
+    -12.100614166259765,
+    -7.350614166259765,
+    -10.850614166259765
+  ],
+  "conditioned_logits": [
+    0.14938583374023437,
+    -10.100614166259765,
+    -12.100614166259765,
+    -7.350614166259765,
+    -10.850614166259765
+  ],
+  "probabilities": [
+    0.9993904430970623,
+    3.533594844169599e-05,
+    4.782200590791269e-06,
+    0.0005527472337521031,
+    1.6691520153238163e-05
+  ],
+  "base_probabilities": [
+    0.9993904430970623,
+    3.533594844169599e-05,
+    4.782200590791269e-06,
+    0.0005527472337521031,
+    1.6691520153238163e-05
+  ],
+  "advantages": {
+    "put bottle in sack": 0.0,
+    "put garlic in sack": 0.0,
+    "put lunch in sack": 0.0,
+    "put down bottle": 0.0,
+    "put down all": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.2861123417053005e-18,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 1,
+    "actions": {
+      "put bottle in sack": {
+        "action": "put bottle in sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put garlic in sack": {
+        "action": "put garlic in sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put lunch in sack": {
+        "action": "put lunch in sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down bottle": {
+        "action": "put down bottle",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down all": {
+        "action": "put down all",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.3266487441302024
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:14-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: The previous objective stalled. Preserve valuables and investigate a new exit or local prerequisite. Reconsider it when observed evidence changes.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The cellar is pitch black, and I need to reduce my inventory to explore safely without risking a grue encounter.
+Base action: put down bottle
+Candidate actions: ["put down bottle", "put down lunch", "put down garlic", "put down sack", "shake sack"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "put down bottle",
+  "candidate_actions": ["put down bottle", "put down lunch", "put down garlic", "put down sack", "shake sack"],
+  "decision_rationale": "The cellar is pitch black, and I need to reduce my inventory to explore safely without risking a grue encounter.",
+  "inventory_items": ["lunch", "clove of garlic", "brown sack", "glass bottle", "quantity of water"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "glass bottle", "quantity of water", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The room is pitch black, and I need to manage my inventory to avoid danger."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:14-05:00
+Base model action: put down bottle
+Final action after Actor RL: put down bottle
+RL selection details:
+{
+  "action": "put down bottle",
+  "candidates": [
+    "put down bottle",
+    "put down lunch",
+    "put down garlic",
+    "put down sack",
+    "shake sack"
+  ],
+  "scorer_preferred_action": "put down bottle",
+  "corrected_preferred_action": "put down bottle",
+  "base_logits": [
+    0.0,
+    -18.625,
+    -21.0,
+    -20.0,
+    -17.25
+  ],
+  "adjusted_logits": [
+    0.15,
+    -18.475,
+    -20.85,
+    -19.85,
+    -17.1
+  ],
+  "conditioned_logits": [
+    0.15,
+    -18.475,
+    -20.85,
+    -19.85,
+    -17.1
+  ],
+  "probabilities": [
+    0.9999999567867041,
+    8.152020362194483e-09,
+    7.582560100244479e-10,
+    2.061153533369316e-09,
+    3.224186597928998e-08
+  ],
+  "base_probabilities": [
+    0.9999999567867041,
+    8.152020362194483e-09,
+    7.582560100244479e-10,
+    2.061153533369316e-09,
+    3.224186597928998e-08
+  ],
+  "advantages": {
+    "put down bottle": 0.0,
+    "put down lunch": 0.0,
+    "put down garlic": 0.0,
+    "put down sack": 0.0,
+    "shake sack": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.9990068692243006e-17,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 1,
+    "actions": {
+      "put down bottle": {
+        "action": "put down bottle",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lunch": {
+        "action": "put down lunch",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "shake sack": {
+        "action": "shake sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.551425013309466
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:18-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Storing the garlic in the sack may help manage inventory and could be useful later, while also avoiding moving in pitch darkness.
+Base action: put garlic in sack
+Candidate actions: ["put garlic in sack", "put lunch in sack", "put down sack", "put down garlic", "put down lunch"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "put garlic in sack",
+  "candidate_actions": ["put garlic in sack", "put lunch in sack", "put down sack", "put down garlic", "put down lunch"],
+  "decision_rationale": "Storing the garlic in the sack may help manage inventory and could be useful later, while also avoiding moving in pitch darkness.",
+  "inventory_items": ["lunch", "clove of garlic", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch", "clove of garlic"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The room is pitch black, and moving is dangerous; thus, I will manage inventory instead."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:18-05:00
+Base model action: put garlic in sack
+Final action after Actor RL: put garlic in sack
+RL selection details:
+{
+  "action": "put garlic in sack",
+  "candidates": [
+    "put garlic in sack",
+    "put lunch in sack",
+    "put down sack",
+    "put down garlic",
+    "put down lunch"
+  ],
+  "scorer_preferred_action": "put garlic in sack",
+  "corrected_preferred_action": "put garlic in sack",
+  "base_logits": [
+    -0.00125885009765625,
+    -10.751258850097656,
+    -6.751258850097656,
+    -10.751258850097656,
+    -10.376258850097656
+  ],
+  "adjusted_logits": [
+    0.14874114990234374,
+    -10.601258850097656,
+    -6.601258850097656,
+    -10.601258850097656,
+    -10.226258850097656
+  ],
+  "conditioned_logits": [
+    0.14874114990234374,
+    -10.601258850097656,
+    -6.601258850097656,
+    -10.601258850097656,
+    -10.226258850097656
+  ],
+  "probabilities": [
+    0.9987565747089078,
+    2.141874255351052e-05,
+    0.0011694237194578583,
+    2.141874255351052e-05,
+    3.116408652727533e-05
+  ],
+  "base_probabilities": [
+    0.9987565747089078,
+    2.141874255351052e-05,
+    0.0011694237194578583,
+    2.141874255351052e-05,
+    3.116408652727533e-05
+  ],
+  "advantages": {
+    "put garlic in sack": 0.0,
+    "put lunch in sack": 0.0,
+    "put down sack": 0.0,
+    "put down garlic": 0.0,
+    "put down lunch": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -1.629781403804926e-17,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.999999999999998,
+    "samples": 2,
+    "actions": {
+      "put garlic in sack": {
+        "action": "put garlic in sack",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put lunch in sack": {
+        "action": "put lunch in sack",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lunch": {
+        "action": "put down lunch",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.7323950073086334
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:22-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the garlic may reveal its purpose and potential score value, as it is currently unclear.
+Base action: take garlic
+Candidate actions: ["take garlic", "put down sack", "put down lunch", "put down garlic", "shake sack"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take garlic",
+  "candidate_actions": ["take garlic", "put down sack", "put down lunch", "put down garlic", "shake sack"],
+  "decision_rationale": "Taking the garlic may reveal its purpose and potential score value, as it is currently unclear.",
+  "inventory_items": ["lunch", "brown sack", "clove of garlic"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": ["clove of garlic"],
+  "puzzle_clues": [],
+  "state_note": "Currently in a pitch-black room; taking garlic may provide new insights."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:22-05:00
+Base model action: take garlic
+Final action after Actor RL: take garlic
+RL selection details:
+{
+  "action": "take garlic",
+  "candidates": [
+    "take garlic",
+    "put down sack",
+    "put down lunch",
+    "put down garlic",
+    "shake sack"
+  ],
+  "scorer_preferred_action": "take garlic",
+  "corrected_preferred_action": "take garlic",
+  "base_logits": [
+    0.0,
+    -24.25,
+    -27.875,
+    -25.25,
+    -23.875
+  ],
+  "adjusted_logits": [
+    0.15,
+    -24.1,
+    -27.725,
+    -25.1,
+    -23.725
+  ],
+  "conditioned_logits": [
+    0.15,
+    -24.1,
+    -27.725,
+    -25.1,
+    -23.725
+  ],
+  "probabilities": [
+    0.9999999999162219,
+    2.940077739038158e-11,
+    7.835041784407984e-13,
+    1.0815941556379554e-11,
+    4.277787868610613e-11
+  ],
+  "base_probabilities": [
+    0.9999999999162219,
+    2.940077739038158e-11,
+    7.835041784407984e-13,
+    1.0815941556379554e-11,
+    4.277787868610613e-11
+  ],
+  "advantages": {
+    "take garlic": 0.0,
+    "put down sack": 0.0,
+    "put down lunch": 0.0,
+    "put down garlic": 0.0,
+    "shake sack": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": -7.018626526860515e-21,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 2,
+    "actions": {
+      "take garlic": {
+        "action": "take garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lunch": {
+        "action": "put down lunch",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "shake sack": {
+        "action": "shake sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.93915129405068
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:26-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The garlic is a carried item that may have a purpose or value, and putting it in the sack may help manage inventory while exploring further.
+Base action: put garlic in sack
+Candidate actions: ["put garlic in sack", "close sack", "put down sack", "put down garlic", "put down lunch"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "put garlic in sack",
+  "candidate_actions": ["put garlic in sack", "close sack", "put down sack", "put down garlic", "put down lunch"],
+  "decision_rationale": "The garlic is a carried item that may have a purpose or value, and putting it in the sack may help manage inventory while exploring further.",
+  "inventory_items": ["clove of garlic", "lunch", "brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": ["clove of garlic"],
+  "puzzle_clues": [],
+  "state_note": "Attempting to organize inventory by placing garlic in the sack to free up space for potential future interactions."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:26-05:00
+Base model action: put garlic in sack
+Final action after Actor RL: put garlic in sack
+RL selection details:
+{
+  "action": "put garlic in sack",
+  "candidates": [
+    "put garlic in sack",
+    "close sack",
+    "put down sack",
+    "put down garlic",
+    "put down lunch"
+  ],
+  "scorer_preferred_action": "put garlic in sack",
+  "corrected_preferred_action": "put garlic in sack",
+  "base_logits": [
+    -0.0867767333984375,
+    -2.5867767333984375,
+    -5.3367767333984375,
+    -5.9617767333984375,
+    -7.7117767333984375
+  ],
+  "adjusted_logits": [
+    0.042673571952080935,
+    -2.5457636677744397,
+    -5.186776733398437,
+    -5.811776733398437,
+    -7.561776733398437
+  ],
+  "conditioned_logits": [
+    0.042673571952080935,
+    -2.5457636677744397,
+    -5.186776733398437,
+    -5.811776733398437,
+    -7.561776733398437
+  ],
+  "probabilities": [
+    0.9226290822541774,
+    0.06932392279910475,
+    0.004942033999948852,
+    0.0026452801786020423,
+    0.0004596807681669746
+  ],
+  "base_probabilities": [
+    0.9169017395604588,
+    0.07526387803007069,
+    0.004811458748584926,
+    0.0025753882830277606,
+    0.00044753537785780504
+  ],
+  "advantages": {
+    "put garlic in sack": 0.04676857634507264,
+    "close sack": -0.09117894950889185,
+    "put down sack": 0.0,
+    "put down garlic": 0.0,
+    "put down lunch": 0.0
+  },
+  "corrections": [
+    0.12945030535051844,
+    0.04101306562399794,
+    0.15,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 0.00026152732485596505,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.999999999999998,
+    "samples": 2,
+    "actions": {
+      "put garlic in sack": {
+        "action": "put garlic in sack",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": 0.04676857634507264,
+        "raw_advantage": 0.18707430538029057,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.988095238095238,
+        "source": "historian_td"
+      },
+      "close sack": {
+        "action": "close sack",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": -0.09117894950889185,
+        "raw_advantage": -0.22794737377222962,
+        "sample_count": 2,
+        "confidence": 0.0,
+        "best_similarity": 0.9163398692810457,
+        "source": "historian_td"
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down lunch": {
+        "action": "put down lunch",
+        "q_value": null,
+        "state_value_baseline": -9.999999999999998,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.7166704108993236
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:29-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: The previous objective stalled. Preserve valuables and investigate a new exit or local prerequisite. Reconsider it when observed evidence changes.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Putting down the lunch will free up inventory space and allow for further exploration or interaction in the dark Cellar.
+Base action: put down lunch
+Candidate actions: ["put down lunch", "put down garlic", "put down sack", "shake sack", "take garlic"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "put down lunch",
+  "candidate_actions": ["put down lunch", "put down garlic", "put down sack", "shake sack", "take garlic"],
+  "decision_rationale": "Putting down the lunch will free up inventory space and allow for further exploration or interaction in the dark Cellar.",
+  "inventory_items": ["lunch", "brown sack", "clove of garlic"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["lunch"],
+  "useful_items": ["brown sack"],
+  "uncertain_items": ["clove of garlic"],
+  "puzzle_clues": [],
+  "state_note": "Preparing to clear inventory to facilitate exploration or item interactions."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:29-05:00
+Base model action: put down lunch
+Final action after Actor RL: put down lunch
+RL selection details:
+{
+  "action": "put down lunch",
+  "candidates": [
+    "put down lunch",
+    "put down garlic",
+    "put down sack",
+    "shake sack",
+    "take garlic"
+  ],
+  "scorer_preferred_action": "put down lunch",
+  "corrected_preferred_action": "put down lunch",
+  "base_logits": [
+    0.0,
+    -15.5,
+    -18.125,
+    -17.125,
+    -17.625
+  ],
+  "adjusted_logits": [
+    0.15,
+    -15.35,
+    -17.975,
+    -16.975,
+    -17.546451449682166
+  ],
+  "conditioned_logits": [
+    0.15,
+    -15.35,
+    -17.975,
+    -16.975,
+    -17.546451449682166
+  ],
+  "probabilities": [
+    0.9999997438542932,
+    1.8553908873654465e-07,
+    1.3440406508431715e-08,
+    3.6534812778972615e-08,
+    2.0631398844672312e-08
+  ],
+  "base_probabilities": [
+    0.9999997423262084,
+    1.855390884530251e-07,
+    1.3440406487893628e-08,
+    3.653481272314431e-08,
+    2.2159484063446228e-08
+  ],
+  "advantages": {
+    "put down lunch": 0.0,
+    "put down garlic": 0.0,
+    "put down sack": 0.0,
+    "shake sack": 0.0,
+    "take garlic": -0.05503493372029661
+  },
+  "corrections": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.07854855031783381
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0000000000000002,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 5.394191254712601e-11,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 1,
+    "actions": {
+      "put down lunch": {
+        "action": "put down lunch",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "shake sack": {
+        "action": "shake sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take garlic": {
+        "action": "take garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": -0.05503493372029661,
+        "raw_advantage": -0.22013973488118643,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.8333333333333333,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 1.1662547225162492
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:32-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Shaking the sack may reveal hidden contents or produce a score change, which is crucial in the current pitch-black environment.
+Base action: shake sack
+Candidate actions: ["shake sack", "take garlic", "close sack", "put down sack", "put down garlic"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "shake sack",
+  "candidate_actions": ["shake sack", "take garlic", "close sack", "put down sack", "put down garlic"],
+  "decision_rationale": "Shaking the sack may reveal hidden contents or produce a score change, which is crucial in the current pitch-black environment.",
+  "inventory_items": ["brown sack", "clove of garlic"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": ["brown sack"],
+  "uncertain_items": ["clove of garlic"],
+  "puzzle_clues": ["The environment is pitch black, and I need to explore for score-producing actions."],
+  "state_note": "Currently in a pitch-black room with no clear path; shaking the sack may provide new information or score."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:32-05:00
+Base model action: shake sack
+Final action after Actor RL: shake sack
+RL selection details:
+{
+  "action": "shake sack",
+  "candidates": [
+    "shake sack",
+    "take garlic",
+    "close sack",
+    "put down sack",
+    "put down garlic"
+  ],
+  "scorer_preferred_action": "shake sack",
+  "corrected_preferred_action": "shake sack",
+  "base_logits": [
+    0.0,
+    -23.125,
+    -26.625,
+    -25.125,
+    -23.25
+  ],
+  "adjusted_logits": [
+    0.15,
+    -23.046439802154318,
+    -26.583997469385398,
+    -24.975,
+    -23.1
+  ],
+  "conditioned_logits": [
+    0.15,
+    -23.046439802154318,
+    -26.583997469385398,
+    -24.975,
+    -23.1
+  ],
+  "probabilities": [
+    0.9999999998210551,
+    8.431681519275183e-11,
+    2.4522933461135696e-12,
+    1.2256067441906323e-11,
+    7.991959891523812e-11
+  ],
+  "base_probabilities": [
+    0.9999999998145288,
+    9.056076987993225e-11,
+    2.7346982910846666e-12,
+    1.2256067441826336e-11,
+    7.991959891471654e-11
+  ],
+  "advantages": {
+    "shake sack": 0.0,
+    "take garlic": -0.0550116386646014,
+    "close sack": -0.09120001952768506,
+    "put down sack": 0.0,
+    "put down garlic": 0.0
+  },
+  "corrections": [
+    0.15,
+    0.07856019784568141,
+    0.04100253061460134,
+    0.15,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999999999,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 2.3546463017689006e-13,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 2,
+    "actions": {
+      "shake sack": {
+        "action": "shake sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "take garlic": {
+        "action": "take garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": -0.0550116386646014,
+        "raw_advantage": -0.2200465546584056,
+        "sample_count": 1,
+        "confidence": 0.0,
+        "best_similarity": 0.9462962962962963,
+        "source": "historian_td"
+      },
+      "close sack": {
+        "action": "close sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": -0.09120001952768506,
+        "raw_advantage": -0.22800004881921263,
+        "sample_count": 2,
+        "confidence": 0.0,
+        "best_similarity": 0.8990196078431372,
+        "source": "historian_td"
+      },
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "put down garlic": {
+        "action": "put down garlic",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.9080279562721782
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:36-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The brown sack has spilled its contents and is no longer useful in this pitch black environment, so I should put it down to avoid carrying unnecessary weight.
+Base action: put down sack
+Candidate actions: ["put down sack", "close sack", "north", "south", "east"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "put down sack",
+  "candidate_actions": ["put down sack", "close sack", "north", "south", "east"],
+  "decision_rationale": "The brown sack has spilled its contents and is no longer useful in this pitch black environment, so I should put it down to avoid carrying unnecessary weight.",
+  "inventory_items": ["brown sack"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["The brown sack is empty after spilling its contents."],
+  "state_note": "The sack is no longer useful as it has spilled its contents."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:36-05:00
+Base model action: put down sack
+Final action after Actor RL: put down sack
+RL selection details:
+{
+  "action": "put down sack",
+  "candidates": [
+    "put down sack",
+    "close sack",
+    "north",
+    "south",
+    "east"
+  ],
+  "scorer_preferred_action": "put down sack",
+  "corrected_preferred_action": "put down sack",
+  "base_logits": [
+    -0.00043487548828125,
+    -10.750434875488281,
+    -9.375434875488281,
+    -8.500434875488281,
+    -9.000434875488281
+  ],
+  "adjusted_logits": [
+    0.14956512451171874,
+    -10.708384001470252,
+    -9.225434875488281,
+    -8.350434875488281,
+    -9.913832335109838
+  ],
+  "conditioned_logits": [
+    0.14956512451171874,
+    -10.708384001470252,
+    -9.225434875488281,
+    -8.350434875488281,
+    -9.913832335109838
+  ],
+  "probabilities": [
+    0.9996499739589739,
+    1.9244231330255537e-05,
+    8.4788546655379e-05,
+    0.00020339714978296535,
+    4.259611325759605e-05
+  ],
+  "base_probabilities": [
+    0.9995670457139457,
+    2.1436123435142312e-05,
+    8.478151282798364e-05,
+    0.00020338027650820454,
+    0.00012335637328305912
+  ],
+  "advantages": {
+    "put down sack": 0.0,
+    "close sack": -0.08910333272083087,
+    "north": 0.0,
+    "south": 0.0,
+    "east": -2.0
+  },
+  "corrections": [
+    0.15,
+    0.04205087401802843,
+    0.15,
+    0.15,
+    -0.9133974596215562
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0000000000000002,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 3.558672680280515e-05,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 2,
+    "actions": {
+      "put down sack": {
+        "action": "put down sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "close sack": {
+        "action": "close sack",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": -0.10354454738288972,
+        "raw_advantage": -0.2588613684572243,
+        "sample_count": 2,
+        "confidence": 0.0,
+        "best_similarity": 0.77,
+        "source": "historian_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": -10.0,
+        "state_value_baseline": -10.0,
+        "advantage": -2.4276898789005004,
+        "raw_advantage": -12.138449394502501,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.7164285714285714,
+        "source": "equal_mixture_mc_and_td"
+      }
+    },
+    "critic_state_value": 2.4082655213933952
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T15:11:39-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving north may lead to a new area to explore, as I cannot move in the pitch black and need to find a way to gather score-producing actions.
+Base action: north
+Candidate actions: ["north", "east", "south"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "east", "south"],
+  "decision_rationale": "Moving north may lead to a new area to explore, as I cannot move in the pitch black and need to find a way to gather score-producing actions.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Currently in a pitch black room with no items; need to explore for score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T15:11:39-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "east",
+    "south"
+  ],
+  "scorer_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "base_logits": [
+    0.0,
+    -15.75,
+    -16.0
+  ],
+  "adjusted_logits": [
+    0.15,
+    -16.663397459621557,
+    -15.85
+  ],
+  "conditioned_logits": [
+    0.15,
+    -16.663397459621557,
+    -15.85
+  ],
+  "probabilities": [
+    0.9999998375724672,
+    4.9892376468184255e-08,
+    1.1253515644044834e-07
+  ],
+  "base_probabilities": [
+    0.9999997429668667,
+    1.4449798747014445e-07,
+    1.1253514579399054e-07
+  ],
+  "advantages": {
+    "north": 0.0,
+    "east": -2.0,
+    "south": 0.0
+  },
+  "corrections": [
+    0.15,
+    -0.9133974596215562,
+    0.15
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0000000000000002,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 4.155019401886578e-08,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -10.0,
+    "samples": 2,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "east": {
+        "action": "east",
+        "q_value": -10.0,
+        "state_value_baseline": -10.0,
+        "advantage": -2.4194792048309433,
+        "raw_advantage": -12.097396024154715,
+        "sample_count": 2,
+        "confidence": 0.4,
+        "best_similarity": 0.8138888888888889,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": -10.0,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 1.6251570927908032
+  }
+}

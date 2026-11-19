@@ -1,0 +1,569 @@
+Episode 36 log: logs/no-map-1_20261119_142411/episode_0036.txt
+Episode 36 chat log: logs/no-map-1_20261119_142411/episode_0036_chat.txt
+Episode 36 decision-rationale log: logs/no-map-1_20261119_142411/episode_0036_reasoning.txt
+Episode: 36/50
+Initial observation: Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.
+ZORK is a registered trademark of Infocom, Inc.
+Revision 88 / Serial number 840726
+
+West of House
+You are standing in an open field west of a white house, with a boarded front door.
+There is a small mailbox here.
+
+
+Starting location: West House
+Target score: 80
+Model: openai/gpt-4o-mini | Agent type: smart
+Maximum steps: 500
+
+LESSONS LEARNED FROM PREVIOUS EPISODES:
+Repeat these positive behaviors:
+1. At Up a Tree, 'take egg' recorded +5. Do it early, then go straight to the house with the egg.
+2. At Behind House, 'open window' then west into the Kitchen recorded +10. Take that route home immediately.
+3. From the Kitchen, go west to the Living Room, then 'put egg in case' immediately after 'open case'. Verify score and inventory.
+4. Before descending, run inventory. Confirm the lantern is carried and lit and the sword is in hand; only then try the trap door.
+5. Once the egg is deposited, explore new rooms and test room-specific commands for new score; log score changes after each action.
+Avoid these negative behaviors:
+1. Don't wander around North/West/South House and Forest while carrying the egg; this episode lost about nine steps. Go to Behind House.
+2. Never stop after 'open case'. Next action must be 'put egg in case'. This episode ended with the egg undeposited.
+3. Never descend without 'take lantern'. A lit lantern lying in the room is not carried; dark Cellar moves caused grue death (-10).
+4. Avoid wasteful detours: mailbox, leaflet, sack, bottle, Attic, and repeated forest loops. Prioritize known score routes and new rooms.
+5. Don't turn on the lantern in the lit Living Room as filler. Use steps for deposit, inventory checks, and progress; ask why before acting.
+Apply these lessons when relevant; current game feedback takes precedence.
+
+========== STEP 1/500 ==========
+Location: West House
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest
+This is a forest, with trees in all directions. To the east, there appears to be sunlight.
+
+
+New location: Forest
+Score: 0 (delta: 0) | reward: 0
+
+========== STEP 2/500 ==========
+Location: Forest
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest Path
+This is a path winding through a dimly lit forest. The path heads north-south here. One particularly large tree with some low branches stands at the edge of the path.
+
+
+New location: Forest Path
+Score: 0 (delta: 0) | reward: 0
+
+========== STEP 3/500 ==========
+Location: Forest Path
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: up
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Up a Tree
+You are about 10 feet above the ground nestled among some large branches. The nearest branch above you is above your reach.
+Beside you on the branch is a small bird's nest.
+In the bird's nest is a large egg encrusted with precious jewels, apparently scavenged by a childless songbird. The egg is covered with fine gold inlay, and ornamented in lapis lazuli and mother-of-pearl. Unlike most eggs, this one is hinged and closed with a delicate looking clasp. The egg appears extremely fragile.
+
+
+New location: Up a Tree
+Score: 0 (delta: 0) | reward: 0
+
+========== STEP 4/500 ==========
+Location: Up a Tree
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +110 (4.23 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: You are already at the room where the interaction previously produced score.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Reassess prior productive interactions and explore current clues.
+Action source: smart_actor
+Action: take egg
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Up a Tree
+Score: 5 (delta: 5) | reward: 5
+
+========== STEP 5/500 ==========
+Location: Up a Tree
+Goal: Find a way back to Living Room while preserving treasure candidates egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest Path
+
+
+New location: Forest Path
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 6/500 ==========
+Location: Forest Path
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North of House
+You are facing the north side of a white house. There is no door here, and all the windows are boarded up. To the north a narrow path winds through the trees.
+
+
+New location: North House
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 7/500 ==========
+Location: North House
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: West of House
+There is a small mailbox here.
+
+
+New location: West House
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 8/500 ==========
+Location: West House
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: South of House
+You are facing the south side of a white house. There is no door here, and all the windows are boarded.
+
+
+New location: South House
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 9/500 ==========
+Location: South House
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: West of House
+There is a small mailbox here.
+
+
+New location: West House
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 10/500 ==========
+Location: West House
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: South of House
+
+
+New location: South House
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 11/500 ==========
+Location: South House
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest
+This is a dimly lit forest, with large trees all around.
+
+
+New location: Forest
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 12/500 ==========
+Location: Forest
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: go around trees
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest Path
+
+
+New location: Forest Path
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 13/500 ==========
+Location: Forest Path
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North of House
+
+
+New location: North House
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 14/500 ==========
+Location: North House
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Behind House
+You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar.
+
+
+New location: Behind House
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 15/500 ==========
+Location: Behind House
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: open window
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: With great effort, you open the window far enough to allow entry.
+
+
+New location: Behind House
+Score: 5 (delta: 0) | reward: 0
+
+========== STEP 16/500 ==========
+Location: Behind House
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Kitchen
+You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open.
+On the table is an elongated brown sack, smelling of hot peppers.
+A bottle is sitting on the table.
+The glass bottle contains:
+  A quantity of water
+
+
+New location: Kitchen
+Score: 15 (delta: 10) | reward: 10
+
+========== STEP 17/500 ==========
+Location: Kitchen
+Goal: Find a way back to Living Room while preserving treasure candidates jewel-encrusted egg. Investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Living Room
+You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room.
+Above the trophy case hangs an elvish sword of great antiquity.
+A battery-powered brass lantern is on the trophy case.
+
+
+New location: Living Room
+Score: 15 (delta: 0) | reward: 0
+
+========== STEP 18/500 ==========
+Location: Living Room
+Goal: You are in Living Room carrying treasure candidates: jewel-encrusted egg. Deposit those candidates in the trophy case, but do not mistake ordinary items (none currently reported) or useful tools (none currently reported) for treasure. Then inspect inventory and score feedback to verify what was secured.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: open case
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Opened.
+
+
+New location: Living Room
+Score: 15 (delta: 0) | reward: 0
+
+========== STEP 19/500 ==========
+Location: Living Room
+Goal: You are in Living Room carrying treasure candidates: jewel-encrusted egg. Deposit those candidates in the trophy case, but do not mistake ordinary items (none currently reported) or useful tools (none currently reported) for treasure. Then inspect inventory and score feedback to verify what was secured.
+  1. Return to Living Room: Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Action source: smart_actor
+Action: put egg in case
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Done.
+
+
+New location: Living Room
+Score: 20 (delta: 5) | reward: 5
+
+========== STEP 20/500 ==========
+Location: Living Room
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: take lantern
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Living Room
+Score: 20 (delta: 0) | reward: 0
+
+========== STEP 21/500 ==========
+Location: Living Room
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: turn on lantern
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The brass lantern is now on.
+
+
+New location: Living Room
+Score: 20 (delta: 0) | reward: 0
+
+========== STEP 22/500 ==========
+Location: Living Room
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: push rug
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door.
+
+
+New location: Living Room
+Score: 20 (delta: 0) | reward: 0
+
+========== STEP 23/500 ==========
+Location: Living Room
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: open trap
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The door reluctantly opens to reveal a rickety staircase descending into darkness.
+
+
+New location: Living Room
+Score: 20 (delta: 0) | reward: 0
+
+========== STEP 24/500 ==========
+Location: Living Room
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The trap door crashes shut, and you hear someone barring it.
+
+Cellar
+You are in a dark and damp cellar with a narrow passageway leading north, and a crawlway to the south. On the west is the bottom of a steep metal ramp which is unclimbable.
+
+
+New location: Cellar
+Score: 45 (delta: 25) | reward: 25
+
+========== STEP 25/500 ==========
+Location: Cellar
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The Troll Room
+This is a small room with passages to the east and south and a forbidding hole leading west. Bloodstains and deep scratches (perhaps made by an axe) mar the walls.
+A nasty-looking troll, brandishing a bloody axe, blocks all passages out of the room.
+The axe crashes against the rock, throwing sparks!
+
+
+New location: Troll 
+Score: 45 (delta: 0) | reward: 0
+
+========== STEP 26/500 ==========
+Location: Troll 
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Cellar
+
+
+New location: Cellar
+Score: 45 (delta: 0) | reward: 0
+
+========== STEP 27/500 ==========
+Location: Cellar
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The Troll Room
+A nasty-looking troll, brandishing a bloody axe, blocks all passages out of the room.
+The troll swings; the blade turns on your armor but crashes broadside into your head.
+
+
+New location: Troll 
+Score: 45 (delta: 0) | reward: 0
+
+========== STEP 28/500 ==========
+Location: Troll 
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Cellar
+
+
+New location: Cellar
+Score: 45 (delta: 0) | reward: 0
+
+========== STEP 29/500 ==========
+Location: Cellar
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The Troll Room
+A nasty-looking troll, brandishing a bloody axe, blocks all passages out of the room.
+
+
+New location: Troll 
+Score: 45 (delta: 0) | reward: 0
+
+========== STEP 30/500 ==========
+Location: Troll 
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: take walls
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: What a concept!
+The troll swings his axe, and it nicks your arm as you dodge.
+
+
+New location: Troll 
+Score: 45 (delta: 0) | reward: 0
+
+========== STEP 31/500 ==========
+Location: Troll 
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: You can't go that way.
+The flat of the troll's axe hits you delicately on the head, knocking you out.
+Conquering his fears, the troll puts you to death.
+It appears that that last blow was too much for you. I'm afraid you are dead.
+ 
+   ****  You have died  **** 
+
+Now, let's take a look here... Well, you probably deserve another chance. I can't quite fix you up completely, but you can't have everything.
+
+Forest
+
+
+New location: Forest
+Score: 35 (delta: -10) | reward: -10
+Environment ended.
+Episode finished: score=35, moves=31, reason=environment_done
+Actor experience update: {'episode_id': 'no-map-1_20261119_142411/episode_0036', 'steps': 31, 'actor_experiences': 31, 'score_reward_total': 35.0, 'discounted_return_first_step': 32.4435729686045, 'termination_reason': 'environment_done', 'final_score': 35.0, 'memory_path': 'logs/no-map-1_20261119_142411/memory/actor_experiences.jsonl', 'bootstrap_value': 0.0, 'episode_truncated': False, 'training_eligible': True, 'return_estimator': 'monte_carlo'}
+Historian critic update: {'enabled': True, 'updates': 31, 'mean_absolute_prediction_error': 5.013381419137374, 'state_visits': 2240, 'episodes_trained': 36, 'termination_reason': 'environment_done', 'path': 'logs/no-map-1_20261119_142411/memory/historian_td.json'}
+Actor experience samples saved: 31 (logs/no-map-1_20261119_142411/episode_0036_experience.jsonl)
+
+Historian episode review — episode 36
+================================================
+
+Review source: llm
+Lessons: 5 positive + 5 negative (configured per category: 5)
+
+The Actor reached 35/80 in 31 steps and ended in death. Its strongest sequence was the +5 egg take, open window and west into the Kitchen for +10, then 'open case' and 'put egg in case' for +5. It also took and lit the lantern before the trap door, and the +25 was recorded on 'down'. Missed opportunities were steps 5-13, when it looped through the houses and forest with the egg for about nine moves, and failing to take a weapon or check inventory before going north. The Troll Room entry went badly: it bounced north and south twice, issued 'take walls' while the troll attacked, and was killed (-10, consistent with the 45 to 35 drop). The symbolic navigation largely succeeded; the failures were in the Actor's choices. Next time: head straight to Behind House, deposit the egg, and check inventory for lantern and sword before the trap door. Do not enter the troll's room unprepared.
+
+LESSONS LEARNED
+================================
+POSITIVES TO REPEAT
+1. From Forest Path 'up' then 'take egg' recorded +5 again. Do it early and keep the egg safe.
+2. With the egg, go to Behind House, 'open window', then west into the Kitchen: +10 recorded. Repeat it directly, without detours.
+3. In the Living Room, 'open case' followed immediately by 'put egg in case' recorded +5. Keep that two-step deposit and verify the score.
+4. 'take lantern' and 'turn on lantern' before 'down' preceded +25 at the trap door, and the Cellar was navigable. Keep lantern carried and lit.
+5. Before leaving the Living Room, run inventory and confirm lantern and sword are carried. Do this before any Troll Room entry.
+
+NEGATIVES TO AVOID
+1. Never enter the Troll Room unarmed. This episode went north from the Cellar without a sword and died there (-10).
+2. Don't spend turns on junk actions like 'take walls' next to a hostile troll; the axe hit immediately. Retreat or act purposefully.
+3. Don't loop North/West/South House and Forest while carrying the egg (about nine wasted steps). From North House go east to Behind House.
+4. Don't oscillate Cellar/Troll Room (north, south, north, south) without new information. Prepare first, then commit once.
+5. Don't make exploratory forest moves like 'go around trees' or west into Forest from West House. Reach the known route and score opportunities directly.
+
+Historian review saved to: logs/no-map-1_20261119_142411/episode_0036_review.txt
+Episode lessons saved to: logs/no-map-1_20261119_142411/episode_0036_lessons.txt
+Current trial lessons saved to: logs/no-map-1_20261119_142411/lessons_learned.txt

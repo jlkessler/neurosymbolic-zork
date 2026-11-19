@@ -1,0 +1,295 @@
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T16:50:12-05:00
+Model: openai/gpt-4o-mini
+Location: West House
+Score: 0
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving west is a previously successful action that has yielded score increases and aligns with the goal of exploring productive opportunities.
+Base action: west
+Candidate actions: ["west", "open mailbox", "north", "south"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "open mailbox", "north", "south"],
+  "decision_rationale": "Moving west is a previously successful action that has yielded score increases and aligns with the goal of exploring productive opportunities.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring west may reveal new score-producing opportunities or valuable items."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T16:50:12-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "open mailbox",
+    "north",
+    "south"
+  ],
+  "scorer_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "base_logits": [
+    0.0,
+    -15.0,
+    -19.0,
+    -15.75
+  ],
+  "adjusted_logits": [
+    0.46913038010406943,
+    -16.12949198832483,
+    -18.95,
+    -15.7
+  ],
+  "conditioned_logits": [
+    0.46913038010406943,
+    -16.12949198832483,
+    -18.95,
+    -15.7
+  ],
+  "probabilities": [
+    0.9999998394452012,
+    6.184574543067146e-08,
+    3.684501713523601e-09,
+    9.502455161725396e-08
+  ],
+  "base_probabilities": [
+    0.9999995439970665,
+    3.059021810094703e-07,
+    5.602793882645657e-09,
+    1.4449795871940137e-07
+  ],
+  "advantages": {
+    "west": 0.568370779217911,
+    "open mailbox": -1.431629220782089,
+    "north": 0.0,
+    "south": 0.0
+  },
+  "corrections": [
+    0.46913038010406943,
+    -1.1294919883248293,
+    0.05,
+    0.05
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 1.5520827074160855e-07,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 22.4302591610355,
+    "samples": 20,
+    "actions": {
+      "west": {
+        "action": "west",
+        "q_value": 28.106585659293025,
+        "state_value_baseline": 22.4302591610355,
+        "advantage": 1.46330320605855,
+        "raw_advantage": -1.951554701017578,
+        "sample_count": 11,
+        "confidence": 0.7857142857142857,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "open mailbox": {
+        "action": "open mailbox",
+        "q_value": 15.492526774276305,
+        "state_value_baseline": 22.4302591610355,
+        "advantage": -3.685811630816362,
+        "raw_advantage": -2.8910986287511022,
+        "sample_count": 9,
+        "confidence": 0.75,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": 22.4302591610355,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": 22.4302591610355,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 23.370679984488678
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-19T16:50:14-05:00
+Model: openai/gpt-4o-mini
+Location: Forest
+Score: 0
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east leads to sunlight, which may indicate a new area with potential score-producing opportunities.
+Base action: east
+Candidate actions: ["east", "north", "south", "go around trees"]
+Navigation context:
+None
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["east", "north", "south", "go around trees"],
+  "decision_rationale": "Moving east leads to sunlight, which may indicate a new area with potential score-producing opportunities.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Moving east may reveal new interactions or treasures in the sunlight."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-19T16:50:15-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "north",
+    "south",
+    "go around trees"
+  ],
+  "scorer_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "base_logits": [
+    0.0,
+    -23.375,
+    -27.125,
+    -25.625
+  ],
+  "adjusted_logits": [
+    0.4634426044774827,
+    -23.325,
+    -27.075,
+    -25.575
+  ],
+  "conditioned_logits": [
+    0.4634426044774827,
+    -23.325,
+    -27.075,
+    -25.575
+  ],
+  "probabilities": [
+    0.999999999947341,
+    4.664559570642175e-11,
+    1.0969992651257765e-12,
+    4.916409616683081e-12
+  ],
+  "base_probabilities": [
+    0.9999999999203788,
+    7.052879850550601e-11,
+    1.6586783587821653e-12,
+    7.43368067176031e-12
+  ],
+  "advantages": {
+    "east": 0.5656646374571038,
+    "north": 0.0,
+    "south": 0.0,
+    "go around trees": 0.0
+  },
+  "corrections": [
+    0.4634426044774827,
+    0.05,
+    0.05,
+    0.05
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": 0.0,
+  "selection_mode": "greedy",
+  "kl_to_base": 5.190734231525861e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 23.745692435636293,
+    "samples": 20,
+    "actions": {
+      "east": {
+        "action": "east",
+        "q_value": 23.745692435636293,
+        "state_value_baseline": 23.745692435636293,
+        "advantage": 0.5656646374571038,
+        "raw_advantage": 1.3010286661513388,
+        "sample_count": 20,
+        "confidence": 0.8695652173913043,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td"
+      },
+      "north": {
+        "action": "north",
+        "q_value": null,
+        "state_value_baseline": 23.745692435636293,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "south": {
+        "action": "south",
+        "q_value": null,
+        "state_value_baseline": 23.745692435636293,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      },
+      "go around trees": {
+        "action": "go around trees",
+        "q_value": null,
+        "state_value_baseline": 23.745692435636293,
+        "advantage": 0.0,
+        "raw_advantage": 0.0,
+        "sample_count": 0,
+        "confidence": 0.0,
+        "best_similarity": 0.0
+      }
+    },
+    "critic_state_value": 21.486813419985598
+  }
+}

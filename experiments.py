@@ -13,17 +13,20 @@ import subprocess
 import sys
 
 
+HYBRID = ["--evolve", "--actor-rl", "--historian-critic", "--historian-review"]
 CONDITIONS = {
     "fixed_policy": ["--no-evolve", "--no-actor-rl", "--no-historian-critic", "--no-historian-review", "--no-nsi"],
     "evolution": ["--evolve", "--no-actor-rl", "--no-historian-critic", "--no-historian-review", "--no-nsi"],
     "actor_critic": ["--no-evolve", "--actor-rl", "--historian-critic", "--no-historian-review", "--no-nsi"],
-    "hybrid": ["--evolve", "--actor-rl", "--historian-critic", "--no-historian-review", "--nsi"],
+    "hybrid": [*HYBRID, "--nsi", "--map-navigation"],
+    "hybrid_no_map": [*HYBRID, "--no-map-navigation"],
 }
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--conditions", nargs="+", choices=CONDITIONS, default=list(CONDITIONS))
+    parser.add_argument("--conditions", nargs="+", choices=CONDITIONS,
+                        default=["fixed_policy", "evolution", "actor_critic", "hybrid"])
     parser.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2])
     parser.add_argument("--episodes", type=int, default=50)
     parser.add_argument("--max-steps", type=int, default=110)

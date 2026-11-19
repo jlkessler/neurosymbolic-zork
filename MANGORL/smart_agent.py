@@ -38,6 +38,7 @@ class SmartAgent:
         client=None,
         policy_mode="rank",
         seed=0,
+        map_navigation=True,
     ):
         self.model = model or os.getenv("ACTOR_MODEL", "gemma4:31b")
         self.base_url = base_url or os.getenv(
@@ -67,6 +68,7 @@ class SmartAgent:
         self.configuration = None
         self.policy_mode = policy_mode
         self.rng = random.Random(seed)
+        self.map_navigation = map_navigation
 
     def apply_configuration(self, configuration):
         self.configuration = validate_configuration(configuration)
@@ -222,32 +224,25 @@ class SmartAgent:
         if not valid_actions:
             raise ValueError("The Actor cannot choose from an empty action list.")
 
-        known_locations = known_locations or []
-        known_routes = known_routes or []
         avoid_actions = avoid_actions or []
         preferred_actions = preferred_actions or []
         goal = goal or {"kind": "explore", "description": "Explore the world."}
 
-        route_lines = []
-        direct_destinations = []
-        available_by_normalized = {
-            NavigationController._normalize_action(action): action for action in valid_actions
-        }
-        for route in known_routes[:15]:
-            route_actions = [NavigationController._normalize_action(a) for a in route.get("actions", [])]
-            destination = route.get("destination_label", route.get("destination"))
-            route_lines.append(
-                f"- {destination} "
-                f"({route.get('total_cost', '?')} movement commands): "
-                f"{' -> '.join(route_actions)}"
-            )
-            if len(route_actions) == 1 and route_actions[0] in available_by_normalized:
-                direct_destinations.append(
-                    f"- {available_by_normalized[route_actions[0]]}: historically led to {destination}")
-        navigation_text = "\n".join(route_lines) or "No known routes are available."
-        if direct_destinations:
-            navigation_context += ("\nAVAILABLE COMMAND DESTINATIONS (historical, verify after execution):\n" +
-                                   "\n".join(direct_destinations))
+        if self.map_navigation:
+            navigation_role = "A symbolic navigation controller may\nexecute known routes. "
+            return_strategy = "  retain discovered return routes while exploring; pursue known"
+            route_strategy = """- Treat persistent map routes as historical hypotheses, not proof that a
+  passage is currently open. The symbolic navigator may cautiously probe a
+  historical candidate one transition at a time; each step must succeed before
+  it advances. If a step fails or is unavailable, the plan is abandoned.
+"""
+            movement_strategy = """- Ground movement commands in the map's command-to-destination associations.
+  Check that your chosen direction actually corresponds to your stated goal."""
+        else:
+            navigation_role = ""
+            return_strategy = "  keep the return to the Living Room in mind while exploring. Pursue known"
+            route_strategy = ""
+            movement_strategy = "- Choose movement commands using current observations and recent action history."
 
         system_prompt = f"""You are the reasoning Actor in a neuro-symbolic agent playing Zork I.
 
@@ -255,8 +250,7 @@ The objective is to reach the configured score target of {target_score}.
 You do not have a walkthrough, official treasure list, or point-value table.
 Discover how the game works from its observations and score feedback.
 
-You choose one game command at a time. A symbolic navigation controller may
-execute known routes. The Historian maintains strategic goals and lessons.
+You choose one game command at a time. {navigation_role}The Historian maintains strategic goals and lessons.
 The Historian may also provide a configurable set of positive behaviors learned
 from prior episodes and negative behaviors to avoid. Apply those lessons when
 they fit the current state, but let fresh environment feedback take precedence.
@@ -271,7 +265,7 @@ STRATEGY:
   interactions that may produce score. Learn from actual score increases and
   from previously successful actions/locations listed in Historian guidance.
 - Make goals sequential rather than impulsive: after entering the underground,
-  retain discovered return routes while exploring; pursue known
+{return_strategy}
   score-positive opportunities, collect likely valuables, return and deposit
   those valuables, and continue to the next productive opportunity.
 - Classify inventory carefully. `inventory_items` must list everything you
@@ -286,11 +280,7 @@ STRATEGY:
 - Do not assume an item is treasure just because it is unusual or carried.
   Recorded score-positive pickup/deposit evidence is stronger than a guess.
   If item purpose is unclear, inspect it or retain it while you gather evidence.
-- Treat persistent map routes as historical hypotheses, not proof that a
-  passage is currently open. The symbolic navigator may cautiously probe a
-  historical candidate one transition at a time; each step must succeed before
-  it advances. If a step fails or is unavailable, the plan is abandoned.
-- When a candidate return route is blocked, or no route is known, make solving
+{route_strategy}- When a candidate return route is blocked, or no route is known, make solving
   the return route a strategic objective when carrying treasure. Otherwise continue productive exploration. Use textual clues to infer barriers,
   prerequisites, and alternate paths rather than repeating the failed command.
 - For puzzles, inspect the situation and reason from textual clues. Consider
@@ -300,8 +290,7 @@ STRATEGY:
 - Current room text, inventory, and the available command menu override old
   clues about an object's state. When the environment reports an obstacle has
   opened, investigate the newly available route before undoing that progress.
-- Ground movement commands in the map's command-to-destination associations.
-  Check that your chosen direction actually corresponds to your stated goal.
+{movement_strategy}
 - Avoid repeating an action when the location, score, and observation do not
   meaningfully change. Repeated-failure warnings are evidence, not absolute
   bans if new clues appear.
@@ -338,12 +327,13 @@ markdown fences or prose outside the JSON.
                 "OUTPUT:", "ADDITIONAL LEARNED STRATEGY:\n" +
                 self.configuration["actor_strategy"] + "\n\nOUTPUT:", 1)
 
+        route_status = f"Home route status: {goal.get('route_status', 'not supplied')}\n" if self.map_navigation else ""
         goal_text = (
             f"Type: {goal.get('kind')}\n"
             f"Objective: {goal.get('description')}\n"
             f"Target: {goal.get('target_label')}\n"
             f"Carried treasure candidates: {goal.get('carried_treasures', [])}\n"
-            f"Home route status: {goal.get('route_status', 'not supplied')}\n"
+            f"{route_status}"
             f"Suggested action: {goal.get('suggested_action')}\n"
             f"Preferred actions: {goal.get('preferred_actions', [])}\n"
             f"Ordered strategic sequence: {json.dumps(goal.get('sequence', []), ensure_ascii=False)}\n"
@@ -357,13 +347,34 @@ markdown fences or prose outside the JSON.
             "goal": f"HISTORIAN GOAL:\n{goal_text}",
             "guidance": f"HISTORIAN GUIDANCE:\n{historian_guidance or 'No persistent lessons yet.'}\nACTIONS TO AVOID REPEATING WITHOUT NEW EVIDENCE:\n{', '.join(avoid_actions)}",
             "experience": f"ACTOR REINFORCEMENT-LEARNING GUIDANCE:\n{rl_guidance}",
-            "navigation": f"NAVIGATION CONTROLLER:\n{navigation_context}",
-            "map": f"KNOWN LOCATIONS:\n{', '.join(known_locations[:100])}\nKNOWN ROUTES (historical hypotheses):\n{navigation_text}",
             "history": f"RECENT ACTION HISTORY:\n{self.format_history()}",
             "actions": f"AVAILABLE ACTIONS:\n{actions_text}",
         }
+        if self.map_navigation:
+            route_lines = []
+            direct_destinations = []
+            available_by_normalized = {
+                NavigationController._normalize_action(action): action for action in valid_actions
+            }
+            for route in (known_routes or [])[:15]:
+                route_actions = [NavigationController._normalize_action(a) for a in route.get("actions", [])]
+                destination = route.get("destination_label", route.get("destination"))
+                route_lines.append(
+                    f"- {destination} "
+                    f"({route.get('total_cost', '?')} movement commands): "
+                    f"{' -> '.join(route_actions)}"
+                )
+                if len(route_actions) == 1 and route_actions[0] in available_by_normalized:
+                    direct_destinations.append(
+                        f"- {available_by_normalized[route_actions[0]]}: historically led to {destination}")
+            navigation_text = "\n".join(route_lines) or "No known routes are available."
+            if direct_destinations:
+                navigation_context += ("\nAVAILABLE COMMAND DESTINATIONS (historical, verify after execution):\n" +
+                                       "\n".join(direct_destinations))
+            sections["navigation"] = f"NAVIGATION CONTROLLER:\n{navigation_context}"
+            sections["map"] = f"KNOWN LOCATIONS:\n{', '.join((known_locations or [])[:100])}\nKNOWN ROUTES (historical hypotheses):\n{navigation_text}"
         order = self.configuration["section_order"] if self.configuration else SECTION_NAMES
-        user_prompt = "\n\n".join(sections[name] for name in order)
+        user_prompt = "\n\n".join(sections[name] for name in order if name in sections)
 
         request = {
             "model": self.model,

@@ -211,9 +211,28 @@ python experiments.py --seeds 0 1 2 --episodes 50 --max-steps 60 -- --model YOUR
 
 The harness isolates all memories for every condition and seed. It compares
 fixed-policy control, evolution, actor-critic, and the hybrid sequentially.
-Ordinary prose reviews are off in all four conditions to isolate the mechanisms.
+Written Historian reviews are enabled in both `hybrid` and `hybrid_no_map`.
+The fixed-policy, evolution-only, and actor-critic conditions keep reviews off.
 It stops on an error instead of hiding a failed run. The fixed-policy control
 still maintains observed map and Historian bookkeeping.
+
+Run the paired hybrid conditions on the same seeds and budget to measure the
+effect of the map and navigator.
+
+```bash
+python experiments.py --conditions hybrid hybrid_no_map --seeds 0 1 2 --episodes 10 --max-steps 500 -- --model YOUR_MODEL
+```
+
+For a single run, pass `python main.py --no-map-navigation --fresh-memory`.
+The switch skips loading, updating, and saving the map, removes map and route
+sections from the Actor prompt, and disables autonomous route execution and
+map-based NSI feasibility. The Actor still chooses movement commands from
+Jericho's available actions. The Historian retains observations, score evidence,
+inventory, and cycle detection from actual play. Other settings apply as configured.
+Use fresh memory for both conditions to avoid carrying lessons from one condition
+into the other. Compare each trial's mean score and rate of reaching the
+harness's 350-point target in `metrics_summary.json`. The condition is recorded as `map_navigation` in the
+trial metadata and per-episode metrics.
 
 Useful switches: `--no-evolve`, `--no-actor-rl`, `--no-historian-critic`,
 `--no-historian-review`, `--no-nsi`, `--actor-policy-mode rank`.
@@ -269,3 +288,17 @@ Tests cover the finite integral, masked policy and numerical stability, native
 logprob failures, online credit updates, terminal versus truncated returns,
 route risk, memory reloads, prompt mutation, parent retention and a mocked
 two-episode integration. Live model/ROM performance remains an empirical test.
+# Seed a map from the reference walkthrough
+
+Run `python main.py --walkthrough` in your Jericho environment to replay the
+ROM's built-in reference walkthrough without calling either LLM. This saves to
+`memory/world_model.json`; choose another destination with
+`--walkthrough-map-path PATH`. Existing map nodes and edges are preserved.
+The replay runs independently of `--max-steps`, `--target-score`, and `--episodes`.
+
+The JSON contains the observed room transitions plus the full ordered command
+sequence and executed steps under `graph.walkthrough`, including puzzle and
+inventory commands that do not change rooms. This is Jericho's reference solution,
+not a verified shortest path. Interrupted replays save their observed progress.
+To use the seeded map in an agent run:
+`python main.py --map-path memory/world_model.json`.

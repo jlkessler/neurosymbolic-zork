@@ -53,11 +53,14 @@ class GoalControl:
         if self.active:
             old = self.active
             deposit = old.get('kind') in {'navigate_to_home', 'solve_return_route', 'deposit_treasure'}
+            priority_goals = {'navigate_to_home', 'deposit_treasure'}
+            if map_size is None:
+                priority_goals.add('solve_return_route')
             invalid = (deposit and (not treasures or self.identity(proposed) != self.identity(old)) or
                        old.get('target_node') is None and self.origin != str(node) or
                        old.get('target_node') is not None and str(old['target_node']) == str(node)
                        and proposed.get('kind') != old.get('kind') or
-                       treasures and proposed.get('kind') in {'navigate_to_home', 'deposit_treasure'}
+                       treasures and proposed.get('kind') in priority_goals
                        and self.identity(proposed) != self.identity(old))
             if invalid:
                 self.events.append({'status': 'released', 'reason': 'prerequisites_or_destination_changed', 'goal': old})

@@ -4,6 +4,22 @@ from pathlib import Path
 
 import networkx as nx
 
+from .action_guards import snapshot_sections
+
+
+def observed_room_title(short_name, state_context):
+    """Read a plausible room title from the current look snapshot."""
+    if "CURRENT ROOM (look):\n" not in str(state_context):
+        return None
+    room_text, _ = snapshot_sections(state_context)
+    title = next((line.strip() for line in room_text.splitlines() if line.strip()), "")
+    short_name = " ".join(str(short_name).casefold().split())
+    normalized = " ".join(title.casefold().split())
+    if (not short_name or len(title) > 100 or any(c in title for c in ".!?:")
+            or not (normalized == short_name or normalized.startswith(short_name + " "))):
+        return None
+    return title
+
 
 class WorldMap:
     """Persistent, directed map of Jericho room-object transitions.
@@ -208,20 +224,11 @@ class WorldMap:
         title as an alias instead of merging rooms by a guessed name prefix.
         Raw action responses are not accepted as room snapshots.
         """
-        if node not in self.graph or "CURRENT ROOM (look):\n" not in str(state_context):
+        if node not in self.graph:
             return False
-        room_text = str(state_context).split("CURRENT ROOM (look):\n", 1)[1]
-        room_text = room_text.split("\n\nCURRENT INVENTORY:", 1)[0]
-        lines = [line.strip() for line in room_text.splitlines() if line.strip()]
-        if not lines:
-            return False
-        title = lines[0]
         attributes = self.graph.nodes[node]
-        short_name = " ".join(str(attributes.get("label", node)).casefold().split())
-        normalized = " ".join(title.casefold().split())
-        # A descriptive first line (especially darkness) is not a room title.
-        if (not short_name or len(title) > 100 or any(c in title for c in ".!?:")
-                or not (normalized == short_name or normalized.startswith(short_name + " "))):
+        title = observed_room_title(attributes.get("label", node), state_context)
+        if title is None:
             return False
         aliases = attributes.setdefault("aliases", [])
         if title not in aliases:

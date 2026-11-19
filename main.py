@@ -20,7 +20,7 @@ from MANGORL.historian_rl_controller import HistorianRLController
 from MANGORL.navigation_controller import NavigationController
 from MANGORL.smart_agent import SmartAgent
 from MANGORL.trial_logger import TrialLogger
-from MANGORL.world_map import WorldMap
+from MANGORL.world_map import observed_room_title
 from MANGORL.cognitive_map import CognitiveMap
 from MANGORL.adaptive_system import AdaptiveSystem
 from MANGORL.semantic_memory import FrozenStateEncoder
@@ -96,6 +96,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--map-path", default=os.getenv("ZORK_MAP_PATH", "memory/world_map.json"),
         help="Persistent WorldMap JSON path.",
     )
+    parser.add_argument(
+        "--map-navigation", action=argparse.BooleanOptionalAction, default=True,
+        help="Use the persistent map, symbolic routing, and map-based feasibility. Disable all three with --no-map-navigation.",
+    )
+    parser.add_argument("--walkthrough", action="store_true",
+                        help="Replay Jericho's walkthrough without LLMs and save its path, then exit.")
+    parser.add_argument("--walkthrough-map-path", default="memory/world_model.json",
+                        help="WorldMap JSON to populate when --walkthrough is enabled.")
     parser.add_argument(
         "--historian-path",
         default=os.getenv("ZORK_HISTORIAN_PATH", "memory/historian.json"),
@@ -245,6 +253,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def parse_args(argv=None):
     args = build_arg_parser().parse_args(argv, namespace=RunArguments())
+    if args.walkthrough and not args.map_navigation:
+        raise SystemExit("--walkthrough requires map storage and cannot be used with --no-map-navigation")
+    args.nsi = args.nsi and args.map_navigation
     for name, value in vars(args).items():
         if isinstance(value, float) and not math.isfinite(value):
             raise SystemExit(f"--{name.replace('_', '-')} must be finite")
@@ -369,6 +380,7 @@ def create_agent(args, event_logger=None):
             event_logger=event_logger,
             policy_mode=args.actor_policy_mode,
             seed=args.seed,
+            map_navigation=args.map_navigation,
         )
     raise ValueError(f"Unsupported agent type: {args.agent_type}")
 
@@ -418,6 +430,9 @@ def run_episode(
     control_metrics = {"navigation_without_treasure": 0, "goal_cancellations": 0, "route_starts": 0, "recovery_actions": 0, "treasure_deposits": 0}
     episode_started = False
     termination_reason = "initialization_failed"
+    home_node = None
+    home_label = "Living Room"
+    use_nsi = args.nsi and world_map is not None
 
     try:
         observation, info = env.reset()
@@ -425,13 +440,17 @@ def run_episode(
         if room is None:
             raise RuntimeError("Jericho did not provide the starting room.")
 
-        if not map_initialized:
-            world_map.instantiate()
-        current_node = world_map.start_episode(room.name, room.num)
-        navigator.start_episode()
+        if world_map is not None:
+            if not map_initialized:
+                world_map.instantiate()
+            current_node = world_map.start_episode(room.name, room.num)
+            current_label = world_map.display_location(current_node)
+            navigator.start_episode()
+        else:
+            current_node, current_label = str(room.num), room.name
         historian.start_episode(
             start_node=current_node,
-            start_location=world_map.display_location(current_node),
+            start_location=current_label,
             initial_score=info.get("score"),
         )
         agent.reset_history()
@@ -446,7 +465,7 @@ def run_episode(
 
         print(f"Episode: {episode_number}/{args.episodes}")
         print(f"Initial observation: {observation}")
-        print(f"Starting location: {world_map.display_location(current_node)}")
+        print(f"Starting location: {current_label}")
         print(f"Target score: {args.target_score}")
         print(f"Model: {args.model} | Agent type: {args.agent_type}")
         print(f"Maximum steps: {args.max_steps}")
@@ -458,13 +477,14 @@ def run_episode(
             if room is None:
                 raise RuntimeError("Jericho did not provide the current room.")
 
-            current_node = world_map.resolve_location(room.name, room.num)
-            if current_node is None:
-                current_node = world_map.add_standard_location(room.name, room.num)
-                world_map.current_location = current_node
-                world_map.current_location_name = room.name
-
-            current_label = world_map.display_location(current_node)
+            if world_map is not None:
+                current_node = world_map.resolve_location(room.name, room.num)
+                if current_node is None:
+                    current_node = world_map.add_standard_location(room.name, room.num)
+                    world_map.current_location = current_node
+                    world_map.current_location_name = room.name
+            else:
+                current_node = str(room.num)
             current_score = info.get("score")
             if isinstance(current_score, (int, float)) and current_score >= args.target_score:
                 termination_reason = "target_score_reached"
@@ -475,8 +495,13 @@ def run_episode(
                 termination_reason = "no_valid_actions"
                 break
             decision_observation = current_environment_context(env, observation)
-            world_map.observe_room_title(current_node, decision_observation)
-            current_label = world_map.display_location(current_node)
+            if world_map is not None:
+                world_map.observe_room_title(current_node, decision_observation)
+                current_label = world_map.display_location(current_node)
+            else:
+                current_label = observed_room_title(room.name, decision_observation) or room.name
+                if current_label.casefold() == home_label.casefold():
+                    home_node = current_node
             _, inventory_text = snapshot_sections(decision_observation)
             observed_inventory = inventory_from_text(inventory_text)
             ground_inventory(historian, observed_inventory)
@@ -492,16 +517,17 @@ def run_episode(
                 termination_reason = "no_safe_actions"
                 break
 
-            known_routes = world_map.get_reachable_routes(
-                start=current_node,
-                max_destinations=max(1, world_map.graph.number_of_nodes()),
-            )
-            known_outgoing = get_known_outgoing_actions(world_map, current_node)
-            home_node = find_living_room_node(world_map)
-            home_route_status = (
-                navigator.route_status(home_node)
-                if home_node is not None else "home_undiscovered"
-            )
+            known_routes, known_outgoing = [], ()
+            home_route_status = "disabled"
+            map_size = None
+            if world_map is not None:
+                map_size = (world_map.graph.number_of_nodes(), world_map.graph.number_of_edges())
+                known_routes = world_map.get_reachable_routes(
+                    start=current_node, max_destinations=max(1, map_size[0])
+                )
+                known_outgoing = get_known_outgoing_actions(world_map, current_node)
+                home_node = find_living_room_node(world_map)
+                home_route_status = navigator.route_status(home_node) if home_node is not None else "home_undiscovered"
 
             # Refresh progress evidence before deciding whether a goal is stale.
             historian.cycle_recovery(current_node, valid_actions, state_context=decision_observation)
@@ -513,7 +539,7 @@ def run_episode(
                 known_outgoing_actions=known_outgoing,
                 current_score=current_score,
                 home_node=home_node,
-                home_label="Living Room",
+                home_label=home_label,
                 home_route_status=home_route_status,
             )
             goal["progress_budget"] = max(24, 2 * max(
@@ -523,7 +549,7 @@ def run_episode(
             goal = goal_control.select(
                 proposed_goal, node=current_node, inventory=observed_inventory,
                 context=decision_observation, score=current_score,
-                map_size=(world_map.graph.number_of_nodes(), world_map.graph.number_of_edges()),
+                map_size=map_size,
                 treasures=carried_treasures(historian, observed_inventory),
             )
             for event in goal_control.events:
@@ -557,7 +583,9 @@ def run_episode(
             # A historical score event has no verified precondition contract.
             # The Actor must reassess it against the current room and inventory.
             # Defense in depth: goal proposals cannot bypass grounded inventory.
-            if authorize_navigation(goal, historian, observed_inventory, current_node, home_node, home_route_status):
+            if navigator is not None and authorize_navigation(
+                goal, historian, observed_inventory, current_node, home_node, home_route_status
+            ):
                 had_plan = navigator.active_plan is not None
                 plan = navigator.plan_to_home(home_node)
                 if plan is not None:
@@ -568,7 +596,7 @@ def run_episode(
                 if action is None:
                     goal_control.cancel("route_unavailable_or_failed")
                     guidance += "\nThe deposit route failed; investigate a local prerequisite before trying again."
-            else:
+            elif navigator is not None:
                 navigator.cancel_plan("treasure_handoff_not_authorized")
 
             recovery = historian.cycle_recovery(
@@ -578,7 +606,7 @@ def run_episode(
             )
             if recovery["blocked_actions"]:
                 blocked = set(recovery["blocked_actions"])
-                if action in blocked:
+                if navigator is not None and action in blocked:
                     goal_control.cancel("movement_cycle")
                     navigator.cancel_plan("movement_cycle")
                     action, action_source = None, "smart_actor"
@@ -588,7 +616,7 @@ def run_episode(
                 goal["preferred_actions"] = recovery["preferred_actions"]
                 episode_logger.log_chat_event("cycle_recovery", recovery)
 
-            if action is not None and args.nsi and not world_map.action_feasibility(
+            if action is not None and use_nsi and not world_map.action_feasibility(
                 actor_rl_state, [action], navigator, valid_actions
             )[0]:
                 episode_logger.log_chat_event("symbolic_action_rejected", {"action": action, "reason": "zero NSI feasibility"})
@@ -596,7 +624,8 @@ def run_episode(
                 action_source = "smart_actor"
 
             if action is None:
-                navigator.cancel_plan("actor_or_puzzle_decision")
+                if navigator is not None:
+                    navigator.cancel_plan("actor_or_puzzle_decision")
                 try:
                     with request_budget():
                         decision = agent.choose_decision(
@@ -605,13 +634,13 @@ def run_episode(
                             valid_actions=valid_actions,
                             current_score=current_score,
                             target_score=args.target_score,
-                            known_locations=world_map.get_known_locations(),
+                            known_locations=world_map.get_known_locations() if world_map is not None else [],
                             known_routes=known_routes,
                             goal=goal,
                             historian_guidance=guidance,
                             avoid_actions=avoid_actions,
                             preferred_actions=goal.get("preferred_actions", []),
-                            navigation_context=navigator.navigation_context(),
+                            navigation_context=navigator.navigation_context() if navigator is not None else None,
                             rl_guidance=rl_guidance,
                             steps_remaining=args.max_steps - step,
                         )
@@ -621,7 +650,7 @@ def run_episode(
                             raise LogitsUnavailable("The Actor did not supply the required native label logprobs.")
                         feasibility = world_map.action_feasibility(
                             actor_rl_state, candidates, navigator, valid_actions
-                        ) if args.nsi else [1.0] * len(candidates)
+                        ) if use_nsi else [1.0] * len(candidates)
                         if not any(feasibility):
                             # Ask again over feasible commands rather than executing a
                             # masked action or fabricating a model probability.
@@ -679,7 +708,7 @@ def run_episode(
                         raise
                     # This is explicitly NOT a model policy sample. Use only a
                     # legal guarded observation/light command, never random travel.
-                    feasible = world_map.action_feasibility(actor_rl_state, valid_actions, navigator, valid_actions) if args.nsi else [1] * len(valid_actions)
+                    feasible = world_map.action_feasibility(actor_rl_state, valid_actions, navigator, valid_actions) if use_nsi else [1] * len(valid_actions)
                     permitted = [a for a, weight in zip(valid_actions, feasible) if weight > 0]
                     action = next((a for preferred in ("look", "inventory", "turn on lantern", "turn on lamp", "wait")
                                    for a in permitted if a.casefold() == preferred), None)
@@ -720,7 +749,7 @@ def run_episode(
                     f"{sequence_step.get('goal', 'Next objective')}: "
                     f"{sequence_step.get('details', '')}"
                 )
-            if home_node is not None:
+            if navigator is not None and home_node is not None:
                 print(f"Home route status this episode: {home_route_status}")
             print(f"Action source: {action_source}")
             print(f"Action: {action}")
@@ -735,7 +764,7 @@ def run_episode(
             before_node = current_node
             before_label = current_label
 
-            state_hash = getattr(env, "get_world_state_hash", None)
+            state_hash = getattr(env, "get_world_state_hash", None) if navigator is not None else None
             world_before = state_hash() if callable(state_hash) else None
             observation, reward, done, next_info = env.step(action)
             info = next_info
@@ -743,30 +772,33 @@ def run_episode(
             next_room = env.get_player_location()
             if next_room is None and not done:
                 raise RuntimeError("Jericho did not provide the room after the action.")
-            if done:
-                # Death/terminal relocation must not become a navigable route.
-                if next_room is not None:
-                    world_map.current_location = world_map.add_standard_location(next_room.name, next_room.num)
-                    world_map.current_location_name = next_room.name
-                navigator.cancel_plan("terminal_transition")
-                navigation_result = {"recorded_transition": False, "before_node": before_node,
-                                     "after_node": world_map.current_location, "plan_status": "terminal_transition",
-                                     "deviation": False, "failed_edge": None, "confirmed_edges": []}
-            else:
-                navigation_result = navigator.observe_action_result(
-                    action=action,
-                    next_location=next_room.name,
-                    next_location_id=next_room.num,
-                    observation=observation,
-                )
-            if action_source == "symbolic_navigation" and (navigation_result.get("failed_edge") or navigation_result.get("deviation")):
-                goal_control.cancel("route_failed_or_deviated")
-            if action_source == "symbolic_navigation" and not carried_treasures(historian, observed_inventory):
-                control_metrics["navigation_without_treasure"] += 1
-            after_node = world_map.current_location
-            if world_changed and before_node == after_node and action.casefold() not in {"look", "inventory"}:
-                navigator.invalidate_local_evidence(after_node)
-            after_label = world_map.display_location(after_node)
+            navigation_result = None
+            if world_map is not None:
+                if done:
+                    # Death/terminal relocation must not become a navigable route.
+                    if next_room is not None:
+                        world_map.current_location = world_map.add_standard_location(next_room.name, next_room.num)
+                        world_map.current_location_name = next_room.name
+                    navigator.cancel_plan("terminal_transition")
+                    navigation_result = {"recorded_transition": False, "before_node": before_node,
+                                         "after_node": world_map.current_location, "plan_status": "terminal_transition",
+                                         "deviation": False, "failed_edge": None, "confirmed_edges": []}
+                else:
+                    navigation_result = navigator.observe_action_result(
+                        action=action,
+                        next_location=next_room.name,
+                        next_location_id=next_room.num,
+                        observation=observation,
+                    )
+                if action_source == "symbolic_navigation":
+                    if navigation_result.get("failed_edge") or navigation_result.get("deviation"):
+                        goal_control.cancel("route_failed_or_deviated")
+                    if not carried_treasures(historian, observed_inventory):
+                        control_metrics["navigation_without_treasure"] += 1
+                after_node = world_map.current_location
+                if world_changed and before_node == after_node and action.casefold() not in {"look", "inventory"}:
+                    navigator.invalidate_local_evidence(after_node)
+                after_label = world_map.display_location(after_node)
             score_after = next_info.get("score")
             score_delta = (
                 score_after - score_before
@@ -775,6 +807,16 @@ def run_episode(
                 else None
             )
             next_context = observation if done else current_environment_context(env, observation)
+            if world_map is None:
+                if next_room is None:
+                    after_node, after_label = before_node, before_label
+                else:
+                    after_node = str(next_room.num)
+                    after_label = observed_room_title(next_room.name, next_context) or (
+                        before_label if after_node == before_node else next_room.name
+                    )
+                    if after_label.casefold() == home_label.casefold():
+                        home_node = after_node
             _, next_inventory_text = snapshot_sections(next_context)
             next_inventory = inventory_from_text(next_inventory_text)
 
@@ -815,7 +857,10 @@ def run_episode(
                 "location": str(after_label),
                 "observation": str(next_context or ""),
                 "score": score_after,
-                "home_route_status": navigator.route_status(home_node) if home_node is not None else "home_undiscovered",
+                "home_route_status": (
+                    navigator.route_status(home_node)
+                    if navigator is not None and home_node is not None else home_route_status
+                ),
                 "inventory_items": list(
                     historian.agent_state.get("inventory_items", [])
                 ),
@@ -873,9 +918,9 @@ def run_episode(
             print(f"Observation: {observation}")
             print(f"New location: {after_label}")
             print(f"Score: {score_after} (delta: {score_delta}) | reward: {reward}")
-            print(f"Navigation status: {navigation_result['plan_status']}")
-
-            world_map.save()
+            if navigation_result is not None:
+                print(f"Navigation status: {navigation_result['plan_status']}")
+                world_map.save()
             historian.save()
 
             if isinstance(score_after, (int, float)) and score_after >= args.target_score:
@@ -891,8 +936,9 @@ def run_episode(
                 print("Recovery action budget exhausted; saving an incomplete episode.")
                 break
 
-        world_map.save()
-        world_map.print_graph()
+        if world_map is not None:
+            world_map.save()
+            world_map.print_graph()
         print(
             f"Episode finished: score={info.get('score')}, "
             f"moves={info.get('moves')}, reason={termination_reason}"
@@ -912,7 +958,10 @@ def run_episode(
             final_moves = info.get("moves") if isinstance(info, dict) else None
             if episode_started:
                 control_metrics['provider_retries'] = getattr(episode_logger, 'provider_retries', 0)
-                control_metrics['repeated_route_starts'] = sum(max(0, n - 1) for n in navigator.route_start_counts.values())
+                control_metrics['repeated_route_starts'] = (
+                    sum(max(0, n - 1) for n in navigator.route_start_counts.values())
+                    if navigator is not None else 0
+                )
                 control_metrics['goal_cancellations'] += sum(e['status'] == 'abandoned' for e in goal_control.events)
                 for event in goal_control.events:
                     episode_logger.log_chat_event('goal_transition', event)
@@ -969,7 +1018,7 @@ def run_episode(
                                                    event_logger=episode_logger.log_chat_event,
                                                    api_requests=episode_logger.api_requests,
                                                    episode_number=episode_number)
-            if map_initialized or world_map.current_location is not None:
+            if world_map is not None and (map_initialized or world_map.current_location is not None):
                 world_map.save()
         finally:
             try:
@@ -979,7 +1028,11 @@ def run_episode(
 
 
 def main(argv=None):
-    args = restore_arguments(parse_args(argv), list(argv if argv is not None else sys.argv[1:]))
+    args = parse_args(argv)
+    if args.walkthrough:
+        from MANGORL.walkthrough import run_walkthrough
+        return run_walkthrough(args.rom_path, args.walkthrough_map_path, seed=args.seed)
+    args = restore_arguments(args, list(argv if argv is not None else sys.argv[1:]))
     historian_client, historian_extra_body = (
         create_historian_connection(args) if args.historian_review or args.evolve else (None, None)
     )
@@ -1000,7 +1053,10 @@ def main(argv=None):
                                       else "openai_chat" if historian_client is not None else "disabled")
     rom = Path(args.rom_path)
     metadata["rom_sha256"] = hashlib.sha256(rom.read_bytes()).hexdigest() if rom.exists() else None
-    metadata["observation_access"] = "Jericho room IDs, world-change hashes, valid-action oracle, snapshot look and inventory"
+    metadata["observation_access"] = (
+        "Jericho room IDs, " + ("world-change hashes, " if args.map_navigation else "")
+        + "valid-action oracle, snapshot look and inventory"
+    )
     metadata["action_guards"] = "preserve sole active carried light; restore light in observed darkness; temporary cycle exclusions"
     metadata["score_replay"] = "Actor reassesses historical score opportunities using current observations"
     if not args.resume_trial:
@@ -1014,13 +1070,17 @@ def main(argv=None):
         checkpoint.publish(args.episodes)
 
         print(f"Trial output directory: {logger.run_directory}")
-        world_map = CognitiveMap(args.map_path)
+        world_map = CognitiveMap(args.map_path) if args.map_navigation else None
         historian = Historian(
             args.historian_path,
             target_score=args.target_score,
             lessons_per_category=args.historian_lessons_per_category,
+            map_navigation=args.map_navigation,
         )
-        navigator = NavigationController(world_map, risk_weight=args.route_risk_weight if args.nsi else 0)
+        navigator = (
+            NavigationController(world_map, risk_weight=args.route_risk_weight if args.nsi else 0)
+            if world_map is not None else None
+        )
         state_encoder = FrozenStateEncoder(args.memory_embedding_model) if args.memory_embedding_model else None
         actor_experience = ActorExperienceMemory(
             args.actor_experience_path,
@@ -1108,7 +1168,7 @@ def main(argv=None):
                         raise
                     # run_episode saved observed transitions before propagating.
                     # Keep the in-memory graph; loading again would lose episode state.
-                    map_initialized = world_map.current_location is not None
+                    map_initialized = world_map is not None and world_map.current_location is not None
                     print("Incomplete episode saved and excluded from score metrics. "
                           + ("Continuing with the next episode." if details["continuing"] else "No episodes remain."))
 

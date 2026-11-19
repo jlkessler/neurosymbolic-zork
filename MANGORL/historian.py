@@ -22,11 +22,13 @@ class Historian:
         target_score=76,
         repeat_threshold=2,
         lessons_per_category=3,
+        map_navigation=True,
     ):
         self.memory_path = Path(memory_path)
         self.target_score = int(target_score)
         self.repeat_threshold = max(2, int(repeat_threshold))
         self.lessons_per_category = int(lessons_per_category)
+        self.map_navigation = map_navigation
         if not 1 <= self.lessons_per_category <= 10:
             raise ValueError("lessons_per_category must be between 1 and 10")
         self.memory = self._empty_memory()
@@ -1042,9 +1044,15 @@ class Historian:
         lines = [
             f"Primary objective: exceed 75 points and reach the configured target of {self.target_score} (current score {score if score is not None else 'unknown'}; approximately {remaining} additional point(s) needed).",
             "Use the remaining command budget to complete meaningful objectives. Follow through on newly opened opportunities before revisiting already tested interactions.",
-            "Treat previous score increases as empirical evidence. Prefer repeating a previously successful interaction when you are at the same room with comparable inventory and puzzle state; use the persistent map to cautiously revisit rooms where those interactions worked.",
-            "A historical route is a candidate, not a guarantee. Follow it one transition at a time and switch back to puzzle reasoning if a passage is blocked or unavailable.",
         ]
+        score_evidence = "Treat previous score increases as empirical evidence. Prefer repeating a previously successful interaction when you are at the same room with comparable inventory and puzzle state"
+        if self.map_navigation:
+            lines.extend([
+                score_evidence + "; use the persistent map to cautiously revisit rooms where those interactions worked.",
+                "A historical route is a candidate, not a guarantee. Follow it one transition at a time and switch back to puzzle reasoning if a passage is blocked or unavailable.",
+            ])
+        else:
+            lines.append(score_evidence + ".")
 
         inventory = self.agent_state.get("inventory_items", [])
         treasures = self.agent_state.get("carried_treasures", [])
@@ -1130,7 +1138,7 @@ class Historian:
             )
 
         episode = self.episode or {}
-        if episode.get("home_discovered") is False:
+        if self.map_navigation and episode.get("home_discovered") is False:
             lines.append(
                 "The home room has not been identified in the map yet. Continue discovery while preserving valuables; no known return destination is available to navigate toward."
             )
@@ -1240,10 +1248,13 @@ class Historian:
                     },
                     {
                         "goal": "Continue to the next productive opportunity",
-                        "details": "Use other previously fruitful locations/actions and then explore unmapped frontiers."
+                        "details": (
+                            "Use other previously fruitful locations/actions and then explore unmapped frontiers."
+                            if self.map_navigation else "Reassess prior productive interactions and explore current clues."
+                        ),
                     },
                 ),
-                "source": "observed_score_delta_and_persistent_world_map",
+                "source": "observed_score_delta_and_persistent_world_map" if self.map_navigation else "observed_score_delta",
             })
         candidates.sort(
             key=lambda item: (
@@ -1273,6 +1284,9 @@ class Historian:
         an early underground return route -> revisit reward-positive actions and
         locations using the persistent map -> explore new frontiers/puzzles.
         """
+        if not self.map_navigation:
+            known_routes, known_outgoing_actions = (), ()
+            home_route_status = "disabled"
         score = self._as_number(current_score)
         if score is not None and score >= self.target_score:
             return {
@@ -1306,7 +1320,7 @@ class Historian:
         treasure_priority = bool(carried)
 
         return_needed = treasure_priority
-        if return_needed and home_key is None:
+        if return_needed and home_key is None and self.map_navigation:
             recovery = self.cycle_recovery(current_node, valid_actions, known_routes)
             return {
                 "kind": "solve_return_route", "route_status": "home_undiscovered",
@@ -1334,7 +1348,7 @@ class Historian:
                     f"The return-route search has made no observed progress for {stagnant_steps} commands. "
                     "Keep carried valuables and investigate an untried exit or local puzzle prerequisite. "
                     "Pursue new evidence instead of retracing the same room cycle; resume the return goal "
-                    "when inventory, room state, map knowledge, or score changes."
+                    f"when inventory, room state, {'map knowledge, ' if self.map_navigation else ''}or score changes."
                 ),
                 "target_node": None, "target_label": None, "route_available": False,
                 "carried_treasures": carried, "ordinary_items": ordinary, "useful_items": useful,
@@ -1349,7 +1363,10 @@ class Historian:
             follow_on = self._goal_sequence(
                 {
                     "goal": f"Return to {home_label}",
-                    "details": "Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked."
+                    "details": (
+                        "Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked."
+                        if self.map_navigation else "Use current observations, puzzle clues, and recent experience to choose commands toward the Living Room."
+                    ),
                 },
                 {
                     "goal": "Deposit the treasure candidates",
@@ -1378,7 +1395,7 @@ class Historian:
                     "sequence": follow_on,
                     "source": "actor_inventory_and_reward_evidence",
                 }
-            if home_route_status in {"confirmed", "historical_unconfirmed"}:
+            if self.map_navigation and home_route_status in {"confirmed", "historical_unconfirmed"}:
                 instruction = (
                     "The route has been traversed successfully this episode."
                     if home_route_status == "confirmed"
@@ -1400,11 +1417,14 @@ class Historian:
                     "sequence": follow_on,
                     "source": "actor_inventory_and_reward_evidence",
                 }
+            return_status = (
+                f"Current route status is {home_route_status}; investigate" if self.map_navigation else "Investigate"
+            )
             return {
                 "kind": "solve_return_route",
                 "description": (
                     f"Find a way back to {home_label} while preserving treasure candidates {', '.join(carried)}. "
-                    f"Current route status is {home_route_status}; investigate environmental clues, puzzle prerequisites, "
+                    f"{return_status} environmental clues, puzzle prerequisites, "
                     "and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools "
                     "separate from the valuables that need to be deposited."
                 ),
@@ -1469,7 +1489,7 @@ class Historian:
                  or self.normalize_action(action) in unvisited_route_actions)
             and self.normalize_action(action) not in blocked
         ]
-        if frontier:
+        if self.map_navigation and frontier:
             return {
                 "kind": "explore_frontier",
                 "description": (
@@ -1502,7 +1522,10 @@ class Historian:
             "sequence": self._goal_sequence(
                 {"goal": "Resolve the most informative local uncertainty", "details": "Inspect the environment or test a contextually plausible interaction."},
                 {"goal": "Record reward and transition evidence", "details": "Use score changes and room transitions to update what is known."},
-                {"goal": "Choose the next productive target", "details": "Prefer previously successful opportunities when state conditions match; otherwise explore a new frontier."},
+                {"goal": "Choose the next productive target", "details": (
+                    "Prefer previously successful opportunities when state conditions match; otherwise explore a new frontier."
+                    if self.map_navigation else "Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions."
+                )},
             ),
             "source": "fallback_reasoning_and_reward_history",
         }

@@ -1,0 +1,99 @@
+Episode 37 log: logs/no-map-1_20261119_142411/episode_0037.txt
+Episode 37 chat log: logs/no-map-1_20261119_142411/episode_0037_chat.txt
+Episode 37 decision-rationale log: logs/no-map-1_20261119_142411/episode_0037_reasoning.txt
+Episode: 37/50
+Initial observation: Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.
+ZORK is a registered trademark of Infocom, Inc.
+Revision 88 / Serial number 840726
+
+West of House
+You are standing in an open field west of a white house, with a boarded front door.
+There is a small mailbox here.
+
+
+Starting location: West House
+Target score: 80
+Model: openai/gpt-4o-mini | Agent type: smart
+Maximum steps: 500
+
+LESSONS LEARNED FROM PREVIOUS EPISODES:
+Repeat these positive behaviors:
+1. From Forest Path 'up' then 'take egg' recorded +5 again. Do it early and keep the egg safe.
+2. With the egg, go to Behind House, 'open window', then west into the Kitchen: +10 recorded. Repeat it directly, without detours.
+3. In the Living Room, 'open case' followed immediately by 'put egg in case' recorded +5. Keep that two-step deposit and verify the score.
+4. 'take lantern' and 'turn on lantern' before 'down' preceded +25 at the trap door, and the Cellar was navigable. Keep lantern carried and lit.
+5. Before leaving the Living Room, run inventory and confirm lantern and sword are carried. Do this before any Troll Room entry.
+Avoid these negative behaviors:
+1. Never enter the Troll Room unarmed. This episode went north from the Cellar without a sword and died there (-10).
+2. Don't spend turns on junk actions like 'take walls' next to a hostile troll; the axe hit immediately. Retreat or act purposefully.
+3. Don't loop North/West/South House and Forest while carrying the egg (about nine wasted steps). From North House go east to Behind House.
+4. Don't oscillate Cellar/Troll Room (north, south, north, south) without new information. Prepare first, then commit once.
+5. Don't make exploratory forest moves like 'go around trees' or west into Forest from West House. Reach the known route and score opportunities directly.
+Apply these lessons when relevant; current game feedback takes precedence.
+
+========== STEP 1/500 ==========
+Location: West House
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest
+This is a forest, with trees in all directions. To the east, there appears to be sunlight.
+
+
+New location: Forest
+Score: 0 (delta: 0) | reward: 0
+
+========== STEP 2/500 ==========
+Location: Forest
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise investigate available exits or interactions.
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest Path
+This is a path winding through a dimly lit forest. The path heads north-south here. One particularly large tree with some low branches stands at the edge of the path.
+
+
+New location: Forest Path
+Score: 0 (delta: 0) | reward: 0
+
+========== STEP 3/500 ==========
+Actor request or policy scoring failed: IncompleteLabelScores: Missing exact single-token labels: ['C'] after 3 attempts. The endpoint did not return a complete distribution even with equal label bias; inspect actor_logprob_attempt events for raw tokens.
+Episode finished: score=0, moves=2, reason=no_safe_actions
+Actor experience update: {'episode_id': 'no-map-1_20261119_142411/episode_0037', 'steps': 2, 'actor_experiences': 2, 'score_reward_total': 0.0, 'discounted_return_first_step': 22.752680709340208, 'termination_reason': 'no_safe_actions', 'final_score': 0.0, 'memory_path': 'logs/no-map-1_20261119_142411/memory/actor_experiences.jsonl', 'bootstrap_value': 22.981925415358408, 'episode_truncated': True, 'training_eligible': True, 'return_estimator': 'bootstrapped'}
+Historian critic update: {'enabled': True, 'updates': 2, 'mean_absolute_prediction_error': 1.6424210974674018, 'state_visits': 2242, 'episodes_trained': 37, 'termination_reason': 'no_safe_actions', 'path': 'logs/no-map-1_20261119_142411/memory/historian_td.json'}
+Actor experience samples saved: 2 (logs/no-map-1_20261119_142411/episode_0037_experience.jsonl)
+
+Historian episode review — episode 37
+================================================
+
+Review source: llm
+Lessons: 5 positive + 5 negative (configured per category: 5)
+
+This episode lasted only two steps and ended with no_safe_actions at score 0, so there is little to judge. The Actor went west from West House to Forest, then east to Forest Path. Both moves succeeded, but neither produced a score event. The Actor's notes, 'may reveal new opportunities', show exploratory reasoning rather than use of the stored lessons. The Forest Path arrival is the one useful result, because earlier lessons tie that location to an 'up' then 'take egg' opportunity. The Actor did not try it, which was the main missed opportunity. Ending on no_safe_actions suggests the action filter or candidate generation failed, and the evidence does not say which. The sword-and-lantern, trap door and troll lessons were never tested. Next episode: from Forest Path, try 'up' and 'take egg' immediately, then continue the verified route. Check inventory before going underground.
+
+LESSONS LEARNED
+================================
+POSITIVES TO REPEAT
+1. At Forest Path, try 'up' then 'take egg' first; the earlier +5 came from this sequence. Confirm the score change after taking it.
+2. With the egg, go to Behind House, 'open window', then west into the Kitchen: +10 was recorded earlier. Repeat it directly.
+3. In the Living Room, 'open case' then 'put egg in case' recorded +5. Keep this two-step deposit and verify the score.
+4. Take the lantern and turn it on before 'down'; the trap door earlier recorded +25 and the Cellar was navigable.
+5. Before the Troll Room, run inventory and confirm sword and lantern are carried. Use combat commands against the troll, then go east once it is dead.
+
+NEGATIVES TO AVOID
+1. Don't spend early steps on exploratory forest moves like 'west' from West House. Go to the known egg and window route instead.
+2. Never enter the Troll Room unarmed. An earlier episode died there (-10) after taking only the lantern and no sword.
+3. Don't use non-combat actions like 'take walls' near the troll, and don't go 'north' while it blocks the way.
+4. Don't oscillate north/south between the Cellar and Troll Room without new information. Prepare first, then commit once.
+5. Don't loop West/South/North House and Forest while carrying the egg. Take the shortest path to Behind House and the window.
+
+Historian review saved to: logs/no-map-1_20261119_142411/episode_0037_review.txt
+Episode lessons saved to: logs/no-map-1_20261119_142411/episode_0037_lessons.txt
+Current trial lessons saved to: logs/no-map-1_20261119_142411/lessons_learned.txt
