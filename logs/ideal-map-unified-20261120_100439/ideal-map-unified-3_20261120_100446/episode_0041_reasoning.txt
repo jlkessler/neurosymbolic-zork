@@ -1,0 +1,2907 @@
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:06:33-05:00
+Model: openai/gpt-4o-mini
+Location: West House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +950 (14.39 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the mailbox may yield a leaflet, which is a known item that could be useful for future interactions.
+Base action: open mailbox
+Candidate actions: ["open mailbox", "north", "south", "west"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- west: historically led to Forest (room #78)
+- north: historically led to North House
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open mailbox",
+  "candidate_actions": ["open mailbox", "north", "south", "west"],
+  "decision_rationale": "Opening the mailbox may yield a leaflet, which is a known item that could be useful for future interactions.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["The mailbox may contain an item, such as a leaflet."],
+  "state_note": "Currently empty-handed; opening the mailbox could provide valuable information or items."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:06:33-05:00
+Base model action: open mailbox
+Final action after Actor RL: open mailbox
+RL selection details:
+{
+  "action": "open mailbox",
+  "candidates": [
+    "open mailbox",
+    "north",
+    "south",
+    "west"
+  ],
+  "scorer_preferred_action": "open mailbox",
+  "without_memory_preferred_action": "open mailbox",
+  "adjusted_preferred_action": "open mailbox",
+  "corrected_preferred_action": "open mailbox",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -21.75,
+    -24.5,
+    -24.125
+  ],
+  "adjusted_logits": [
+    0.0798260710639876,
+    -21.45,
+    -24.2,
+    -23.825
+  ],
+  "conditioned_logits": [
+    0.0798260710639876,
+    -21.473530497410195,
+    -24.2,
+    -23.85166824708216
+  ],
+  "probabilities": [
+    0.9999999994950253,
+    4.360097244782006e-10,
+    2.8536816035770055e-11,
+    4.042816911330596e-11
+  ],
+  "base_probabilities": [
+    0.9999999995856124,
+    3.581747928798949e-10,
+    2.289734844696715e-11,
+    3.331544540785861e-11
+  ],
+  "advantages": {
+    "open mailbox": -0.7017392893601239
+  },
+  "corrections": [
+    0.0798260710639876,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    1.0,
+    0.9767441860465116,
+    1.0,
+    0.9736842105263158
+  ],
+  "satisfaction_mass": 0.9999999999885263,
+  "log_satisfaction_mass": -1.1473710870291143e-11,
+  "action_logprob": -5.049747288264257e-10,
+  "selection_mode": "sample",
+  "kl_to_base": 9.257498140898623e-12,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 12.76003665189638,
+    "samples": 3,
+    "actions": {
+      "open mailbox": {
+        "action": "open mailbox",
+        "q_value": 12.76003665189638,
+        "raw_advantage": -2.8069571574404955,
+        "advantage": -0.7017392893601239,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0001",
+          "step": 1,
+          "score_delta": 0.0,
+          "next_location": "room:180",
+          "next_score": 0.0,
+          "return": 4.876243765609375,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "open mailbox": {
+        "action": "open mailbox",
+        "q_value": 12.76003665189638,
+        "raw_advantage": 0.0,
+        "advantage": 0.0,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0001",
+          "step": 1,
+          "score_delta": 0.0,
+          "next_location": "room:180",
+          "next_score": 0.0,
+          "return": 4.876243765609375,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "open mailbox": {
+        "action": "open mailbox",
+        "advantage": -1.4034785787202477,
+        "raw_advantage": -2.8069571574404955,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 28.226805273036746
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:06:38-05:00
+Model: openai/gpt-4o-mini
+Location: West House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +950 (14.39 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the leaflet may provide useful information or hints for future actions.
+Base action: take leaflet
+Candidate actions: ["take leaflet", "close mailbox", "north", "south", "west"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- west: historically led to Forest (room #78)
+- north: historically led to North House
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take leaflet",
+  "candidate_actions": ["take leaflet", "close mailbox", "north", "south", "west"],
+  "decision_rationale": "Taking the leaflet may provide useful information or hints for future actions.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "The inventory now contains the leaflet, which may provide insights for future exploration."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:06:38-05:00
+Base model action: take leaflet
+Final action after Actor RL: take leaflet
+RL selection details:
+{
+  "action": "take leaflet",
+  "candidates": [
+    "take leaflet",
+    "close mailbox",
+    "north",
+    "south",
+    "west"
+  ],
+  "scorer_preferred_action": "take leaflet",
+  "without_memory_preferred_action": "take leaflet",
+  "adjusted_preferred_action": "take leaflet",
+  "corrected_preferred_action": "take leaflet",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -16.875,
+    -13.75,
+    -17.875,
+    -16.25
+  ],
+  "adjusted_logits": [
+    0.12618048287037636,
+    -16.575,
+    -13.4627464707287,
+    -17.575,
+    -15.95
+  ],
+  "conditioned_logits": [
+    0.12618048287037636,
+    -16.575,
+    -13.486276968138894,
+    -17.575,
+    -15.976668247082161
+  ],
+  "probabilities": [
+    0.9999985969766123,
+    5.581730523975345e-08,
+    1.225135810946936e-06,
+    2.053403905929632e-08,
+    1.0153623237237915e-07
+  ],
+  "base_probabilities": [
+    0.9999987804855268,
+    4.691158300891997e-08,
+    1.0677027079542893e-06,
+    1.7257806941789205e-08,
+    8.764237531316086e-08
+  ],
+  "advantages": {
+    "take leaflet": -0.8595155148558785,
+    "north": 1.1404844851441214
+  },
+  "corrections": [
+    0.12618048287037636,
+    0.3,
+    0.2872535292712999,
+    0.3,
+    0.3
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    0.9767441860465116,
+    1.0,
+    0.9736842105263158
+  ],
+  "satisfaction_mass": 0.9999999680858782,
+  "log_satisfaction_mass": -3.191412223380041e-08,
+  "action_logprob": -1.4030243719298382e-06,
+  "selection_mode": "sample",
+  "kl_to_base": 1.3211686544121583e-08,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 12.82415743909184,
+    "samples": 3,
+    "actions": {
+      "take leaflet": {
+        "action": "take leaflet",
+        "q_value": 4.900747503124999,
+        "raw_advantage": -1.6308366800805274,
+        "advantage": -1.194280827005921,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0001",
+          "step": 2,
+          "score_delta": 0.0,
+          "next_location": "room:180",
+          "next_score": 0.0,
+          "return": 4.900747503124999,
+          "source": "smart_actor"
+        }
+      },
+      "north": {
+        "action": "north",
+        "q_value": 16.785862407075257,
+        "raw_advantage": 3.961704967983417,
+        "advantage": 1.5846819871933668,
+        "confidence": 0.4,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0002",
+          "step": 2,
+          "score_delta": 0.0,
+          "next_location": "room:81",
+          "next_score": 0.0,
+          "return": 10.726283956662582,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "take leaflet": {
+        "action": "take leaflet",
+        "q_value": 4.900747503124999,
+        "raw_advantage": -7.92340993596684,
+        "advantage": -1.98085248399171,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0001",
+          "step": 2,
+          "score_delta": 0.0,
+          "next_location": "room:180",
+          "next_score": 0.0,
+          "return": 4.900747503124999,
+          "source": "smart_actor"
+        }
+      },
+      "north": {
+        "action": "north",
+        "q_value": 16.785862407075257,
+        "raw_advantage": 3.961704967983417,
+        "advantage": 1.5846819871933668,
+        "confidence": 0.4,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0002",
+          "step": 2,
+          "score_delta": 0.0,
+          "next_location": "room:81",
+          "next_score": 0.0,
+          "return": 10.726283956662582,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "take leaflet": {
+        "action": "take leaflet",
+        "advantage": -0.40770917002013185,
+        "raw_advantage": -1.6308366800805274,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 25.451987057209006
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:06:42-05:00
+Model: openai/gpt-4o-mini
+Location: West House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +950 (14.39 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving north may lead to a new area and potential score opportunities, as the Living Room is a historical candidate for score increases.
+Base action: north
+Candidate actions: ["north", "west", "south", "close mailbox", "put leaflet in mailbox"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- west: historically led to Forest (room #78)
+- north: historically led to North House
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "north",
+  "candidate_actions": ["north", "west", "south", "close mailbox", "put down leaflet"],
+  "decision_rationale": "Moving north may lead to a new area and potential score opportunities, as the Living Room is a historical candidate for score increases.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring north to potentially access new locations and opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:06:42-05:00
+Base model action: north
+Final action after Actor RL: north
+RL selection details:
+{
+  "action": "north",
+  "candidates": [
+    "north",
+    "west",
+    "south",
+    "close mailbox",
+    "put leaflet in mailbox"
+  ],
+  "scorer_preferred_action": "north",
+  "without_memory_preferred_action": "north",
+  "adjusted_preferred_action": "north",
+  "corrected_preferred_action": "north",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    -3.814697265625e-06,
+    -13.000003814697266,
+    -15.750003814697266,
+    -17.375003814697266,
+    -13.500003814697266
+  ],
+  "adjusted_logits": [
+    0.14034933709464126,
+    -12.698577616504435,
+    -15.450003814697265,
+    -17.075003814697265,
+    -13.200003814697265
+  ],
+  "conditioned_logits": [
+    0.11681883968444709,
+    -12.725245863586597,
+    -15.450003814697265,
+    -17.075003814697265,
+    -13.200003814697265
+  ],
+  "probabilities": [
+    0.9999954986914067,
+    2.647038196828489e-06,
+    1.73545303616266e-07,
+    3.417309645889935e-08,
+    1.6465519963517677e-06
+  ],
+  "base_probabilities": [
+    0.9999961957746062,
+    2.2603208081785256e-06,
+    1.444974749078699e-07,
+    2.8453239846884657e-08,
+    1.3709538709467142e-06
+  ],
+  "advantages": {
+    "north": -0.7177888256405734,
+    "west": 1.2822111743594262
+  },
+  "corrections": [
+    0.14035315179190688,
+    0.30142619819283034,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    0.9767441860465116,
+    0.9736842105263158,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9767442200409024,
+  "log_satisfaction_mass": -0.023530462606413616,
+  "action_logprob": -4.50131872422759e-06,
+  "selection_mode": "sample",
+  "kl_to_base": 6.063499802741153e-08,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 12.952963011457507,
+    "samples": 3,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": 4.925374375,
+        "raw_advantage": 1.7000616021696295,
+        "advantage": -0.7909408792859849,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0001",
+          "step": 3,
+          "score_delta": 0.0,
+          "next_location": "room:81",
+          "next_score": 0.0,
+          "return": 4.925374375,
+          "source": "smart_actor"
+        }
+      },
+      "west": {
+        "action": "west",
+        "q_value": 16.96675732968626,
+        "raw_advantage": 3.050631857346655,
+        "advantage": 1.4128852351150816,
+        "confidence": 0.4,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0004",
+          "step": 3,
+          "score_delta": 0.0,
+          "next_location": "room:78",
+          "next_score": 0.0,
+          "return": 9.747333467349215,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "north": {
+        "action": "north",
+        "q_value": 4.925374375,
+        "raw_advantage": -8.027588636457509,
+        "advantage": -2.006897159114377,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0001",
+          "step": 3,
+          "score_delta": 0.0,
+          "next_location": "room:81",
+          "next_score": 0.0,
+          "return": 4.925374375,
+          "source": "smart_actor"
+        }
+      },
+      "west": {
+        "action": "west",
+        "q_value": 16.96675732968626,
+        "raw_advantage": 4.0137943182287525,
+        "advantage": 1.605517727291501,
+        "confidence": 0.4,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0004",
+          "step": 3,
+          "score_delta": 0.0,
+          "next_location": "room:78",
+          "next_score": 0.0,
+          "return": 9.747333467349215,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "north": {
+        "action": "north",
+        "advantage": 0.4250154005424074,
+        "raw_advantage": 1.7000616021696295,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "west": {
+        "action": "west",
+        "advantage": 1.220252742938662,
+        "raw_advantage": 3.050631857346655,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 23.878499540246967
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:06:47-05:00
+Model: openai/gpt-4o-mini
+Location: North House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +950 (14.39 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east to Behind House may reveal new opportunities, as it has previously led to productive interactions.
+Base action: east
+Candidate actions: ["east", "north", "west"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Behind House
+- north: historically led to Forest Path
+- west: historically led to West House
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["east", "north", "west"],
+  "decision_rationale": "Moving east to Behind House may reveal new opportunities, as it has previously led to productive interactions.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring east to access the Behind House for potential score-positive interactions."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:06:47-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "north",
+    "west"
+  ],
+  "scorer_preferred_action": "east",
+  "without_memory_preferred_action": "east",
+  "adjusted_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -18.75,
+    -20.375
+  ],
+  "adjusted_logits": [
+    0.3,
+    -18.726539765967825,
+    -20.213671800323787
+  ],
+  "conditioned_logits": [
+    0.1946394843421737,
+    -18.800647738121548,
+    -20.25003944449466
+  ],
+  "probabilities": [
+    0.9999999930494752,
+    5.629263449276813e-09,
+    1.321261419555946e-09
+  ],
+  "base_probabilities": [
+    0.9999999913892582,
+    7.194132968378561e-09,
+    1.4166087744451435e-09
+  ],
+  "advantages": {
+    "north": -1.8867180032378907,
+    "west": 0.11328199676210932
+  },
+  "corrections": [
+    0.3,
+    0.023460234032175148,
+    0.16132819967621093
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    0.9,
+    0.9285714285714286,
+    0.9642857142857143
+  ],
+  "satisfaction_mass": 0.9000000002351629,
+  "log_satisfaction_mass": -0.10536051539653421,
+  "action_logprob": -6.9505248465127046e-09,
+  "selection_mode": "sample",
+  "kl_to_base": 1.873665372829473e-10,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 19.407687416489463,
+    "samples": 3,
+    "actions": {
+      "north": {
+        "action": "north",
+        "q_value": 4.950125,
+        "raw_advantage": -14.457562416489463,
+        "advantage": -3.6143906041223657,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0001",
+          "step": 4,
+          "score_delta": 0.0,
+          "next_location": "room:75",
+          "next_score": 0.0,
+          "return": 4.950125,
+          "source": "smart_actor"
+        }
+      },
+      "west": {
+        "action": "west",
+        "q_value": 26.636468624734192,
+        "raw_advantage": -4.91496649890635,
+        "advantage": 0.21701461692235857,
+        "confidence": 0.4,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0018",
+          "step": 4,
+          "score_delta": 0.0,
+          "next_location": "room:180",
+          "next_score": 0.0,
+          "return": 24.017932557072523,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "north": {
+        "action": "north",
+        "q_value": 4.950125,
+        "raw_advantage": -14.457562416489463,
+        "advantage": -3.6143906041223657,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0001",
+          "step": 4,
+          "score_delta": 0.0,
+          "next_location": "room:75",
+          "next_score": 0.0,
+          "return": 4.950125,
+          "source": "smart_actor"
+        }
+      },
+      "west": {
+        "action": "west",
+        "q_value": 26.636468624734192,
+        "raw_advantage": 7.22878120824473,
+        "advantage": 2.891512483297892,
+        "confidence": 0.4,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0018",
+          "step": 4,
+          "score_delta": 0.0,
+          "next_location": "room:180",
+          "next_score": 0.0,
+          "return": 24.017932557072523,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "west": {
+        "action": "west",
+        "advantage": -2.457483249453175,
+        "raw_advantage": -4.91496649890635,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 32.61746614221006
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:06:51-05:00
+Model: openai/gpt-4o-mini
+Location: Behind House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +45 (4.50 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the window is a previously successful action that allows entry into the house, which may lead to score-positive opportunities.
+Base action: open window
+Candidate actions: ["open window", "east", "south", "north"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Clearing (room #74)
+- south: historically led to South House
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open window",
+  "candidate_actions": ["open window", "east", "south", "north"],
+  "decision_rationale": "Opening the window is a previously successful action that allows entry into the house, which may lead to score-positive opportunities.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Opening the window may provide access to the house and potential score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:06:51-05:00
+Base model action: open window
+Final action after Actor RL: open window
+RL selection details:
+{
+  "action": "open window",
+  "candidates": [
+    "open window",
+    "east",
+    "south",
+    "north"
+  ],
+  "scorer_preferred_action": "open window",
+  "without_memory_preferred_action": "open window",
+  "adjusted_preferred_action": "open window",
+  "corrected_preferred_action": "open window",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -18.125,
+    -21.125,
+    -21.125
+  ],
+  "adjusted_logits": [
+    0.16556862326480895,
+    -18.151794919243113,
+    -20.825,
+    -20.825
+  ],
+  "conditioned_logits": [
+    0.16556862326480895,
+    -18.168602037559495,
+    -20.905042707673534,
+    -20.825
+  ],
+  "probabilities": [
+    0.999999987624374,
+    1.0903623484317652e-08,
+    7.06561164698675e-10,
+    7.654412617568965e-10
+  ],
+  "base_probabilities": [
+    0.9999999852212731,
+    1.3440409752502874e-08,
+    6.691585992399658e-10,
+    6.691585992399658e-10
+  ],
+  "advantages": {
+    "open window": -0.46563411091155277,
+    "east": -2.0
+  },
+  "corrections": [
+    0.16556862326480895,
+    -0.02679491924311228,
+    0.3,
+    0.3
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    1.0,
+    0.9833333333333333,
+    0.9230769230769231,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999997563126,
+  "log_satisfaction_mass": -2.436872925670741e-10,
+  "action_logprob": -1.2375626045030713e-08,
+  "selection_mode": "sample",
+  "kl_to_base": 2.637110911159412e-10,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 23.983851046513504,
+    "samples": 3,
+    "actions": {
+      "open window": {
+        "action": "open window",
+        "q_value": 23.983851046513504,
+        "raw_advantage": -5.536314319884596,
+        "advantage": -0.6920392899855745,
+        "confidence": 0.5,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0032",
+          "step": 5,
+          "score_delta": 0.0,
+          "next_location": "room:79",
+          "next_score": 0.0,
+          "return": 24.996453554411808,
+          "source": "smart_actor"
+        }
+      },
+      "east": {
+        "action": "east",
+        "advantage": -3.66449888333795,
+        "raw_advantage": -9.161247208344875,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "memory_actions": {
+      "open window": {
+        "action": "open window",
+        "q_value": 23.983851046513504,
+        "raw_advantage": 0.0,
+        "advantage": 0.0,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0032",
+          "step": 5,
+          "score_delta": 0.0,
+          "next_location": "room:79",
+          "next_score": 0.0,
+          "return": 24.996453554411808,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "open window": {
+        "action": "open window",
+        "advantage": -1.384078579971149,
+        "raw_advantage": -5.536314319884596,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "east": {
+        "action": "east",
+        "advantage": -3.66449888333795,
+        "raw_advantage": -9.161247208344875,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 37.04411995149088
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:06:54-05:00
+Model: openai/gpt-4o-mini
+Location: Behind House
+Score: 0
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +950 (14.39 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving west to the Kitchen is a previously successful action that generated a score increase, and I need to explore score-positive opportunities.
+Base action: west
+Candidate actions: ["west", "close window", "put down leaflet", "south", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Clearing (room #74)
+- west: historically led to Kitchen
+- south: historically led to South House
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "close window", "put down leaflet", "south", "north"],
+  "decision_rationale": "Moving west to the Kitchen is a previously successful action that generated a score increase, and I need to explore score-positive opportunities.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Moving to the Kitchen to explore further score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:06:55-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "close window",
+    "put down leaflet",
+    "south",
+    "east"
+  ],
+  "scorer_preferred_action": "west",
+  "without_memory_preferred_action": "west",
+  "adjusted_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -24.125,
+    -28.375,
+    -26.25,
+    -25.0
+  ],
+  "adjusted_logits": [
+    0.35,
+    -23.825,
+    -28.075,
+    -25.95,
+    -24.7
+  ],
+  "conditioned_logits": [
+    0.33496212263545944,
+    -23.825,
+    -28.075,
+    -26.030042707673534,
+    -24.71680711831638
+  ],
+  "probabilities": [
+    0.9999999999506364,
+    3.2170793064383334e-11,
+    4.588917173083748e-13,
+    3.5466953604680356e-12,
+    1.3187268741953533e-11
+  ],
+  "base_probabilities": [
+    0.9999999999483424,
+    3.3315445419943126e-11,
+    4.752193062525666e-13,
+    3.978962535631696e-12,
+    1.3887943864246603e-11
+  ],
+  "advantages": {
+    "west": 2.0
+  },
+  "corrections": [
+    0.35,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    0.9850746268656716,
+    1.0,
+    1.0,
+    0.9230769230769231,
+    0.9833333333333333
+  ],
+  "satisfaction_mass": 0.9850746268658936,
+  "log_satisfaction_mass": -0.015037877364315166,
+  "action_logprob": -4.9363624300521796e-11,
+  "selection_mode": "sample",
+  "kl_to_base": 6.255777894670114e-14,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 24.104372911068847,
+    "samples": 3,
+    "actions": {
+      "west": {
+        "action": "west",
+        "q_value": 24.104372911068847,
+        "raw_advantage": 10.692560930057462,
+        "advantage": 2.6731402325143656,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0032",
+          "step": 6,
+          "score_delta": 10.0,
+          "next_location": "room:203",
+          "next_score": 10.0,
+          "return": 25.12206387378071,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "west": {
+        "action": "west",
+        "q_value": 24.104372911068847,
+        "raw_advantage": 0.0,
+        "advantage": 0.0,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0032",
+          "step": 6,
+          "score_delta": 10.0,
+          "next_location": "room:203",
+          "next_score": 10.0,
+          "return": 25.12206387378071,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "west": {
+        "action": "west",
+        "advantage": 5.346280465028731,
+        "raw_advantage": 10.692560930057462,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 33.1984855831881
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:06:59-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +950 (14.39 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving west to the Living Room is the next step in pursuing a previously score-positive opportunity.
+Base action: west
+Candidate actions: ["west", "up", "open bottle", "open sack", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- up: historically led to Attic
+- east: historically led to Behind House
+- west: historically led to Living Room
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "up", "open bottle", "open sack", "take bottle"],
+  "decision_rationale": "Moving west to the Living Room is the next step in pursuing a previously score-positive opportunity.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Transitioning to the Living Room to explore score-positive interactions."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:06:59-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "up",
+    "open bottle",
+    "open sack",
+    "east"
+  ],
+  "scorer_preferred_action": "west",
+  "without_memory_preferred_action": "west",
+  "adjusted_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -23.25,
+    -27.875,
+    -26.0,
+    -25.125
+  ],
+  "adjusted_logits": [
+    0.35,
+    -22.95,
+    -27.575,
+    -25.7,
+    -24.825
+  ],
+  "conditioned_logits": [
+    0.34134193725688544,
+    -22.965504186535963,
+    -27.575,
+    -25.7,
+    -24.861367644170873
+  ],
+  "probabilities": [
+    0.9999999999075031,
+    7.550319641967193e-11,
+    7.517730307347406e-13,
+    4.902175952963613e-12,
+    1.1339719180949614e-11
+  ],
+  "base_probabilities": [
+    0.9999999999019318,
+    7.991959892170175e-11,
+    7.835041784296021e-13,
+    5.1090890275622855e-12,
+    1.2256067442897552e-11
+  ],
+  "advantages": {
+    "west": 2.0
+  },
+  "corrections": [
+    0.35,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    0.9913793103448276,
+    0.9846153846153847,
+    1.0,
+    1.0,
+    0.9642857142857143
+  ],
+  "satisfaction_mass": 0.9913793103440458,
+  "log_satisfaction_mass": -0.008658062743903017,
+  "action_logprob": -9.249689903329321e-11,
+  "selection_mode": "sample",
+  "kl_to_base": 1.6430708746129244e-13,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.175249156853111,
+    "samples": 3,
+    "actions": {
+      "west": {
+        "action": "west",
+        "q_value": 14.175249156853111,
+        "raw_advantage": 10.417429313435777,
+        "advantage": 2.6043573283589443,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0032",
+          "step": 7,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 15.198054144503226,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "west": {
+        "action": "west",
+        "q_value": 14.175249156853111,
+        "raw_advantage": 0.0,
+        "advantage": 0.0,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0032",
+          "step": 7,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 15.198054144503226,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "west": {
+        "action": "west",
+        "advantage": 5.208714656717889,
+        "raw_advantage": 10.417429313435777,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 34.67463764723216
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:07:03-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +45 (4.50 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east to the Kitchen is the next logical step to explore for potential score increases, as it previously yielded a score of +10.
+Base action: east
+Candidate actions: ["east", "turn on lantern", "open case", "take lantern", "push rug"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["turn on lantern", "open case", "take lantern", "take sword", "push rug"],
+  "decision_rationale": "Moving east to the Kitchen is the next logical step to explore for potential score increases, as it previously yielded a score of +10.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Moving east to the Kitchen to explore potential score opportunities."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:07:04-05:00
+Base model action: east
+Final action after Actor RL: turn on lantern
+RL selection details:
+{
+  "action": "turn on lantern",
+  "candidates": [
+    "east",
+    "turn on lantern",
+    "open case",
+    "take lantern",
+    "push rug"
+  ],
+  "scorer_preferred_action": "turn on lantern",
+  "without_memory_preferred_action": "turn on lantern",
+  "adjusted_preferred_action": "turn on lantern",
+  "corrected_preferred_action": "turn on lantern",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    -2.9381675720214844,
+    -0.18816757202148438,
+    -6.188167572021484,
+    -5.438167572021484,
+    -2.1881675720214844
+  ],
+  "adjusted_logits": [
+    -2.9260355376655203,
+    0.11183242797851561,
+    -5.8881675720214846,
+    -5.352883859766633,
+    -2.0622237506391428
+  ],
+  "conditioned_logits": [
+    -2.946654824868256,
+    0.11183242797851561,
+    -5.8881675720214846,
+    -5.352883859766633,
+    -2.0622237506391428
+  ],
+  "probabilities": [
+    0.04022547977935798,
+    0.8566143977383144,
+    0.0021233348029575886,
+    0.0036265130172724973,
+    0.09741027466209752
+  ],
+  "base_probabilities": [
+    0.0529647239745614,
+    0.8285076799816999,
+    0.0020536652151394333,
+    0.004347609294567053,
+    0.11212632153403224
+  ],
+  "advantages": {
+    "take lantern": -1.2684832210111288,
+    "push rug": -0.8618821297362257,
+    "east": -2.0
+  },
+  "corrections": [
+    0.012132034355964216,
+    0.3,
+    0.3,
+    0.08528371225485135,
+    0.12594382138234167
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    0.9795918367346939,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9991626708788808,
+  "log_satisfaction_mass": -0.0008376798769601512,
+  "action_logprob": -0.1547674059356819,
+  "selection_mode": "sample",
+  "kl_to_base": 0.00321918715036779,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.246481564676493,
+    "samples": 3,
+    "actions": {
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": 15.27442627588264,
+        "raw_advantage": -11.589581995478369,
+        "advantage": -1.3202046605340279,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0032",
+          "step": 8,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 15.27442627588264,
+          "source": "smart_actor"
+        }
+      },
+      "push rug": {
+        "action": "push rug",
+        "q_value": 14.89987625,
+        "raw_advantage": -7.829592434958705,
+        "advantage": -0.8970247187043998,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0040",
+          "step": 8,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 14.89987625,
+          "source": "smart_actor"
+        }
+      },
+      "east": {
+        "action": "east",
+        "advantage": -3.285800634425618,
+        "raw_advantage": -13.143202537702471,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "memory_actions": {
+      "take lantern": {
+        "action": "take lantern",
+        "q_value": 15.27442627588264,
+        "raw_advantage": 1.0279447112061462,
+        "advantage": 0.25698617780153654,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0032",
+          "step": 8,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 15.27442627588264,
+          "source": "smart_actor"
+        }
+      },
+      "push rug": {
+        "action": "push rug",
+        "q_value": 14.89987625,
+        "raw_advantage": 0.6533946853235069,
+        "advantage": 0.16334867133087672,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0040",
+          "step": 8,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 14.89987625,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "east": {
+        "action": "east",
+        "advantage": -3.285800634425618,
+        "raw_advantage": -13.143202537702471,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "take lantern": {
+        "action": "take lantern",
+        "advantage": -2.8973954988695922,
+        "raw_advantage": -11.589581995478369,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "push rug": {
+        "action": "push rug",
+        "advantage": -1.9573981087396763,
+        "raw_advantage": -7.829592434958705,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 43.9254983583755
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:07:08-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +45 (4.50 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving east to the Kitchen is the next logical step to explore for potential score opportunities, as it previously yielded a score increase.
+Base action: east
+Candidate actions: ["east", "open case", "take lantern", "take sword", "push rug"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "east",
+  "candidate_actions": ["open case", "take lantern", "take sword", "take all", "push rug"],
+  "decision_rationale": "Moving east to the Kitchen is the next logical step to explore for potential score opportunities, as it previously yielded a score increase.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Proceeding to the Kitchen to explore for items that may increase the score."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:07:08-05:00
+Base model action: east
+Final action after Actor RL: east
+RL selection details:
+{
+  "action": "east",
+  "candidates": [
+    "east",
+    "open case",
+    "take lantern",
+    "take sword",
+    "push rug"
+  ],
+  "scorer_preferred_action": "east",
+  "without_memory_preferred_action": "east",
+  "adjusted_preferred_action": "east",
+  "corrected_preferred_action": "east",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    -0.006725311279296875,
+    -12.506725311279297,
+    -13.631725311279297,
+    -12.631725311279297,
+    -5.006725311279297
+  ],
+  "adjusted_logits": [
+    0.0495323142029829,
+    -12.206725311279296,
+    -13.331725311279296,
+    -12.331725311279296,
+    -4.825964118923409
+  ],
+  "conditioned_logits": [
+    0.0289130270002472,
+    -12.206725311279296,
+    -13.331725311279296,
+    -12.331725311279296,
+    -4.825964118923409
+  ],
+  "probabilities": [
+    0.9922593800052854,
+    4.816759916785529e-06,
+    1.5637729916572213e-06,
+    4.250775707056863e-06,
+    0.007729988686099056
+  ],
+  "base_probabilities": [
+    0.9932990335945228,
+    3.7016809943677067e-06,
+    1.2017598681949855e-06,
+    3.266722011885766e-06,
+    0.006692796242602709
+  ],
+  "advantages": {
+    "push rug": 0.07556111598999961,
+    "east": -1.5587440887368444
+  },
+  "corrections": [
+    0.05625762548227978,
+    0.3,
+    0.3,
+    0.3,
+    0.1807611923558877
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    0.9795918367346939,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9797466091059632,
+  "log_satisfaction_mass": -0.020461302887244008,
+  "action_logprob": -0.007770734095530923,
+  "selection_mode": "sample",
+  "kl_to_base": 7.739312035404827e-05,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.94912999375,
+    "samples": 1,
+    "actions": {
+      "push rug": {
+        "action": "push rug",
+        "q_value": 14.94912999375,
+        "raw_advantage": 0.377805579949998,
+        "advantage": 0.07556111598999961,
+        "confidence": 0.25,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0031",
+          "step": 13,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 14.94912999375,
+          "source": "smart_actor"
+        }
+      },
+      "east": {
+        "action": "east",
+        "advantage": -1.5587440887368444,
+        "raw_advantage": -6.234976354947378,
+        "sample_count": 1,
+        "best_similarity": 0.9967948717948717,
+        "source": "historian_td"
+      }
+    },
+    "memory_actions": {
+      "push rug": {
+        "action": "push rug",
+        "q_value": 14.94912999375,
+        "raw_advantage": 0.0,
+        "advantage": 0.0,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 0.9992000000000001,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0031",
+          "step": 13,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 14.94912999375,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "east": {
+        "action": "east",
+        "advantage": -1.5587440887368444,
+        "raw_advantage": -6.234976354947378,
+        "sample_count": 1,
+        "best_similarity": 0.9967948717948717,
+        "source": "historian_td"
+      },
+      "push rug": {
+        "action": "push rug",
+        "advantage": 0.15112223197999922,
+        "raw_advantage": 0.377805579949998,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 34.168750080772476
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:07:14-05:00
+Model: openai/gpt-4o-mini
+Location: Kitchen
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +950 (14.39 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Moving west to the Living Room is the next step in pursuing the previously successful interaction 'down' for score gain.
+Base action: west
+Candidate actions: ["west", "up", "east", "open bottle", "open sack"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- up: historically led to Attic
+- east: historically led to Behind House
+- west: historically led to Living Room
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "west",
+  "candidate_actions": ["west", "up", "east", "open bottle", "take bottle"],
+  "decision_rationale": "Moving west to the Living Room is the next step in pursuing the previously successful interaction 'down' for score gain.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Transitioning to the Living Room to prepare for the next score-positive interaction."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:07:14-05:00
+Base model action: west
+Final action after Actor RL: west
+RL selection details:
+{
+  "action": "west",
+  "candidates": [
+    "west",
+    "up",
+    "east",
+    "open bottle",
+    "open sack"
+  ],
+  "scorer_preferred_action": "west",
+  "without_memory_preferred_action": "west",
+  "adjusted_preferred_action": "west",
+  "corrected_preferred_action": "west",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -21.375,
+    -25.625,
+    -25.0,
+    -24.25
+  ],
+  "adjusted_logits": [
+    0.2700163962090335,
+    -21.075,
+    -25.325,
+    -24.7,
+    -23.95
+  ],
+  "conditioned_logits": [
+    0.2700163962090335,
+    -21.090504186535963,
+    -25.361367644170873,
+    -24.7,
+    -23.95
+  ],
+  "probabilities": [
+    0.9999999994192654,
+    5.287419642466946e-10,
+    7.386374912073154e-12,
+    1.4310660072135712e-11,
+    3.029566761044964e-11
+  ],
+  "base_probabilities": [
+    0.9999999994281363,
+    5.211412484908322e-10,
+    7.433680668101136e-12,
+    1.3887943857022011e-11,
+    2.940077737603149e-11
+  ],
+  "advantages": {
+    "west": 1.200163962090335
+  },
+  "corrections": [
+    0.2700163962090335,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "state_action_visits": [
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    1.0,
+    0.9846153846153847,
+    0.9642857142857143,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9999999999914649,
+  "log_satisfaction_mass": -8.535172568713278e-12,
+  "action_logprob": -5.807345717111335e-10,
+  "selection_mode": "sample",
+  "kl_to_base": 7.527471716312782e-14,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 19.510118347584914,
+    "samples": 2,
+    "actions": {
+      "west": {
+        "action": "west",
+        "q_value": 19.510118347584914,
+        "raw_advantage": 4.80065584836134,
+        "advantage": 1.200163962090335,
+        "confidence": 0.4,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0023",
+          "step": 13,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 24.2942243352178,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "west": {
+        "action": "west",
+        "q_value": 19.510118347584914,
+        "raw_advantage": 0.0,
+        "advantage": 0.0,
+        "confidence": 0.4,
+        "sample_count": 2,
+        "best_similarity": 0.9994000000000001,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0023",
+          "step": 13,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 24.2942243352178,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "west": {
+        "action": "west",
+        "advantage": 2.40032792418067,
+        "raw_advantage": 4.80065584836134,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 32.26104619517123
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:07:18-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +45 (4.50 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Taking the lantern is essential for exploring dark areas, especially since the Cellar is pitch black and I need a light source before descending.
+Base action: take lantern
+Candidate actions: ["take lantern", "take sword", "push rug", "open case", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "take lantern",
+  "candidate_actions": ["take sword", "push rug", "open case", "take all", "blow out lantern"],
+  "decision_rationale": "Taking the lantern is essential for exploring dark areas, especially since the Cellar is pitch black and I need a light source before descending.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": ["lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "I need to secure the lantern to proceed safely to the Cellar or explore further."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:07:18-05:00
+Base model action: take lantern
+Final action after Actor RL: push rug
+RL selection details:
+{
+  "action": "push rug",
+  "candidates": [
+    "take lantern",
+    "take sword",
+    "push rug",
+    "open case",
+    "east"
+  ],
+  "scorer_preferred_action": "take lantern",
+  "without_memory_preferred_action": "take lantern",
+  "adjusted_preferred_action": "take lantern",
+  "corrected_preferred_action": "take lantern",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    -0.7945938110351562,
+    -9.419593811035156,
+    -1.2945938110351562,
+    -8.919593811035156,
+    -1.2945938110351562
+  ],
+  "adjusted_logits": [
+    -0.49459381103515626,
+    -9.119593811035156,
+    -1.1128389326843215,
+    -8.619593811035156,
+    -1.159185385006237
+  ],
+  "conditioned_logits": [
+    -0.49459381103515626,
+    -9.119593811035156,
+    -1.1128389326843215,
+    -8.619593811035156,
+    -1.159185385006237
+  ],
+  "probabilities": [
+    0.48689082681053236,
+    8.742621688205284e-05,
+    0.2623802536487845,
+    0.00014414146339028318,
+    0.2504973518604108
+  ],
+  "base_probabilities": [
+    0.4517656737480408,
+    8.111913718253803e-05,
+    0.2740097321339215,
+    0.00013374284693369213,
+    0.2740097321339215
+  ],
+  "advantages": {
+    "push rug": 0.08549797593947049,
+    "east": -0.7672360832704499
+  },
+  "corrections": [
+    0.3,
+    0.3,
+    0.1817548783508348,
+    0.3,
+    0.13540842602891923
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0,
+    1
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": -1.3379604776067058,
+  "selection_mode": "sample",
+  "kl_to_base": 0.002621360101030049,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.874571207906172,
+    "samples": 2,
+    "actions": {
+      "push rug": {
+        "action": "push rug",
+        "q_value": 14.94912999375,
+        "raw_advantage": 0.38089063854495947,
+        "advantage": 0.08549797593947049,
+        "confidence": 0.25,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0003",
+          "step": 22,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 14.94912999375,
+          "source": "smart_actor"
+        }
+      },
+      "east": {
+        "action": "east",
+        "q_value": 14.800012422062343,
+        "raw_advantage": -6.06332988031977,
+        "advantage": -0.7672360832704499,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0003",
+          "step": 20,
+          "score_delta": 0.0,
+          "next_location": "room:203",
+          "next_score": 10.0,
+          "return": 14.800012422062343,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "push rug": {
+        "action": "push rug",
+        "q_value": 14.94912999375,
+        "raw_advantage": 0.0745587858438288,
+        "advantage": 0.0186396964609572,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 0.9978,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0003",
+          "step": 22,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 14.94912999375,
+          "source": "smart_actor"
+        }
+      },
+      "east": {
+        "action": "east",
+        "q_value": 14.800012422062343,
+        "raw_advantage": -0.0745587858438288,
+        "advantage": -0.0186396964609572,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 0.9982,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0003",
+          "step": 20,
+          "score_delta": 0.0,
+          "next_location": "room:203",
+          "next_score": 10.0,
+          "return": 14.800012422062343,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "push rug": {
+        "action": "push rug",
+        "advantage": 0.15235625541798378,
+        "raw_advantage": 0.38089063854495947,
+        "sample_count": 2,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "east": {
+        "action": "east",
+        "advantage": -1.5158324700799426,
+        "raw_advantage": -6.06332988031977,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 36.704453524807235
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:07:23-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +45 (4.50 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the trap door could lead to new areas and potential score opportunities, as it is now accessible.
+Base action: open trap
+Candidate actions: ["open trap", "open case", "take lantern", "take sword", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open trap",
+  "candidate_actions": ["open trap", "open case", "take lantern", "take sword", "take all"],
+  "decision_rationale": "Opening the trap door could lead to new areas and potential score opportunities, as it is now accessible.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": ["The trap door is now accessible and may lead to new areas."],
+  "state_note": "The rug has been pushed aside, revealing the trap door, which is now a viable option for exploration."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:07:23-05:00
+Base model action: open trap
+Final action after Actor RL: open trap
+RL selection details:
+{
+  "action": "open trap",
+  "candidates": [
+    "open trap",
+    "open case",
+    "take lantern",
+    "take sword",
+    "east"
+  ],
+  "scorer_preferred_action": "open trap",
+  "without_memory_preferred_action": "open trap",
+  "adjusted_preferred_action": "open trap",
+  "corrected_preferred_action": "open trap",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -21.125,
+    -23.5,
+    -22.5,
+    -17.25
+  ],
+  "adjusted_logits": [
+    0.20987141927146846,
+    -20.825,
+    -23.2,
+    -22.2,
+    -17.18895913348305
+  ],
+  "conditioned_logits": [
+    0.20987141927146846,
+    -20.825,
+    -23.2,
+    -22.2,
+    -17.20916184080057
+  ],
+  "probabilities": [
+    0.9999999717868334,
+    7.322702709640641e-10,
+    6.811174521787656e-11,
+    1.8514691933038613e-10,
+    2.722763768147044e-08
+  ],
+  "base_probabilities": [
+    0.9999999668575439,
+    6.691585869517183e-10,
+    6.224144416624343e-11,
+    1.6918978665414777e-10,
+    3.224186630399266e-08
+  ],
+  "advantages": {
+    "open trap": -0.02260615084495754,
+    "east": -1.5109116783901317
+  },
+  "corrections": [
+    0.20987141927146846,
+    0.3,
+    0.3,
+    0.3,
+    0.06104086651695104
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.98
+  ],
+  "satisfaction_mass": 0.9999999994443338,
+  "log_satisfaction_mass": -5.556661519801054e-10,
+  "action_logprob": -2.821316697873974e-08,
+  "selection_mode": "sample",
+  "kl_to_base": 4.157376579931481e-10,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 14.991250416666666,
+    "samples": 3,
+    "actions": {
+      "open trap": {
+        "action": "open trap",
+        "q_value": 14.991250416666666,
+        "raw_advantage": -0.18084920675966032,
+        "advantage": -0.02260615084495754,
+        "confidence": 0.5,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0007",
+          "step": 11,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 15.02425125,
+          "source": "smart_actor"
+        }
+      },
+      "east": {
+        "action": "east",
+        "advantage": -1.5109116783901317,
+        "raw_advantage": -6.043646713560527,
+        "sample_count": 1,
+        "best_similarity": 0.9603174603174602,
+        "source": "historian_td"
+      }
+    },
+    "memory_actions": {
+      "open trap": {
+        "action": "open trap",
+        "q_value": 14.991250416666666,
+        "raw_advantage": 0.0,
+        "advantage": 0.0,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 0.9998,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0007",
+          "step": 11,
+          "score_delta": 0.0,
+          "next_location": "room:193",
+          "next_score": 10.0,
+          "return": 15.02425125,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "open trap": {
+        "action": "open trap",
+        "advantage": -0.04521230168991508,
+        "raw_advantage": -0.18084920675966032,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "east": {
+        "action": "east",
+        "advantage": -1.5109116783901317,
+        "raw_advantage": -6.043646713560527,
+        "sample_count": 1,
+        "best_similarity": 0.9603174603174602,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 35.47292416977476
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:07:27-05:00
+Model: openai/gpt-4o-mini
+Location: Living Room
+Score: 10
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +950 (14.39 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The 'down' command has previously resulted in a score increase and is compatible with the current state, as I have a lit lantern.
+Base action: down
+Candidate actions: ["down", "open case", "take lantern", "take sword", "east"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- down: historically led to Cellar
+- east: historically led to Kitchen
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "down",
+  "candidate_actions": ["down", "open case", "take lantern", "take sword", "take all"],
+  "decision_rationale": "The 'down' command has previously resulted in a score increase and is compatible with the current state, as I have a lit lantern.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": ["lantern"],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Preparing to explore the Cellar, which has previously yielded a score increase."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:07:27-05:00
+Base model action: down
+Final action after Actor RL: down
+RL selection details:
+{
+  "action": "down",
+  "candidates": [
+    "down",
+    "open case",
+    "take lantern",
+    "take sword",
+    "east"
+  ],
+  "scorer_preferred_action": "down",
+  "without_memory_preferred_action": "down",
+  "adjusted_preferred_action": "down",
+  "corrected_preferred_action": "down",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -24.75,
+    -28.0,
+    -23.875,
+    -25.0
+  ],
+  "adjusted_logits": [
+    0.35,
+    -24.45,
+    -27.7,
+    -23.575,
+    -24.7
+  ],
+  "conditioned_logits": [
+    0.3351849142148594,
+    -24.45,
+    -27.7,
+    -23.575,
+    -24.72020270731752
+  ],
+  "probabilities": [
+    0.9999999999276781,
+    1.721594865614543e-11,
+    6.675347712136382e-13,
+    4.1298913893433335e-11,
+    1.31396384088287e-11
+  ],
+  "base_probabilities": [
+    0.9999999999248104,
+    1.783247290680557e-11,
+    6.914400106420312e-13,
+    4.277787868647353e-11,
+    1.3887943863919791e-11
+  ],
+  "advantages": {
+    "down": 2.0
+  },
+  "corrections": [
+    0.35,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    0.9852941176470589,
+    1.0,
+    1.0,
+    1.0,
+    0.98
+  ],
+  "satisfaction_mass": 0.9852941176478464,
+  "log_satisfaction_mass": -0.01481508578434143,
+  "action_logprob": -7.232192622814226e-11,
+  "selection_mode": "sample",
+  "kl_to_base": 5.760517514243758e-14,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": 15.066583333333334,
+    "samples": 3,
+    "actions": {
+      "down": {
+        "action": "down",
+        "q_value": 15.066583333333334,
+        "raw_advantage": 10.634030998594586,
+        "advantage": 2.6585077496486464,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0007",
+          "step": 12,
+          "score_delta": 25.0,
+          "next_location": "room:72",
+          "next_score": 35.0,
+          "return": 15.09975,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "down": {
+        "action": "down",
+        "q_value": 15.066583333333334,
+        "raw_advantage": 0.0,
+        "advantage": 0.0,
+        "confidence": 0.5,
+        "sample_count": 3,
+        "best_similarity": 0.9998,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0007",
+          "step": 12,
+          "score_delta": 25.0,
+          "next_location": "room:72",
+          "next_score": 35.0,
+          "return": 15.09975,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "down": {
+        "action": "down",
+        "advantage": 5.317015499297293,
+        "raw_advantage": 10.634030998594586,
+        "sample_count": 3,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 37.224470951659534
+  }
+}
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T15:07:31-05:00
+Model: openai/gpt-4o-mini
+Location: Cellar
+Score: 35
+Goal: Exploit a previously score-positive opportunity at Loud Room: the interaction 'take bar' produced an observed total gain of +20 (10.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+The south route historically led to East Chasm, which may provide further exploration opportunities despite the current darkness.
+Base action: south
+Candidate actions: ["south", "north", "east", "put down leaflet"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+AVAILABLE COMMAND DESTINATIONS (historical, verify after execution):
+- south: historically led to East Chasm
+- north: historically led to Troll
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "south",
+  "candidate_actions": ["south", "north", "east", "put down leaflet"],
+  "decision_rationale": "The south route historically led to East Chasm, which may provide further exploration opportunities despite the current darkness.",
+  "inventory_items": ["leaflet"],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": ["leaflet"],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Attempting to move south to explore the East Chasm, as the current state is pitch black and no other actions are viable."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T15:07:31-05:00
+Base model action: south
+Final action after Actor RL: south
+RL selection details:
+{
+  "action": "south",
+  "candidates": [
+    "south",
+    "north",
+    "east",
+    "put down leaflet"
+  ],
+  "scorer_preferred_action": "south",
+  "without_memory_preferred_action": "south",
+  "adjusted_preferred_action": "south",
+  "corrected_preferred_action": "south",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    -0.06284332275390625,
+    -7.562843322753906,
+    -7.937843322753906,
+    -2.8128433227539062
+  ],
+  "adjusted_logits": [
+    -0.050711288397942034,
+    -7.550711288397942,
+    -7.637843322753906,
+    -2.6300262067487976
+  ],
+  "conditioned_logits": [
+    -0.0526587086823376,
+    -7.560013681060255,
+    -7.637843322753906,
+    -2.6300262067487976
+  ],
+  "probabilities": [
+    0.928478645215839,
+    0.0005097639053789807,
+    0.0004715938114915759,
+    0.07053999706729049
+  ],
+  "base_probabilities": [
+    0.9390896370561156,
+    0.0005193958004235394,
+    0.00035697516508015407,
+    0.06003399197838074
+  ],
+  "advantages": {
+    "south": -2.0,
+    "north": -2.0,
+    "put down leaflet": -0.29314918350855723
+  },
+  "corrections": [
+    0.012132034355964216,
+    0.012132034355964216,
+    0.3,
+    0.1828171160051085
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    0.9980544747081712,
+    0.9907407407407407,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 0.9981886229988535,
+  "log_satisfaction_mass": -0.0018130195282569095,
+  "action_logprob": -0.07420789768290004,
+  "selection_mode": "sample",
+  "kl_to_base": 0.000946868546489571,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": -9.983333333333333,
+    "samples": 3,
+    "actions": {
+      "south": {
+        "action": "south",
+        "q_value": -10.0,
+        "raw_advantage": -31.376842353650545,
+        "advantage": -3.9241886275396514,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0029",
+          "step": 13,
+          "score_delta": -10.0,
+          "next_location": "room:78",
+          "next_score": 25.0,
+          "return": -10.0,
+          "source": "smart_actor"
+        }
+      },
+      "north": {
+        "action": "north",
+        "q_value": -10.0,
+        "raw_advantage": -31.376842353650545,
+        "advantage": -3.9241886275396514,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0018",
+          "step": 15,
+          "score_delta": -10.0,
+          "next_location": "room:78",
+          "next_score": 25.0,
+          "return": -10.0,
+          "source": "smart_actor"
+        }
+      },
+      "put down leaflet": {
+        "action": "put down leaflet",
+        "q_value": -9.95,
+        "raw_advantage": -3.844928979334032,
+        "advantage": -0.47644945575008735,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "equal_mixture_mc_and_td",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0007",
+          "step": 13,
+          "score_delta": 0.0,
+          "next_location": "room:72",
+          "next_score": 35.0,
+          "return": -9.95,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "memory_actions": {
+      "south": {
+        "action": "south",
+        "q_value": -10.0,
+        "raw_advantage": -0.016666666666667496,
+        "advantage": -0.004166666666666874,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 0.9998,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0029",
+          "step": 13,
+          "score_delta": -10.0,
+          "next_location": "room:78",
+          "next_score": 25.0,
+          "return": -10.0,
+          "source": "smart_actor"
+        }
+      },
+      "north": {
+        "action": "north",
+        "q_value": -10.0,
+        "raw_advantage": -0.016666666666667496,
+        "advantage": -0.004166666666666874,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 0.9998,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0018",
+          "step": 15,
+          "score_delta": -10.0,
+          "next_location": "room:78",
+          "next_score": 25.0,
+          "return": -10.0,
+          "source": "smart_actor"
+        }
+      },
+      "put down leaflet": {
+        "action": "put down leaflet",
+        "q_value": -9.95,
+        "raw_advantage": 0.033333333333333215,
+        "advantage": 0.008333333333333304,
+        "confidence": 0.25,
+        "sample_count": 1,
+        "best_similarity": 0.9998,
+        "source": "concrete_outcomes",
+        "example": {
+          "episode_id": "ideal-map-unified-3_20261120_100446/episode_0007",
+          "step": 13,
+          "score_delta": 0.0,
+          "next_location": "room:72",
+          "next_score": 35.0,
+          "return": -9.95,
+          "source": "smart_actor"
+        }
+      }
+    },
+    "td_actions": {
+      "south": {
+        "action": "south",
+        "advantage": -7.844210588412636,
+        "raw_advantage": -31.376842353650545,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "north": {
+        "action": "north",
+        "advantage": -7.844210588412636,
+        "raw_advantage": -31.376842353650545,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      },
+      "put down leaflet": {
+        "action": "put down leaflet",
+        "advantage": -0.961232244833508,
+        "raw_advantage": -3.844928979334032,
+        "sample_count": 1,
+        "best_similarity": 1.0,
+        "source": "historian_td"
+      }
+    },
+    "critic_state_value": 21.376842353650545
+  }
+}

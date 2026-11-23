@@ -1,0 +1,120 @@
+
+==================== ACTOR_DECISION_RATIONALE ====================
+Timestamp: 2026-11-20T10:02:43-05:00
+Model: openai/gpt-4o-mini
+Location: West House
+Score: 0
+Goal: Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables.
+Rationale source: model_emitted_json_field
+Model-emitted decision rationale:
+Opening the mailbox may reveal valuable items or clues that could contribute to scoring opportunities.
+Base action: open mailbox
+Candidate actions: ["open mailbox", "north", "south", "west"]
+Navigation context:
+NO ACTIVE SYMBOLIC ROUTE IS CURRENTLY BEING EXECUTED.
+Last navigation status: treasure_handoff_not_authorized.
+Use this information as evidence, not as a guarantee that a historical passage is currently open. Investigate blocked prerequisites or an alternate route.
+Raw assistant response (model-emitted content; also preserved in chat log):
+{
+  "action": "open mailbox",
+  "candidate_actions": ["open mailbox", "north", "south", "west"],
+  "decision_rationale": "Opening the mailbox may reveal valuable items or clues that could contribute to scoring opportunities.",
+  "inventory_items": [],
+  "treasure_candidates": [],
+  "carried_treasures": [],
+  "ordinary_items": [],
+  "useful_items": [],
+  "uncertain_items": [],
+  "puzzle_clues": [],
+  "state_note": "Exploring the mailbox could provide new interactions or items to advance the game."
+}
+
+==================== ACTOR_FINAL_SELECTION ====================
+Timestamp: 2026-11-20T10:02:43-05:00
+Base model action: open mailbox
+Final action after Actor RL: open mailbox
+RL selection details:
+{
+  "action": "open mailbox",
+  "candidates": [
+    "open mailbox",
+    "north",
+    "south",
+    "west"
+  ],
+  "scorer_preferred_action": "open mailbox",
+  "without_memory_preferred_action": "open mailbox",
+  "adjusted_preferred_action": "open mailbox",
+  "corrected_preferred_action": "open mailbox",
+  "memory_changed_argmax": false,
+  "nsi_changed_argmax": false,
+  "base_logits": [
+    0.0,
+    -26.875,
+    -30.0,
+    -27.625
+  ],
+  "adjusted_logits": [
+    0.2,
+    -26.675,
+    -29.8,
+    -27.425
+  ],
+  "conditioned_logits": [
+    0.2,
+    -26.675,
+    -29.8,
+    -27.425
+  ],
+  "probabilities": [
+    0.9999999999967706,
+    2.129785170948907e-12,
+    9.357622968809956e-14,
+    1.006039279280068e-12
+  ],
+  "base_probabilities": [
+    0.9999999999967706,
+    2.129785170948907e-12,
+    9.357622968809956e-14,
+    1.006039279280068e-12
+  ],
+  "advantages": {},
+  "corrections": [
+    0.2,
+    0.2,
+    0.2,
+    0.2
+  ],
+  "state_action_visits": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeat_costs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "feasibility": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "satisfaction_mass": 1.0,
+  "log_satisfaction_mass": 0.0,
+  "action_logprob": -3.22941673403487e-12,
+  "selection_mode": "sample",
+  "kl_to_base": -1.0429422742827047e-23,
+  "method": "model_label_logits_plus_advantage_nsi",
+  "critic": {
+    "state_value": null,
+    "samples": 0,
+    "actions": {},
+    "memory_actions": {},
+    "td_actions": {},
+    "critic_state_value": 0.0
+  }
+}

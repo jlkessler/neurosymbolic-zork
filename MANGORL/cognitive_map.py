@@ -30,6 +30,8 @@ class CognitiveMap(WorldMap):
         old_edges = set(self.graph.edges(keys=True))
         moved = super().record_step(action, next_location, observation, next_location_id)
         destination = self.current_location
+        if source is None or destination is None:
+            return moved
         for left, right, key, data in self.graph.out_edges(source, keys=True, data=True):
             if data.get("actions") != [action]:
                 continue

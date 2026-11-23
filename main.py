@@ -14,12 +14,14 @@ from pathlib import Path
 from multiprocessing import freeze_support
 
 from MANGORL.actor_experience import ActorExperienceMemory
+from MANGORL.outcome_memory import OutcomeMemory
 from MANGORL.actor_rl_controller import ActorRLController
 from MANGORL.historian import Historian
 from MANGORL.historian_rl_controller import HistorianRLController
 from MANGORL.navigation_controller import NavigationController
 from MANGORL.smart_agent import SmartAgent
 from MANGORL.trial_logger import TrialLogger
+from MANGORL.episode_analysis import transition
 from MANGORL.world_map import observed_room_title
 from MANGORL.cognitive_map import CognitiveMap
 from MANGORL.adaptive_system import AdaptiveSystem
@@ -173,6 +175,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default=os.getenv("ZORK_ACTOR_EXPERIENCE_PATH", "memory/actor_experiences.jsonl"),
         help="Append-only JSONL file containing completed Actor experiences.",
     )
+    parser.add_argument("--actor-memory", choices=("concrete", "legacy", "off"), default="concrete",
+                        help="Retrieve completed outcomes, use the historical similarity estimator, or use no episodic estimates. The TD critic has its own switch.")
+    parser.add_argument("--actor-repeat-penalty", type=float, default=0.5,
+                        help="Logit cost per repeated concrete state/action after its first retry (capped at three increments). Zero disables it.")
+    parser.add_argument("--actor-cycle-cooldown", action=argparse.BooleanOptionalAction, default=True,
+                        help="Temporarily remove a repeated score-losing command after returning to the same state in concrete mode.")
     parser.add_argument(
         "--actor-rl-gamma", type=float, default=0.995,
         help="Discount factor used to assign delayed episode rewards to Actor decisions.",
@@ -285,6 +293,8 @@ def parse_args(argv=None):
         raise SystemExit("--historian-temperature cannot be negative")
     if not 0.0 <= args.actor_rl_gamma <= 1.0:
         raise SystemExit("--actor-rl-gamma must be between 0 and 1")
+    if not math.isfinite(args.actor_repeat_penalty) or args.actor_repeat_penalty < 0:
+        raise SystemExit("--actor-repeat-penalty must be finite and nonnegative")
     if args.actor_rl_beta < 0 or args.actor_rl_exploration < 0:
         raise SystemExit("Actor RL beta and exploration coefficient cannot be negative")
     if args.actor_rl_rank_penalty < 0:
@@ -339,7 +349,7 @@ def get_known_outgoing_actions(world_map, current_node):
 def find_living_room_node(world_map):
     """Return the canonical Living Room node, if already discovered."""
     matches = world_map.find_nodes_by_label("Living Room")
-    return matches[0] if matches else None
+    return matches[0] if len(matches) == 1 else None
 
 
 def _match_action(candidate, valid_actions):
@@ -428,6 +438,10 @@ def run_episode(
     goal_control = GoalControl()
     recovery_count = 0
     control_metrics = {"navigation_without_treasure": 0, "goal_cancellations": 0, "route_starts": 0, "recovery_actions": 0, "treasure_deposits": 0}
+    control_metrics.update(policy_decisions=0, memory_supported_decisions=0, recalled_candidates=0,
+                           memory_argmax_changes=0, nsi_decisions=0, nsi_informative_decisions=0,
+                           nsi_argmax_changes=0, loss_cycle_cooldown_decisions=0, peak_score=None, steps_since_peak=0)
+    control_metrics.update(world_model_guided_decisions=0, world_model_recalled_candidates=0)
     episode_started = False
     termination_reason = "initialization_failed"
     home_node = None
@@ -436,6 +450,9 @@ def run_episode(
 
     try:
         observation, info = env.reset()
+        peak_score = info.get("score")
+        last_peak_step = 0
+        control_metrics["peak_score"] = peak_score
         room = env.get_player_location()
         if room is None:
             raise RuntimeError("Jericho did not provide the starting room.")
@@ -443,11 +460,14 @@ def run_episode(
         if world_map is not None:
             if not map_initialized:
                 world_map.instantiate()
+                world_map.bind_rom(args.rom_path)
             current_node = world_map.start_episode(room.name, room.num)
             current_label = world_map.display_location(current_node)
             navigator.start_episode()
         else:
             current_node, current_label = str(room.num), room.name
+        episode_logger.start_traversal(f"id:{room.num}", observed_room_title(room.name, observation)
+                                       or current_label, info.get("score"))
         historian.start_episode(
             start_node=current_node,
             start_location=current_label,
@@ -517,17 +537,27 @@ def run_episode(
                 termination_reason = "no_safe_actions"
                 break
 
-            known_routes, known_outgoing = [], ()
+            known_routes, known_outgoing, map_experiences = [], (), []
             home_route_status = "disabled"
             map_size = None
+            supported_score_moves = None
             if world_map is not None:
                 map_size = (world_map.graph.number_of_nodes(), world_map.graph.number_of_edges())
                 known_routes = world_map.get_reachable_routes(
-                    start=current_node, max_destinations=max(1, map_size[0])
+                    start=current_node, max_destinations=max(1, map_size[0]),
+                    valid_actions=valid_actions, blocked_edges=navigator.blocked_edges
                 )
                 known_outgoing = get_known_outgoing_actions(world_map, current_node)
                 home_node = find_living_room_node(world_map)
                 home_route_status = navigator.route_status(home_node) if home_node is not None else "home_undiscovered"
+                map_experiences = world_map.retrieve_action_experiences(
+                    current_node=current_node,
+                    state_context=decision_observation,
+                    valid_actions=valid_actions, top_k=len(valid_actions), blocked_edges=navigator.blocked_edges,
+                )
+                supported_score_moves = {historian.normalize_action(row["action"])
+                                         for row in map_experiences if row["productive"]}
+                map_experiences = map_experiences[:6]
 
             # Refresh progress evidence before deciding whether a goal is stale.
             historian.cycle_recovery(current_node, valid_actions, state_context=decision_observation)
@@ -541,6 +571,7 @@ def run_episode(
                 home_node=home_node,
                 home_label=home_label,
                 home_route_status=home_route_status,
+                supported_score_moves=supported_score_moves,
             )
             goal["progress_budget"] = max(24, 2 * max(
                 (len(r.get("actions", [])) for r in known_routes if str(r.get("destination")) == str(goal.get("target_node"))),
@@ -560,7 +591,20 @@ def run_episode(
                 current_node,
                 current_label,
                 current_score=current_score,
+                score_goal=goal if world_map is not None else None,
             )
+            map_experience_guidance = (
+                world_map.format_experience_guidance(map_experiences)
+                if world_map is not None else ""
+            )
+            if map_experience_guidance:
+                guidance += "\n\n" + map_experience_guidance
+                control_metrics["world_model_guided_decisions"] += 1
+                episode_logger.log_chat_event("world_model_experience_retrieval", {
+                    "location": current_label,
+                    "experiences": map_experiences,
+                })
+            map_recalled_actions = [row["action"] for row in map_experiences]
             avoid_actions = historian.get_avoid_actions(current_node)
             actor_rl_state = build_actor_rl_state(
                 current_node=current_node,
@@ -571,11 +615,7 @@ def run_episode(
                 goal=goal,
                 home_route_status=home_route_status,
             )
-            rl_guidance = actor_rl_controller.build_guidance(
-                actor_rl_state, valid_actions
-            )
-            if adaptive_system is not None and not adaptive_system.configuration["memory_guidance"]:
-                rl_guidance = "Memory prompt guidance disabled by the active configuration."
+            actor_rl_state.update(peak_score=peak_score, steps_remaining=args.max_steps - step)
 
             action = None
             action_source = "smart_actor"
@@ -626,6 +666,27 @@ def run_episode(
             if action is None:
                 if navigator is not None:
                     navigator.cancel_plan("actor_or_puzzle_decision")
+                if (args.actor_cycle_cooldown and actor_experience.outcomes is not None
+                        and actor_experience.outcomes.cooldowns):
+                    eligible = valid_actions
+                    if use_nsi:
+                        weights = world_map.action_feasibility(actor_rl_state, valid_actions, navigator, valid_actions)
+                        eligible = [command for command, weight in zip(valid_actions, weights) if weight > 0]
+                    _, held = actor_experience.outcomes.apply_cooldown(actor_rl_state, eligible)
+                    if held:
+                        valid_actions = [command for command in valid_actions if command not in held]
+                        control_metrics["loss_cycle_cooldown_decisions"] += 1
+                        episode_logger.log_chat_event("outcome_loss_cycle_cooldown", {
+                            "location": current_label, "score": current_score, "withheld": held})
+                prior_estimates = (actor_rl_controller.estimate(actor_rl_state, valid_actions)
+                                   if actor_rl_controller.enabled else {})
+                rl_guidance = actor_rl_controller.build_guidance(actor_rl_state, valid_actions, estimates=prior_estimates)
+                recalled_actions = list(dict.fromkeys([
+                    *map_recalled_actions,
+                    *actor_rl_controller.recall_candidates(prior_estimates),
+                ]))
+                if adaptive_system is not None and not adaptive_system.configuration["memory_guidance"]:
+                    rl_guidance = "Memory prompt guidance disabled by the active configuration."
                 try:
                     with request_budget():
                         decision = agent.choose_decision(
@@ -642,6 +703,7 @@ def run_episode(
                             preferred_actions=goal.get("preferred_actions", []),
                             navigation_context=navigator.navigation_context() if navigator is not None else None,
                             rl_guidance=rl_guidance,
+                            recalled_actions=recalled_actions,
                             steps_remaining=args.max_steps - step,
                         )
                         base_action = decision["action"]
@@ -668,6 +730,7 @@ def run_episode(
                                 observation=decision_observation, current_location=current_label,
                                 valid_actions=permitted, current_score=current_score, target_score=args.target_score,
                                 goal=goal, historian_guidance=guidance, rl_guidance=rl_guidance,
+                                recalled_actions=recalled_actions,
                                 navigation_context=navigator.navigation_context(),
                                 steps_remaining=args.max_steps - step,
                             )
@@ -683,6 +746,16 @@ def run_episode(
                             sample=args.sample_actions,
                         )
                         action = rl_selection.get("action") or base_action
+                        if decision.get("recalled_candidate") in map_recalled_actions:
+                            control_metrics["world_model_recalled_candidates"] += 1
+                        control_metrics["policy_decisions"] += 1
+                        control_metrics["memory_supported_decisions"] += int(any(
+                            item["sample_count"] for item in rl_selection["critic"].get("memory_actions", {}).values()))
+                        control_metrics["recalled_candidates"] += int(bool(decision.get("recalled_candidate")))
+                        control_metrics["memory_argmax_changes"] += int(rl_selection["memory_changed_argmax"])
+                        control_metrics["nsi_decisions"] += int(use_nsi)
+                        control_metrics["nsi_informative_decisions"] += int(use_nsi and len(set(feasibility)) > 1)
+                        control_metrics["nsi_argmax_changes"] += int(rl_selection["nsi_changed_argmax"])
                         decision["action"] = action
                         decision["rl_selection"] = rl_selection
                         decision["action_logprob"] = rl_selection.get("action_logprob")
@@ -796,10 +869,13 @@ def run_episode(
                     if not carried_treasures(historian, observed_inventory):
                         control_metrics["navigation_without_treasure"] += 1
                 after_node = world_map.current_location
-                if world_changed and before_node == after_node and action.casefold() not in {"look", "inventory"}:
+                if (world_changed and before_node == after_node and not navigation_result.get("failed_edge")
+                        and action.casefold() not in {"look", "inventory"}):
                     navigator.invalidate_local_evidence(after_node)
-                after_label = world_map.display_location(after_node)
             score_after = next_info.get("score")
+            if score_after is not None and (peak_score is None or score_after > peak_score):
+                peak_score, last_peak_step = score_after, step + 1
+            control_metrics.update(peak_score=peak_score, steps_since_peak=step + 1 - last_peak_step)
             score_delta = (
                 score_after - score_before
                 if isinstance(score_before, (int, float))
@@ -807,7 +883,11 @@ def run_episode(
                 else None
             )
             next_context = observation if done else current_environment_context(env, observation)
-            if world_map is None:
+            if world_map is not None:
+                if next_room is not None:
+                    world_map.observe_room_title(after_node, next_context)
+                after_label = world_map.display_location(after_node)
+            else:
                 if next_room is None:
                     after_node, after_label = before_node, before_label
                 else:
@@ -817,8 +897,29 @@ def run_episode(
                     )
                     if after_label.casefold() == home_label.casefold():
                         home_node = after_node
+            if world_map is not None:
+                world_map.record_experience(
+                    source=before_node,
+                    action=action,
+                    destination=after_node,
+                    before_context=decision_observation,
+                    after_context=next_context,
+                    score_before=score_before,
+                    score_after=score_after,
+                    reward=reward,
+                    done=done,
+                    trajectory_id=episode_key,
+                    step=step + 1,
+                    provenance=action_source,
+                )
             _, next_inventory_text = snapshot_sections(next_context)
             next_inventory = inventory_from_text(next_inventory_text)
+            episode_logger.write_traversal(transition(
+                step + 1, f"id:{room.num}", f"id:{next_room.num}" if next_room else None,
+                before_label, (observed_room_title(next_room.name, next_context) or after_label) if next_room else None,
+                action, action_source, observation, score_after, score_delta,
+                observed_inventory, next_inventory if next_inventory_text else None,
+            ))
 
             agent.add_history(
                 observation=observation,
@@ -857,6 +958,8 @@ def run_episode(
                 "location": str(after_label),
                 "observation": str(next_context or ""),
                 "score": score_after,
+                "peak_score": peak_score,
+                "steps_remaining": args.max_steps - step - 1,
                 "home_route_status": (
                     navigator.route_status(home_node)
                     if navigator is not None and home_node is not None else home_route_status
@@ -1082,11 +1185,20 @@ def main(argv=None):
             if world_map is not None else None
         )
         state_encoder = FrozenStateEncoder(args.memory_embedding_model) if args.memory_embedding_model else None
+        outcomes_memory = None
+        if args.actor_rl and args.actor_memory == "concrete":
+            directory = Path(args.actor_experience_path).expanduser()
+            outcomes_memory = OutcomeMemory(
+                directory.with_name(directory.name + ".outcomes"), gamma=args.actor_rl_gamma,
+                horizon=args.max_steps, target=args.target_score,
+                rom=metadata["rom_sha256"] or str(rom.resolve()), map_navigation=args.map_navigation)
         actor_experience = ActorExperienceMemory(
             args.actor_experience_path,
             environment_reward_weight=args.actor_rl_environment_reward_weight,
             no_progress_penalty=args.actor_rl_no_progress_penalty,
             state_encoder=state_encoder,
+            outcomes=outcomes_memory,
+            retain_legacy_index=args.actor_rl and args.actor_memory == "legacy",
         )
         historian_critic = HistorianRLController(
             args.historian_critic_path,
@@ -1105,6 +1217,7 @@ def main(argv=None):
             min_similarity=args.actor_rl_min_similarity,
             value_controller=historian_critic if args.historian_critic else None,
             seed=args.seed,
+            memory_mode=args.actor_memory, repeat_penalty=args.actor_repeat_penalty,
         )
         agent = None
         map_initialized = False

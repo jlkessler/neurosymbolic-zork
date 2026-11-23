@@ -1,0 +1,347 @@
+Episode 12 log: logs/ideal-map-unified-20261119_210406/ideal-map-unified_20261119_210923/episode_0012.txt
+Episode 12 chat log: logs/ideal-map-unified-20261119_210406/ideal-map-unified_20261119_210923/episode_0012_chat.txt
+Episode 12 decision-rationale log: logs/ideal-map-unified-20261119_210406/ideal-map-unified_20261119_210923/episode_0012_reasoning.txt
+Episode: 12/20
+Initial observation: Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.
+ZORK is a registered trademark of Infocom, Inc.
+Revision 88 / Serial number 840726
+
+West of House
+You are standing in an open field west of a white house, with a boarded front door.
+There is a small mailbox here.
+
+
+Starting location: West House
+Target score: 80
+Model: openai/gpt-4o-mini | Agent type: smart
+Maximum steps: 500
+
+LESSONS LEARNED FROM PREVIOUS EPISODES:
+Repeat these positive behaviors:
+1. Go to Behind House, open window, west into Kitchen: +10 recorded at step 7. Skip the forest entirely.
+2. Take lantern and sword in Living Room, push rug, light lantern, open trap door, go down: Cellar +25 recorded with light on.
+3. Cellar south, then east reaches Gallery; 'take art' gave +4. Carry it to the Living Room case: 'put painting in case' gave +6.
+4. Enter the Troll Room armed with the sword and lit lantern. Repeated 'hit troll with sword' knocked out, then killed, the troll; west leads into the maze.
+5. In the maze, west, west, west, up reached room #167; 'take bag' gave +10. Verify the score line after each pickup.
+6. At the Cyclops Room, saying 'odysse' made the cyclops flee and open the east wall. Then Strange Passage, west, up gave Treasure Room +25.
+7. When a route is blocked, try an untested command or exit once, then re-check the observation. This unlocked the Cyclops Room exit.
+8. Credit score only to the action whose observation shows the gain, and watch for drops: taking the painting from the case cost -6.
+Avoid these negative behaviors:
+1. Never move in darkness without a lit lantern: an earlier run died to a grue after 'south' from a dark Cellar.
+2. Never enter the Troll Room unarmed; an earlier run was knocked out and the episode ended. Armed combat worked this run.
+3. Never type 'jump' at East Chasm or any chasm edge; an earlier run died from it.
+4. Do not wander Forest, Forest Path or Clearing before the window; steps 2-5 this run scored 0 and delayed the Kitchen.
+5. Ignore stale 'take egg' / Up a Tree goals; no tree route was verified and they were re-issued about eight times with 0 score.
+6. Do not shuttle Cellar, East Chasm and Troll Room, or loop northwest/southeast in maze room #52; about 20 moves scored 0.
+7. Do not drop and retake treasure, or take a deposited painting out of the case; that cost -6 and needed a redeposit.
+8. Skip mailbox, sack, bottle, garlic and rope detours; none produced score. Leave the trap door open path and avoid hauling junk.
+Apply these lessons when relevant; current game feedback takes precedence.
+
+========== STEP 1/500 ==========
+Location: West House
+Goal: Exploit a previously score-positive opportunity at : the interaction 'up' produced an observed total gain of +25 (25.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'up': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: open mailbox
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Opening the small mailbox reveals a leaflet.
+
+
+New location: West House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261119_210406/world_model.json
+
+========== STEP 2/500 ==========
+Location: West House
+Goal: Exploit a previously score-positive opportunity at : the interaction 'up' produced an observed total gain of +25 (25.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'up': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North of House
+You are facing the north side of a white house. There is no door here, and all the windows are boarded up. To the north a narrow path winds through the trees.
+
+
+New location: North House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261119_210406/world_model.json
+
+========== STEP 3/500 ==========
+Location: North House
+Goal: Exploit a previously score-positive opportunity at : the interaction 'up' produced an observed total gain of +25 (25.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'up': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Behind House
+You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar.
+
+
+New location: Behind House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261119_210406/world_model.json
+
+========== STEP 4/500 ==========
+Location: Behind House
+Goal: Exploit a previously score-positive opportunity at : the interaction 'up' produced an observed total gain of +25 (25.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'up': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: open window
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: With great effort, you open the window far enough to allow entry.
+
+
+New location: Behind House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261119_210406/world_model.json
+
+========== STEP 5/500 ==========
+Actor request or policy scoring failed: IncompleteLabelScores: Missing exact single-token labels: ['C'] after 3 attempts. The endpoint did not return a complete distribution even with equal label bias; inspect actor_logprob_attempt events for raw tokens.
+World map saved to logs/ideal-map-unified-20261119_210406/world_model.json
+
+===== WORLD MAP =====
+
+West House --north: ['N']--> North House
+West House --north: ['north']--> North House
+West House --southwest: ['Sw']--> Stone Barrow
+West House --west: ['west']--> Forest (room #78)
+North House --north: ['N']--> Forest Path
+North House --north: ['north']--> Forest Path
+North House --east: ['E']--> Behind House
+North House --east: ['east']--> Behind House
+North House --west: ['W']--> West House
+Forest Path --up: ['U']--> Up a Tree
+Forest Path --up: ['up']--> Up a Tree
+Forest Path --south: ['S']--> North House
+Forest Path --east: ['E']--> Forest (room #77)
+Forest Path --['go around forest']--> Clearing
+Up a Tree --down: ['D']--> Forest Path
+Up a Tree --down: ['down']--> Forest Path
+Behind House --west: ['W']--> Kitchen
+Behind House --west: ['west']--> Kitchen
+Behind House --north: ['N']--> North House
+Behind House --east: ['east']--> Clearing
+Behind House --south: ['south']--> South House
+Kitchen --west: ['W']--> Living Room
+Kitchen --west: ['west']--> Living Room
+Kitchen --up: ['U']--> Attic
+Kitchen --up: ['up']--> Attic
+Kitchen --east: ['E']--> Behind House
+Kitchen --east: ['east']--> Behind House
+Living Room --east: ['E']--> Kitchen
+Living Room --east: ['east']--> Kitchen
+Living Room --down: ['D']--> Cellar
+Living Room --down: ['down']--> Cellar
+Living Room --west: ['W']--> Strange Passage
+Attic --down: ['D']--> Kitchen
+Attic --down: ['down']--> Kitchen
+Cellar --north: ['N']--> Troll 
+Cellar --north: ['north']--> Troll 
+Cellar --south: ['S']--> East Chasm
+Cellar --south: ['south']--> East Chasm
+Cellar --up: ['U']--> Living Room
+Troll  --east: ['E']--> East-West Passage
+Troll  --south: ['S']--> Cellar
+Troll  --south: ['south']--> Cellar
+Troll  --west: ['W']--> Maze (room #70)
+Troll  --west: ['west']--> Maze (room #70)
+East-West Passage --east: ['E']--> Round 
+East-West Passage --west: ['W']--> Troll 
+Round  --southeast: ['Se']--> Engravings Cave
+Round  --east: ['E']--> Loud 
+Round  --south: ['S']--> Narrow Passage
+Round  --west: ['W']--> East-West Passage
+Round  --north: ['N']--> North-South Passage
+Engravings Cave --east: ['E']--> Dome 
+Dome  --down: ['D']--> Torch 
+Torch  --down: ['D']--> Temple
+Temple --south: ['S']--> Altar
+Temple --east: ['E']--> Egypti
+Temple --down: ['D']--> Egypti
+Altar --north: ['N']--> Temple
+Altar --['Pray']--> Forest (room #78)
+Egypti --west: ['W']--> Temple
+Egypti --up: ['U']--> Temple
+Forest (room #78) --east: ['E']--> Forest Path
+Forest (room #78) --east: ['east']--> Forest Path
+East Chasm --east: ['E']--> Gallery
+East Chasm --east: ['east']--> Gallery
+East Chasm --north: ['N']--> Cellar
+East Chasm --north: ['north']--> Cellar
+Gallery --west: ['W']--> East Chasm
+Gallery --west: ['west']--> East Chasm
+Gallery --north: ['north']--> Studio
+Loud  --up: ['U']--> Deep Canyon
+Loud  --west: ['W']--> Round 
+Loud  --east: ['E']--> Damp Cave
+Deep Canyon --east: ['E']--> Dam
+Deep Canyon --down: ['D']--> Loud 
+Dam --north: ['N']--> Dam Lobby
+Dam --south: ['S']--> Deep Canyon
+Dam --down: ['D']--> Dam Base
+Dam --west: ['W']--> Reservoir South
+Dam Lobby --south: ['S']--> Dam
+Dam Lobby --north: ['N']--> Maintenance 
+Narrow Passage --south: ['S']--> Mirror  (room #152)
+Narrow Passage --north: ['N']--> Round 
+Mirror  (room #152) --east: ['E']--> Cave (room #46)
+Mirror  (room #152) --north: ['N']--> Narrow Passage
+Mirror  (room #152) --['Touch mirror']--> Mirror  (room #150)
+Cave (room #46) --down: ['D']--> Entrance Hades
+Cave (room #46) --north: ['N']--> Mirror  (room #152)
+Entrance Hades --south: ['S']--> LDead
+Entrance Hades --up: ['U']--> Cave (room #46)
+LDead --north: ['N']--> Entrance Hades
+Maze (room #70) --west: ['W']--> Maze (room #67)
+Maze (room #70) --west: ['west']--> Maze (room #67)
+Maze (room #67) --west: ['W']--> Maze (room #68)
+Maze (room #67) --west: ['west']--> Maze (room #68)
+Maze (room #68) --up: ['U']--> Maze (room #167)
+Maze (room #68) --up: ['up']--> Maze (room #167)
+Maze (room #167) --southwest: ['Sw']--> Maze (room #64)
+Maze (room #167) --southwest: ['southwest']--> Maze (room #64)
+Maze (room #64) --east: ['E']--> Maze (room #63)
+Maze (room #64) --east: ['east']--> Maze (room #63)
+Maze (room #63) --south: ['S']--> Maze (room #52)
+Maze (room #63) --south: ['south']--> Maze (room #52)
+Maze (room #52) --southeast: ['Se']--> 
+Maze (room #52) --southeast: ['southeast']--> 
+ --east: ['E']--> Strange Passage
+ --east: ['east']--> Strange Passage
+ --up: ['U']--> Treasure 
+ --up: ['up']--> Treasure 
+ --northwest: ['northwest']--> Maze (room #52)
+Strange Passage --east: ['E']--> Living Room
+Strange Passage --west: ['W']--> 
+Strange Passage --west: ['west']--> 
+North-South Passage --northeast: ['Ne']--> Deep Canyon
+North-South Passage --south: ['S']--> Round 
+Dam Base --up: ['U']--> Dam
+Maintenance  --south: ['S']--> Dam Lobby
+Reservoir South --west: ['W']--> Stream View
+Reservoir South --southwest: ['Sw']--> Chasm
+Stream View --east: ['E']--> Reservoir South
+Chasm --south: ['S']--> North-South Passage
+Mirror  (room #150) --east: ['E']--> Cave (room #47)
+Mirror  (room #150) --north: ['N']--> Cold Passage
+Cave (room #47) --down: ['D']--> Atlant
+Atlant --south: ['S']--> Reservoir North
+Reservoir North --south: ['S']--> Reservoir
+Reservoir --south: ['S']--> Reservoir South
+Damp Cave --east: ['E']--> White Cliffs Beach
+White Cliffs Beach --['Enter boat']--> magic boat
+magic boat --['Get out of boat']--> Shore
+Shore --north: ['N']--> Sandy Beach
+Shore --south: ['S']--> AragaFalls
+Sandy Beach --northeast: ['Ne']--> Sandy Cave
+Sandy Beach --south: ['S']--> Shore
+Sandy Cave --southwest: ['Sw']--> Sandy Beach
+AragaFalls --west: ['W']--> On Rainbow
+On Rainbow --west: ['W']--> End Rainbow
+End Rainbow --southwest: ['Sw']--> CanyBottom
+CanyBottom --up: ['U']--> Rocky Ledge
+Rocky Ledge --up: ['U']--> CanyView
+CanyView --northwest: ['Nw']--> Clearing
+Clearing --west: ['W']--> Behind House
+Clearing --west: ['west']--> Behind House
+Treasure  --down: ['D']--> 
+Forest (room #77) --west: ['W']--> Forest Path
+Cold Passage --west: ['W']--> Slide 
+Slide  --north: ['N']--> Mine Entrance
+Slide  --down: ['D']--> Cellar
+Mine Entrance --west: ['W']--> Squeaky 
+Mine Entrance --south: ['S']--> Slide 
+Squeaky  --north: ['N']--> Bat 
+Squeaky  --east: ['E']--> Mine Entrance
+Bat  --east: ['E']--> Shaft 
+Bat  --south: ['S']--> Squeaky 
+Shaft  --north: ['N']--> Smelly 
+Shaft  --west: ['W']--> Bat 
+Smelly  --down: ['D']--> Gas 
+Smelly  --south: ['S']--> Shaft 
+Gas  --east: ['E']--> Coal Mine (room #19)
+Gas  --up: ['U']--> Smelly 
+Coal Mine (room #19) --northeast: ['Ne']--> Coal Mine (room #18)
+Coal Mine (room #19) --north: ['N']--> Gas 
+Coal Mine (room #18) --southeast: ['Se']--> Coal Mine (room #17)
+Coal Mine (room #18) --south: ['S']--> Coal Mine (room #19)
+Coal Mine (room #17) --southwest: ['Sw']--> Coal Mine (room #16)
+Coal Mine (room #17) --east: ['E']--> Coal Mine (room #18)
+Coal Mine (room #16) --down: ['D']--> Ladder Top
+Coal Mine (room #16) --north: ['N']--> Coal Mine (room #17)
+Ladder Top --down: ['D']--> Ladder Bottom
+Ladder Top --up: ['U']--> Coal Mine (room #16)
+Ladder Bottom --south: ['S']--> Dead End
+Ladder Bottom --up: ['U']--> Ladder Top
+Ladder Bottom --west: ['W']--> Timber 
+Dead End --north: ['N']--> Ladder Bottom
+Timber  --west: ['W']--> Drafty 
+Timber  --east: ['E']--> Ladder Bottom
+Drafty  --south: ['S']--> Machine 
+Drafty  --east: ['E']--> Timber 
+Machine  --north: ['N']--> Drafty 
+South House --west: ['west']--> West House
+Studio --up: ['up']--> Kitchen
+Studio --south: ['south']--> Gallery
+
+===== END OF WORLD MAP =====
+
+Episode finished: score=0, moves=4, reason=no_safe_actions
+Actor experience update: {'episode_id': 'ideal-map-unified_20261119_210923/episode_0012', 'steps': 4, 'actor_experiences': 4, 'score_reward_total': 0.0, 'discounted_return_first_step': 4.957541378540255, 'termination_reason': 'no_safe_actions', 'final_score': 0.0, 'memory_path': 'logs/ideal-map-unified-20261119_210406/actor_experiences.jsonl', 'bootstrap_value': 5.057944094629483, 'episode_truncated': True, 'training_eligible': True, 'return_estimator': 'bootstrapped', 'published_outcome_steps': 0, 'outcome_directory': 'logs/ideal-map-unified-20261119_210406/actor_experiences.jsonl.outcomes/5730853b292aee8e1e84ff6c68d903149dde36d3a8259d1e6e3c669f15c058f8'}
+Historian critic update: {'enabled': True, 'updates': 4, 'mean_absolute_prediction_error': 1.0416156324212746, 'state_visits': 314, 'episodes_trained': 12, 'termination_reason': 'no_safe_actions', 'path': 'logs/ideal-map-unified-20261119_210406/historian_td.json'}
+Actor experience samples saved: 4 (logs/ideal-map-unified-20261119_210406/ideal-map-unified_20261119_210923/episode_0012_experience.jsonl)
+
+Historian episode review — episode 12
+================================================
+
+Review source: llm
+Lessons: 8 positive + 8 negative (configured per category: 8)
+
+The episode ended after 4 steps at 0 points (target 80) with termination reason 'no_safe_actions'. The Actor's best decisions were heading toward Behind House and opening the window, which the observation confirms worked. Those actions scored nothing, though, and the Actor never entered the Kitchen, so the +10 was not earned. The opening 'open mailbox' was a minor detour that revealed a leaflet and scored nothing. Going north to North House and then east cost a move, and the goal text pointed at an 'up' interaction. The Actor did not use the window before the episode ended, so the stop is the main failure and the evidence does not explain why no actions were safe. Next episode: go to Behind House, open the window, enter, and verify each score line. Then collect the light source and weapon, and bank treasures before going underground.
+
+LESSONS LEARNED
+================================
+POSITIVES TO REPEAT
+1. Go straight to Behind House, open the window, enter the Kitchen, and check for the +10 score line; the window opened this run.
+2. Take lantern and sword in the Living Room, light the lantern, and open the trap door before descending; Cellar +25 was recorded earlier.
+3. Before entering the Troll Room, carry the sword and a lit lantern; earlier armed combat defeated the troll.
+4. Cellar south then east reaches the Gallery; 'take art' gave +4, and 'put painting in case' in the Living Room gave +6.
+5. In the maze, west, west, west, up reached room #167; 'take bag' gave +10. Verify the score after each pickup.
+6. At the Cyclops Room, saying 'odysseus' makes the cyclops flee and opens the east wall; then Strange Passage, west, up reached the Treasure Room +25.
+7. If a route is blocked, try one untested command or exit, then re-read the observation before repeating anything.
+8. Credit score only to the action whose observation shows the gain, and bank treasures in the trophy case promptly.
+
+NEGATIVES TO AVOID
+1. Never move in darkness without a lit lantern; an earlier run died to a grue after moving south from a dark Cellar.
+2. Never enter the Troll Room unarmed; an earlier run was knocked out and the episode ended.
+3. Never type 'jump' at a chasm edge; an earlier run died from it.
+4. Do not wander Forest, Forest Path or Clearing before entering the Kitchen; earlier forest steps scored 0 and delayed progress.
+5. Do not pursue stale 'take egg' or Up a Tree goals; no tree route was verified and repeats scored 0.
+6. Do not loop northwest/southeast in the maze or shuttle Cellar, East Chasm and Troll Room; about 20 moves scored 0.
+7. Do not make repeated Attic or Kitchen trips without a new item or goal; they wasted moves and scored nothing.
+8. Do not open the mailbox or take detours before the window; this run's mailbox step scored 0, and North House cost extra moves.
+
+Historian review saved to: logs/ideal-map-unified-20261119_210406/ideal-map-unified_20261119_210923/episode_0012_review.txt
+Episode lessons saved to: logs/ideal-map-unified-20261119_210406/ideal-map-unified_20261119_210923/episode_0012_lessons.txt
+Current trial lessons saved to: logs/ideal-map-unified-20261119_210406/ideal-map-unified_20261119_210923/lessons_learned.txt
+World map saved to logs/ideal-map-unified-20261119_210406/world_model.json

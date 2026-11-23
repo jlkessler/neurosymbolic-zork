@@ -69,6 +69,14 @@ class EpisodeLogger:
         print(f"Episode {self.episode_number} decision-rationale log: {self.reasoning_path}")
         return self
 
+    def start_traversal(self, node, label, score):
+        path = self.run_directory / f"episode_{self.episode_number:04d}_traversal.jsonl"
+        self._traversal_file = self._redirects.enter_context(path.open("x", encoding="utf-8", buffering=1))
+        self.write_traversal({"start": node, "start_label": label, "start_score": score})
+
+    def write_traversal(self, record):
+        self._traversal_file.write(json.dumps(record) + "\n")
+
     def _write_decision_trace(self, event: str, payload: Any):
         """Write concise, model-emitted decision explanations to a focused file.
 

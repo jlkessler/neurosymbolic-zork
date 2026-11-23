@@ -56,7 +56,11 @@ class GoalControl:
             priority_goals = {'navigate_to_home', 'deposit_treasure'}
             if map_size is None:
                 priority_goals.add('solve_return_route')
-            invalid = (deposit and (not treasures or self.identity(proposed) != self.identity(old)) or
+            score_goal = old.get('kind') in {'score_action', 'navigate_score_goal'}
+            new_goal = self.identity(proposed) != self.identity(old)
+            invalid = (deposit and (not treasures or new_goal) or
+                       score_goal and new_goal or
+                       not deposit and new_goal and proposed.get('kind') == 'score_action' or
                        old.get('target_node') is None and self.origin != str(node) or
                        old.get('target_node') is not None and str(old['target_node']) == str(node)
                        and proposed.get('kind') != old.get('kind') or
@@ -66,8 +70,8 @@ class GoalControl:
                 self.events.append({'status': 'released', 'reason': 'prerequisites_or_destination_changed', 'goal': old})
                 self.active = None
                 self.age, self.visits = 0, {}
-            elif old.get('kind') == 'score_action' and self.identity(old) != self.identity(proposed):
-                self.active = None  # No longer legal or already attempted.
+            elif score_goal:
+                self.active = deepcopy(proposed)  # Refresh the route from the current room.
         if self.active:
             self.age += 1
             state = (str(node), room, facts)

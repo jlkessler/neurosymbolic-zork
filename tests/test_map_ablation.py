@@ -46,7 +46,7 @@ def test_no_map_trial_scores_and_keeps_actor_in_control(tmp_path, monkeypatch):
         raise AssertionError("Map or navigator was invoked in the map ablation")
 
     requests = []
-    commands = iter(["east", "take painting", "west", "put painting in case"])
+    commands = iter(["east", "take painting", "west", "put painting in case"] * 2)
 
     def answer(**request):
         requests.append(request)
@@ -84,7 +84,22 @@ def test_no_map_trial_scores_and_keeps_actor_in_control(tmp_path, monkeypatch):
         assert all(section not in user for section in ("NAVIGATION CONTROLLER", "KNOWN LOCATIONS", "KNOWN ROUTES", "Home route status"))
     metric = json.loads((run / "metrics.jsonl").read_text(encoding="utf-8"))
     assert metric["map_navigation"] is False and metric["nsi"] is False
+    assert metric["objectives_met"]["painting_taken"] == 2
+    assert metric["objectives_met"]["painting_deposited"] == 4
+    journal = [json.loads(line) for line in (run / "episode_0001_traversal.jsonl").read_text().splitlines()]
+    assert journal[0]["start"] == "id:1"
+    assert [r["delta"] for r in journal[1:]] == [0, 4, 0, 6]
     summary = json.loads((run / "metrics_summary.json").read_text(encoding="utf-8"))
     assert summary["mean_score"] == 10 and summary["target_success_rate"] == 1
     resume = ["--resume-trial", str(run), "--episodes", "2"]
     assert restore_arguments(main.parse_args(resume), resume).map_navigation is False
+    main.main(resume)
+    metrics = [json.loads(line) for line in (run / "metrics.jsonl").read_text().splitlines()]
+    first, second = [row["control_metrics"] for row in metrics]
+    summary = json.loads((run / "metrics_summary.json").read_text())["objectives_met"]
+    assert summary["episodes_with_evidence"] == 2
+    assert summary["milestones"]["painting_deposited"]["first_step_by_episode"] == {"1": 4, "2": 4}
+    assert first["memory_supported_decisions"] == 0
+    assert second["memory_supported_decisions"] == second["policy_decisions"] == 4
+    assert second["peak_score"] == 10 and second["steps_since_peak"] == 0
+    assert second["nsi_decisions"] == 0

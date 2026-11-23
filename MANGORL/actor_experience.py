@@ -76,12 +76,16 @@ class ActorExperienceMemory:
         environment_reward_weight: float = 0.0,
         no_progress_penalty: float = 0.0,
         state_encoder=None,
+        outcomes=None,
+        retain_legacy_index=True,
     ):
         self.path = Path(path).expanduser()
         self.max_records = max(100, int(max_records))
         self.environment_reward_weight = float(environment_reward_weight)
         self.no_progress_penalty = float(no_progress_penalty)
         self.state_encoder = state_encoder
+        self.outcomes = outcomes
+        self.retain_legacy_index = retain_legacy_index
         self.experiences: list[dict[str, Any]] = []
         self.episode_id: str | None = None
         self._episode_steps: list[dict[str, Any]] = []
@@ -92,7 +96,7 @@ class ActorExperienceMemory:
     def load(self) -> int:
         """Load valid JSONL records, ignoring malformed/truncated final lines."""
         self.experiences = []
-        if not self.path.exists():
+        if not self.retain_legacy_index or not self.path.exists():
             return 0
         with self.path.open("r", encoding="utf-8") as file:
             for line_number, line in enumerate(file, 1):
@@ -132,6 +136,8 @@ class ActorExperienceMemory:
             )
         self.episode_id = str(episode_id)
         self._episode_steps = []
+        if self.outcomes is not None:
+            self.outcomes.start_episode(self.episode_id)
 
     @staticmethod
     def normalize_state(state: dict[str, Any] | None) -> dict[str, Any]:
@@ -199,6 +205,10 @@ class ActorExperienceMemory:
             "terminal": bool(terminal),
             "truncated": bool(truncated),
         }
+        if self.outcomes is not None:
+            record["score_delta_known"] = _number(score_delta, default=None) is not None
+            record["outcome_snapshot"] = self.outcomes.snapshot(state)
+            self.outcomes.record_visit(record["outcome_snapshot"], action, record["score_delta"])
         self._episode_steps.append(record)
         return record
 
@@ -287,8 +297,9 @@ class ActorExperienceMemory:
                     file.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
                 file.flush()
 
-        self.experiences.extend(record for record in actor_records if self._training_eligible(record))
-        self.experiences = self.experiences[-self.max_records :]
+        if self.retain_legacy_index:
+            self.experiences.extend(record for record in actor_records if self._training_eligible(record))
+            self.experiences = self.experiences[-self.max_records :]
         summary = {
             "episode_id": self.episode_id,
             "steps": len(completed),
@@ -305,6 +316,10 @@ class ActorExperienceMemory:
             "training_eligible": training_eligible,
             "return_estimator": estimator,
         }
+        if self.outcomes is not None:
+            summary["published_outcome_steps"] = self.outcomes.publish(
+                self.episode_id, completed, termination_reason, final_score)
+            summary["outcome_directory"] = str(self.outcomes.directory)
         self.last_finish_summary = summary
         self.episode_id = None
         self._episode_steps = []

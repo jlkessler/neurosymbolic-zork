@@ -1,0 +1,375 @@
+{
+  "schema_version": 1,
+  "entries": {
+    "ca9c7ffcc0a26016": {
+      "configuration": {
+        "actor_strategy": "Use the current goal and score feedback to choose one valid command.\nExplore new interactions when observations do not support a known productive action.\nTest return routes early and preserve useful tools. Inspect uncertain objects.\nTreat old routes and model-reported inventory as hypotheses until confirmed.\nUse repeated failures to investigate a prerequisite or alternative rather than looping.\nKeep observations, hypotheses, inventory categories, and score evidence distinct.",
+        "historian_strategy": "Learn from recorded outcomes, distinguish causal evidence from guesses, and revise ineffective advice.",
+        "section_order": [
+          "state",
+          "goal",
+          "guidance",
+          "experience",
+          "navigation",
+          "map",
+          "history",
+          "actions"
+        ],
+        "temperature": 0.25,
+        "history_length": 15,
+        "retrieval_top_k": 40,
+        "retrieval_min_similarity": 0.65,
+        "actor_beta": 0.5,
+        "exploration": 0.2,
+        "critic_learning_rate": 0.025,
+        "route_risk_weight": 3.0,
+        "memory_guidance": true
+      },
+      "parent_id": null,
+      "visits": 1,
+      "score_sum": 0.07142857142857142,
+      "scores": [
+        25.0
+      ]
+    },
+    "8a611da9398d533f": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nOpening: from West House go to Behind House (around the house, not deep into the forest), open window, west into Kitchen (+10). In the Living Room take the lantern, push rug, open trap door, then turn on lantern BEFORE going down (+25).\nIn the Cellar, if it is dark and the lantern is not lit, do NOT move: a grue killed the agent after moving south in darkness (-10, terminal). Turn on lantern first.\nDo not go north from the Cellar unarmed (troll). Never jump at chasms.\nBank treasures in the trophy case. Avoid movement loops.",
+        "historian_strategy": "Learn from recorded outcomes. Separate causal evidence from guesses. This run: Kitchen +10, Cellar +25 (35 steps wasted early wandering Forest/Clearing, 4 steps). Death: the agent entered the Cellar dark with no lantern lit, then moved south and a grue killed it. Flag moving in darkness without light as fatal. Also record prior troll-room danger. Ignore stale 'take egg' goals unless the tree route is verified. Record the working route.",
+        "section_order": [
+          "state",
+          "goal",
+          "guidance",
+          "navigation",
+          "experience",
+          "map",
+          "history",
+          "actions"
+        ],
+        "temperature": 0.25,
+        "history_length": 20,
+        "retrieval_top_k": 30,
+        "retrieval_min_similarity": 0.65,
+        "actor_beta": 0.5,
+        "exploration": 0.2,
+        "critic_learning_rate": 0.025,
+        "route_risk_weight": 8.0,
+        "memory_guidance": true
+      },
+      "parent_id": "df6f33181bdc2325",
+      "visits": 1,
+      "score_sum": 0.22857142857142856,
+      "scores": [
+        80.0
+      ]
+    },
+    "b551bfec79115e93": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nOpening: Behind House, open window, west into Kitchen (+10). Optional: tree egg, then 'open case' and 'put egg in case'.\nBefore the trap door: take lantern AND sword, turn on lantern. Push rug, open trap door, down (+25). The trap door shuts behind you; the way back is Cellar south, East Chasm east, Gallery north, Studio up, Kitchen, west.\nVerified: Gallery 'take art' (+4); Living Room 'open case', 'put painting in case' (+6).\nNEVER move in the dark; light the lantern first. Never go north from Cellar into the Troll Room unless the sword is in hand and health is full: the troll knocked out and killed us (-10). Do not shuttle Cellar/East Chasm or Kitchen/Attic without a new goal. Prefer unexplored exits and new items; bank treasures in the case.",
+        "historian_strategy": "Record verified: Kitchen +10, trap door 'down' +25 (not 'up'), Gallery art +4, painting in case +6. Flag the stale 'up +25' goal as misleading. Flag as fatal: entering the Troll Room without a sword, repeatedly (-10, game over). Flag as wasteful: about 30 steps of Cellar/East Chasm/Troll shuttling, the sword never taken, the egg never fetched. Record the safe loop: bank treasure, take lantern and sword, light the lantern, then explore only new exits.",
+        "section_order": [
+          "state",
+          "goal",
+          "guidance",
+          "navigation",
+          "actions",
+          "experience",
+          "map",
+          "history"
+        ],
+        "temperature": 0.2,
+        "history_length": 20,
+        "retrieval_top_k": 25,
+        "retrieval_min_similarity": 0.65,
+        "actor_beta": 0.5,
+        "exploration": 0.15,
+        "critic_learning_rate": 0.025,
+        "route_risk_weight": 10.0,
+        "memory_guidance": true
+      },
+      "parent_id": "045b15ec5439c24c",
+      "visits": 1,
+      "score_sum": 0.12857142857142856,
+      "scores": [
+        45.0
+      ]
+    },
+    "a0df6a4bad49e85b": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nVerified route: Behind House, open window, west into Kitchen (+10). Forest Path, up the tree, 'take egg' (+5). Living Room: 'open case', 'put egg in case' (+5). Take lantern, push rug, open trap door, down (+25; the door then bars). Cellar: turn on lantern, south, East Chasm east, Gallery 'take art' (+4); north Studio, up Kitchen, west Living Room, 'put painting in case' (+6).\nNEVER move in the dark. Take the sword from the Living Room before going down again. A thief appeared in the Cellar and killed us (-10) after we idled and shuttled: do not 'wait', 'push all' or loiter there. Do not shuttle Cellar/East Chasm. Each step, choose a new exit or item; avoid the Troll Room without the sword.",
+        "historian_strategy": "Record verified scores: egg +5, Kitchen +10, egg in case +5, trap door down +25 (not 'up'), art +4, painting in case +6 (total 45). Flag the stale 'up +25' goal as misleading. Flag as fatal: lingering in the Cellar (about 15 shuttles, then 'wait'/'push all') let the thief kill us. The sword was never taken. Advise: bank treasure, carry lantern and sword, then explore only new exits, such as the Studio and Gallery frontiers.",
+        "section_order": [
+          "state",
+          "goal",
+          "guidance",
+          "navigation",
+          "actions",
+          "experience",
+          "map",
+          "history"
+        ],
+        "temperature": 0.3,
+        "history_length": 20,
+        "retrieval_top_k": 25,
+        "retrieval_min_similarity": 0.65,
+        "actor_beta": 0.5,
+        "exploration": 0.25,
+        "critic_learning_rate": 0.025,
+        "route_risk_weight": 10.0,
+        "memory_guidance": true
+      },
+      "parent_id": "b551bfec79115e93",
+      "visits": 1,
+      "score_sum": 0.14285714285714285,
+      "scores": [
+        50.0
+      ]
+    },
+    "8c7ffd4ebe4ee838": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nRoute: West House, north, east to Behind House (skip mailbox and leaflet). 'open window', west (+10 Kitchen), west to Living Room. Never go 'up' from the Kitchen (Attic, 0 gain).\nLIVING ROOM, in order: 'take lantern', 'take sword', 'push rug', 'open trap door', 'turn on lantern', then 'down' (+25; the trap door bars behind you, so there is NO way back up). Do not shuttle Kitchen/Living Room or open the sack.\nDARK RULE: if the text says dark or pitch black, the only legal command is 'turn on lantern'. Never move while dark.\nUNDERGROUND: once the Cellar is lit, go 'south' to East Chasm, then east to the Gallery, 'take art' (+4). Do not drop and retake items. Never enter the Troll Room (north of the Cellar): the troll killed the last run there. Never give items to the troll or 'look around' there.\nAFTER THE ART: do not try to return home (blocked). Do not shuttle Cellar/East Chasm/Gallery/Studio. Read each room's exits and try only exits never tried, using 'look' in new rooms.",
+        "historian_strategy": "Verified: Kitchen +10; Living Room 'down' +25; Gallery 'take art' +4. Run 5 reached 29 in about 17 steps, then wasted 60 steps shuttling Cellar/East Chasm/Gallery/Studio, dropping and retaking art, and trying to return home. The trap door is barred after 'down', so every navigate_to_home or return-route goal is unreachable: ignore them. The stored 'up' +25 goal is STALE; the real +25 is Living Room 'down'. The run died in the Troll Room (-10) after giving the troll the sword. Penalize the Troll Room, giving items, drop/take loops, repeated edges, moves while dark, and mailbox/sack detours. Reward only never-tried exits and new rooms.",
+        "section_order": [
+          "goal",
+          "guidance",
+          "state",
+          "navigation",
+          "actions",
+          "experience",
+          "map",
+          "history"
+        ],
+        "temperature": 0.15,
+        "history_length": 30,
+        "retrieval_top_k": 6,
+        "retrieval_min_similarity": 0.8,
+        "actor_beta": 0.5,
+        "exploration": 0.25,
+        "critic_learning_rate": 0.025,
+        "route_risk_weight": 10,
+        "memory_guidance": true
+      },
+      "parent_id": "7e335fd265d89b53",
+      "visits": 1,
+      "score_sum": 0.12857142857142856,
+      "scores": [
+        45.0
+      ]
+    },
+    "594768ba1cb2177f": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nVerified score: Up a Tree 'take egg' +5 (Forest Path, 'up'); 'open window' then west into Kitchen +10; Living Room 'open case', 'put egg in case' +5; Living Room 'down' +25 (once).\nLANTERN GATE: the last two runs reached the Cellar without the lantern and died to a grue. In the Living Room, 'take lantern' FIRST, then 'turn on lantern', then 'inventory' to confirm it is carried and lit. Only then 'push rug', 'open trap door', 'down'. If no lantern is listed, do NOT go down; look for it.\nDARK RULE: if the observation says dark, do not move; turn on the lantern if carried.\nUNDERGROUND: Cellar south, east to Gallery, 'take art' (+4). Return: Gallery north, up, west. Then 'put painting in case' (+6). Never drop treasure.\nNever go north from the Cellar (Troll). No shuttling. Skip junk. Then try untried exits.",
+        "historian_strategy": "Verified: egg from Up a Tree +5; Kitchen +10; egg in case +5; Living Room 'down' +25 (not 'up'); Gallery 'take art' +4; 'put painting in case' +6 (never achieved). Stale: the 'up' +25 goal is a mislabeled bug; never generate it. Last two deaths: the agent went down without a carried, lit lantern and moved south in the dark Cellar (-10, death). Penalize 'down' unless inventory shows a lit lantern. Also penalize moving in the dark, north from the Cellar, shuttling, junk and dropping treasure. Reward 'take lantern' first, then banked treasures and new rooms.",
+        "section_order": [
+          "goal",
+          "state",
+          "guidance",
+          "actions",
+          "navigation",
+          "experience",
+          "map",
+          "history"
+        ],
+        "temperature": 0.1,
+        "history_length": 30,
+        "retrieval_top_k": 6,
+        "retrieval_min_similarity": 0.8,
+        "actor_beta": 0.5,
+        "exploration": 0.2,
+        "critic_learning_rate": 0.025,
+        "route_risk_weight": 10,
+        "memory_guidance": true
+      },
+      "parent_id": "bfb0817b488d068f",
+      "visits": 1,
+      "score_sum": 0.12857142857142856,
+      "scores": [
+        45.0
+      ]
+    },
+    "f79c2502029bd578": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nBanked (verified, do not repeat): egg +5 (Up a Tree), Kitchen +10 (window entry), egg in case +5, Living Room 'down' trap door +25 (once only), Gallery 'take art' +4, painting in case +6.\nDEADLY: 'north' from the Cellar enters the Troll Room. The troll knocked us out and cost -10 twice. NEVER go north from the Cellar or Troll Room. The trap door shuts behind you; the Cellar's only other exit is south (East Chasm).\nKEEP LANTERN LIT underground and never move in the dark. Never throw or drop the lantern or treasures.\nSTALL RULE: if Cellar<->East Chasm has been visited twice with no gain, try an untried exit from East Chasm (not north from Cellar). Try 'up' in the Studio. Do not toggle the bottle.\nAbove ground, explore untried exits and items (Forest, Attic, North House). Take portable items, then bank treasures in the Living Room case.\nCheck 'inventory' if unsure.",
+        "historian_strategy": "Verified: egg +5, Kitchen +10, egg in case +5, Living Room 'down' (trap door) +25 once only, Gallery 'take art' +4, painting in case +6. STALE BUG: the '+25 for up' goal is mislabeled; the +25 came from 'down' through the trap door and is already banked. Never generate navigate_score_goal 'up'. Fatal error: 'north' from the Cellar reaches the Troll Room, where the troll knocks us out for -10; the actor did this twice. Penalize: north from Cellar, shuttling Cellar/East Chasm, bottle toggling, throwing or dropping the lantern or treasures, moving in the dark. Reward: untried exits from East Chasm and Studio 'up', new rooms, new treasures, banking them. Prefer unvisited frontiers.",
+        "section_order": [
+          "goal",
+          "state",
+          "guidance",
+          "navigation",
+          "experience",
+          "actions",
+          "map",
+          "history"
+        ],
+        "temperature": 0.3,
+        "history_length": 30,
+        "retrieval_top_k": 6,
+        "retrieval_min_similarity": 0.75,
+        "actor_beta": 0.5,
+        "exploration": 0.4,
+        "critic_learning_rate": 0.05,
+        "route_risk_weight": 10,
+        "memory_guidance": true
+      },
+      "parent_id": "27feb2e70c520372",
+      "visits": 1,
+      "score_sum": 0.1,
+      "scores": [
+        35.0
+      ]
+    },
+    "b653552d33f78736": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nKnown scoring route in a fresh game: Forest Path 'up' then 'take egg' +5; Behind House 'open window', west to Kitchen +10; Living Room 'open case', 'put egg in case' +5; then 'push rug', 'open trap', 'down' +25.\nLAST RUN DIED: we went down with NO lantern, stayed in the dark Cellar, moved south, and a grue killed us (-10). BEFORE going down, 'take lamp' or lantern in the Living Room and check 'inventory'. Without a light source, do NOT go down. Turn the lantern on ('turn on lamp') on arrival in the Cellar, before any move.\nNEVER move in the dark. NEVER go north from the Cellar (Troll Room). Never throw or drop the lantern or treasures.\nDo not shuttle between rooms with no gain. Try untried exits and items, then bank treasures in the case.",
+        "historian_strategy": "Per-game reset: the route egg +5, Kitchen +10, egg in case +5, trap door 'down' +25 is repeatable each fresh game; the '+25 for up' goal is mislabeled, so never generate navigate_score_goal 'up'. Last episode: down the trap door with no lamp, moved in the dark, and a grue killed us (-10). Before any descent, require a lamp in inventory and lit. Penalize: moving in the dark, going down without light, north from Cellar, aimless Kitchen/Living Room shuttling, dropping the lantern or treasures. Reward: take the lamp, light it, untried lit exits, new treasures, banking them.",
+        "section_order": [
+          "goal",
+          "state",
+          "guidance",
+          "navigation",
+          "experience",
+          "actions",
+          "map",
+          "history"
+        ],
+        "temperature": 0.2,
+        "history_length": 30,
+        "retrieval_top_k": 6,
+        "retrieval_min_similarity": 0.75,
+        "actor_beta": 0.5,
+        "exploration": 0.3,
+        "critic_learning_rate": 0.05,
+        "route_risk_weight": 10,
+        "memory_guidance": true
+      },
+      "parent_id": "f79c2502029bd578",
+      "visits": 1,
+      "score_sum": 0.12857142857142856,
+      "scores": [
+        45.0
+      ]
+    },
+    "8fbe91a99ae76a4d": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nABOVE GROUND FIRST (the trap door shuts and bars behind you; no route back up was found). Before 'down': Forest Path 'up', 'take egg' +5; Behind House 'open window', west to Kitchen +10; Living Room 'take lantern', 'open case', 'put egg in case' +5. Bank all treasures first.\nThen 'push rug', 'open trap', 'down' +25 (once only). In the Cellar 'turn on lantern' at once. Never move in the dark.\nGallery: 'take art' +4. Studio: manual only. Gallery/Studio/East Chasm are exhausted after one visit. Do not shuttle.\nNEVER go north from the Cellar (troll). NEVER 'give' anything to the troll; last run gave the painting and was knocked out (-10).\nDon't drop treasures or the lamp. Never repeat a 2-room loop more than twice. If stuck, try untried verbs (examine, read, look) or unexplored exits.",
+        "historian_strategy": "The trap-door 'down' +25 is one-time and one-way: the door bars behind you, so navigate_to_home from underground is NOT viable. Do not emit navigate_to_home or treasure-handoff goals once underground; never route through the Troll room or 'give troll' anything (death, -10). Plan the above-ground phase first: egg, window, lantern, bank in case, then descend. Underground, after the Gallery art, set explore_alternative goals with specific untried verbs/objects. Penalize movement cycles, the dark, and north from the Cellar. Reward new rooms, items, score.",
+        "section_order": [
+          "goal",
+          "state",
+          "experience",
+          "guidance",
+          "actions",
+          "navigation",
+          "map",
+          "history"
+        ],
+        "temperature": 0.5,
+        "history_length": 30,
+        "retrieval_top_k": 4,
+        "retrieval_min_similarity": 0.8,
+        "actor_beta": 0.5,
+        "exploration": 0.6,
+        "critic_learning_rate": 0.05,
+        "route_risk_weight": 10,
+        "memory_guidance": true
+      },
+      "parent_id": "bfc1f367efbaf2cf",
+      "visits": 1,
+      "score_sum": 0.1,
+      "scores": [
+        35.0
+      ]
+    },
+    "56f1ca7ba7375b56": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nOPENING (worked: +35): west, east, 'up' at Forest Path, 'take egg' (+5); down, south, east to Behind House; 'open window', west to Kitchen (+10); west to Living Room; 'take lantern' (not yet done!), 'open case', 'put egg in case' (+5).\nBEFORE 'down': you MUST hold the lantern. Last run descended without it and died to a grue in the dark. Never 'down' without the lantern.\nThen 'push rug', 'open trap', 'down' (+25, once). In the Cellar 'turn on lantern' FIRST. Never move in the dark; never move before the light is on.\nNEVER go north from the Cellar (troll). NEVER 'give' to the troll.\nDon't drop treasures or the lamp. Avoid 2-room loops. If stuck, try untried verbs or exits.",
+        "historian_strategy": "The trap-door 'down' +25 is one-time and one-way (it bars behind you). Above ground, ensure the lantern is taken from the Living Room BEFORE descending; last run died at the Cellar (moved south in the dark, -10, grue). Do not set score goals to descend until the lantern is in inventory. Once in the Cellar, the first goal is 'turn on lantern'. Do not emit navigate_to_home underground; avoid the Troll room. Penalize any move in the dark.",
+        "section_order": [
+          "goal",
+          "state",
+          "guidance",
+          "experience",
+          "actions",
+          "navigation",
+          "map",
+          "history"
+        ],
+        "temperature": 0.4,
+        "history_length": 30,
+        "retrieval_top_k": 4,
+        "retrieval_min_similarity": 0.8,
+        "actor_beta": 0.5,
+        "exploration": 0.5,
+        "critic_learning_rate": 0.05,
+        "route_risk_weight": 10,
+        "memory_guidance": true
+      },
+      "parent_id": "8fbe91a99ae76a4d",
+      "visits": 1,
+      "score_sum": 0.12857142857142856,
+      "scores": [
+        45.0
+      ]
+    },
+    "9dd6f1fbdc490ae4": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nOPENING: west, east, 'up' at Forest Path, 'take egg'; down, south, east to Behind House; 'open window', west to Kitchen (+10); west to Living Room; 'take lantern'. Do NOT skip the lantern.\nNEVER go 'down' the trap door without the lantern in hand. This run went down with no lantern, moved in the dark and was eaten by a grue. In the Cellar, 'turn on lantern' BEFORE any move. Never move in the dark.\nThen 'open case', 'put egg in case'. Do not waste moves on the mailbox, Attic or rug-shuffling.\nNEVER go north from the Cellar (troll). NEVER give to the troll.\nKeep the lantern in hand; ignore sack, garlic, lunch.\nUnderground: Cellar south to East Chasm, east to Gallery ('take art'), north to Studio; carry treasures home.\nIf 6 moves bring no score, try a new verb or exit.",
+        "historian_strategy": "Key failure: the run reached the Cellar without the lantern (never visited the Living Room lantern step) and died moving in the dark. Set goal order: get lantern and egg first, then trap door. Flag any 'down' or underground move without the lantern as high risk. The trap-door +25 is one-time; do not retry it. Penalize dark moves, repeated 2-room loops and Attic detours. After the lantern is lit, explore untried exits and bring treasures home.",
+        "section_order": [
+          "goal",
+          "state",
+          "guidance",
+          "history",
+          "navigation",
+          "actions",
+          "experience",
+          "map"
+        ],
+        "temperature": 0.4,
+        "history_length": 30,
+        "retrieval_top_k": 3,
+        "retrieval_min_similarity": 0.85,
+        "actor_beta": 0.5,
+        "exploration": 0.4,
+        "critic_learning_rate": 0.05,
+        "route_risk_weight": 9,
+        "memory_guidance": true
+      },
+      "parent_id": "dad17313134e26f8",
+      "visits": 1,
+      "score_sum": 0.12857142857142856,
+      "scores": [
+        45.0
+      ]
+    },
+    "485abdda360ff859": {
+      "configuration": {
+        "actor_strategy": "Choose one valid command from the current observation.\nOPENING (worked): west, east, 'up' at Forest Path, 'take egg'; down, south, east to Behind House; 'open window', west to Kitchen; west to Living Room; 'take lantern'; 'put egg in case'. Then 'down' trap door (+25 once), 'turn on lantern' immediately in the Cellar.\nLIGHT: never 'put down' or drop the lantern; never move while dark.\nUnderground loop: Cellar south, East Chasm east, Gallery 'take art', north Studio. Then carry treasures home to the trophy case.\nAvoid north of Cellar (troll). Ignore pepper, garlic, lunch.\nSTALL RULE: if 6 moves give no score, do NOT repeat a room pair (Cellar/East Chasm, Gallery/Studio). Try untried verbs ('examine', 'look', 'open', 'take all') or untried exits, e.g. up from the Cellar/Kitchen chimney, Living Room west door. The +25 is one-time.",
+        "historian_strategy": "Key failures: 405 steps wasted shuttling Cellar/East Chasm and Gallery/Studio after 45 points; the Historian repeatedly re-suggested the one-time 'up' +25 goal, so do NOT propose it again. The run died when the lantern was dropped in the dark Cellar. Penalize repeated 2-room cycles and dropping the lantern. After treasures are cased, push untried exits and untried verbs, keeping the lantern lit.",
+        "section_order": [
+          "goal",
+          "state",
+          "guidance",
+          "navigation",
+          "history",
+          "actions",
+          "experience",
+          "map"
+        ],
+        "temperature": 0.7,
+        "history_length": 30,
+        "retrieval_top_k": 5,
+        "retrieval_min_similarity": 0.75,
+        "actor_beta": 0.5,
+        "exploration": 0.6,
+        "critic_learning_rate": 0.05,
+        "route_risk_weight": 8,
+        "memory_guidance": true
+      },
+      "parent_id": "9dd6f1fbdc490ae4",
+      "visits": 0,
+      "score_sum": 0.0,
+      "scores": []
+    }
+  }
+}

@@ -19,9 +19,9 @@ Defining Neurosymbolic AI. It has not established a state-of-the-art Zork score.
 - **Cognitive Map:** directed room transitions accumulate traversal evidence.
   NSI computes logic-times-belief integrals, while the navigator plans with
   route uncertainty and checks each executed transition.
-- **Memory:** completed Actor returns and all critic transitions persist.
-  Optional frozen neural embeddings support semantic retrieval; the default
-  retrieval index is lexical and state-based.
+- **Outcome memory** retrieves signed score returns from completed episodes
+  at the same observed puzzle state. It can put one previously successful
+  legal action on the Actor's scoring menu. The critic also learns online.
 
 Read [the architecture and equations](docs/architecture.md) and
 [the paper mapping, framework comparison and evaluation protocol](docs/research.md).
@@ -104,8 +104,31 @@ python main.py --fresh-memory --episodes 50 --max-steps 110 --target-score 350 -
 The default enables Actor RL, the Historian TD critic, NSI, configuration evolution,
 and prose reviews. `--fresh-memory` puts all new memories inside that trial's
 directory and leaves existing `memory/` files intact. Omit it to continue using
-the configured persistent memory paths. To run with frozen neural retrieval,
-add `--memory-embedding-model MODEL_OR_LOCAL_PATH`.
+the configured persistent memory paths. `--actor-memory concrete` is the
+default. Use `--actor-memory legacy` for the previous return estimator or
+`--actor-memory off` to keep the critic while disabling episodic retrieval.
+Frozen embeddings apply to legacy retrieval and the TD critic.
+
+For an ideal-map trial, start with a private copy of the same initial map in
+each condition. Run these Linux commands from the updated checkout with the
+Jericho environment active. To use the exact historical seed, copy the archived
+pre-episode map to `"$trial/world_model.json"` in place of the walkthrough call.
+
+```bash
+mkdir -p logs
+trial=$(mktemp -d logs/ideal-outcomes.XXXXXX)
+python main.py --walkthrough --walkthrough-map-path "$trial/world_model.json" &&
+python main.py --map-navigation --actor-memory concrete --no-evolve --historian-review \
+  --episodes 20 --max-steps 500 --target-score 350 --seed 0 \
+  --map-path "$trial/world_model.json" --historian-path "$trial/historian.json" \
+  --actor-experience-path "$trial/actor.jsonl" --historian-critic-path "$trial/td.json" \
+  --output-dir "$trial" --trial-name ideal-outcomes
+```
+
+This runs a single condition. For a memory-only comparison, use
+`--actor-repeat-penalty 0 --no-actor-cycle-cooldown` with concrete memory
+and compare with `--actor-memory off` in a new trial directory. Keep the
+map, target, step budget, seed, models and critic settings matched.
 
 **Endpoint requirement:** default `--actor-policy-mode logprobs` requires real
 first-token `logprobs`/`top_logprobs` for all menu labels. It makes a second
@@ -179,10 +202,10 @@ immediately. This does not guarantee remote-service availability.
 `episode_outcomes.jsonl` and `run_status.json` record every attempted episode,
 including failures. `metrics.jsonl` retains actual episode numbers and excludes
 incomplete episodes; inspect the completion count alongside score averages.
-Interrupted experience is bootstrapped at the last recorded state when the
-critic is enabled, otherwise excluded from return-based learning. Existing
-interrupted records without a valid bootstrap remain on disk but are not
-retrieved for training.
+The concrete bank publishes completed, non-degraded trajectories and uses
+the observed return through the game ending, target or step limit. The
+legacy estimator can bootstrap interrupted experience from the enabled critic.
+Older interrupted records without a valid bootstrap remain available for audit.
 
 New trials write an atomic `checkpoint.json`. Resume with
 `python main.py --resume-trial /absolute/path/to/trial --episodes TOTAL`.
@@ -243,7 +266,9 @@ experience and can retain NSI. `python main.py --help` lists all settings.
 Do not compare a 500-step peak score to a paper's 60-step average. The runner
 uses Jericho room IDs, world-change hashes and valid-action generation, and
 retains existing Zork-specific return/deposit heuristics. These must be matched
-or disclosed in benchmark comparisons. No walkthrough is loaded.
+or disclosed in benchmark comparisons. A map seeded with `--walkthrough` also
+provides the Actor with retrieved puzzle-action outcomes and is an ideal-map
+knowledge condition rather than an ordinary online-learning condition.
 
 ## Files and logs
 
@@ -258,6 +283,7 @@ or disclosed in benchmark comparisons. No walkthrough is loaded.
 | `MANGORL/semantic_memory.py` | Optional frozen neural encoder |
 | `MANGORL/nsi.py` | Weighted model counting and posterior conditioning |
 | `MANGORL/cognitive_map.py` | Probabilistic extension of the persistent WorldMap |
+| `MANGORL/world_map.py` | Routes plus unified, state-conditioned command experiences |
 | `MANGORL/navigation_controller.py` | Route planning, execution and verification |
 | `MANGORL/evolution.py` | Validated configurations, archive and UCB |
 | `MANGORL/adaptive_system.py` | Episode lifecycle, evolution and evaluation metrics |
@@ -296,9 +322,68 @@ ROM's built-in reference walkthrough without calling either LLM. This saves to
 `--walkthrough-map-path PATH`. Existing map nodes and edges are preserved.
 The replay runs independently of `--max-steps`, `--target-score`, and `--episodes`.
 
-The JSON contains the observed room transitions plus the full ordered command
-sequence and executed steps under `graph.walkthrough`, including puzzle and
-inventory commands that do not change rooms. This is Jericho's reference solution,
-not a verified shortest path. Interrupted replays save their observed progress.
+The JSON contains room transitions and a unified `graph.action_experiences`
+bank containing every executed command, including puzzle and inventory commands
+that do not change rooms. Actor and navigator commands are appended using the
+same schema. Runtime retrieval ignores provenance and ranks legal commands by
+current room, visible room facts, and inventory; provenance remains only for
+auditability. The legacy ordered replay remains under `graph.walkthrough`.
+Jericho's reference sequence is an ideal solution trace, not a verified shortest
+path. Interrupted replays save their observed progress.
 To use the seeded map in an agent run:
 `python main.py --map-path memory/world_model.json`.
+
+## Episode traversal figures and objective statistics
+
+Scroll over a room to zoom around the pointer. As you zoom in, room centers spread apart and room names, point labels, and traversal counts become slightly smaller. Drag to pan, use **+** or **−** to zoom around the viewport center, and select **Fit** to restore the episode overview.
+
+**Trial milestones** shows the attainment rate and median first step for each tracked objective. Select a milestone to see the first achievement in each qualifying episode. Select an episode in that list to replay the command and read the game response. The viewer reads the saved milestone summary when available. For older trials it uses the evaluated metrics rows, or reconstructs the cohort from completed, non-degraded run statuses and complete transcripts. The view identifies the source, denominator, and any evaluated episodes missing evidence.
+
+In **Episode replay**, a gold diamond marks each room where a milestone has occurred by the selected step. Select the room to inspect its milestones. **Next milestone** advances to the next achievement, including ones with zero score change. **Full episode checklist** shows recorded first steps and objectives without an observed achievement. SVG exports include the milestone markers and their first steps.
+
+From the project root, build an interactive figure for any trial directory. The viewer uses the Python standard library, works offline, and opens directly in a browser. For example, on Linux you can run
+
+```bash
+trial=logs/ideal-map-1_big_20261115_211515
+python3 visualize_trial.py "$trial"
+xdg-open "$trial/traversal.html"
+```
+
+Choose an episode and scrub the command timeline. Each arrow counts observed changes of room in one direction. Hover over an edge for the commands and controllers that used it. Select a room to see its arrivals, commands, and score events. Select a score event or objective to jump to the game's response. **Export SVG** saves the displayed step as a vector figure, including the directional counts and a list of scoring commands. Positions are fixed within each episode and use a common trial layout. Graph distance and orientation have no physical units.
+
+New trials write a line-buffered `episode_NNNN_traversal.jsonl` after each executed command in every condition, including the no-map ablation. Each row carries Jericho room IDs, the command and its source, the game response, the signed change in game score, and inventory differences when observed. The journal is used only for measurement. Older trials use console logs plus aligned experience records when available. The viewer identifies label-based reconstructions because identically named rooms can merge. In-room actions contribute to command counts. A death can change the current room without adding a navigable edge. Score changes are attributed to the resulting room, or to the command's origin on death or when the destination is unknown.
+
+Each evaluated episode's `metrics.jsonl` row stores `objectives_met` as milestone IDs mapped to their first verified command numbers. In `metrics_summary.json`, `objectives_met.milestones` gives each milestone's episode count, attainment rate, median first step among successful episodes, and first step by episode. The summary also records the distinct objectives per episode, their mean, and evidence coverage. The denominator is evaluated episodes with complete command traces. An excluded attempt can still be replayed in the viewer.
+
+The tracked items are the painting, egg, bag of coins, platinum bar, canary, and chalice. Taking and depositing each item are separate milestones. A deposit requires a successful placement in the Living Room trophy case. Repeated transfers count once per milestone per episode. Room entry and troll death use the observed room and game response. `return_route_found` records the first observed return from underground to a recognized surface room, including the Studio–Kitchen chimney. `returned_home` separately records arrival in the Living Room during that excursion. Death resets the excursion. Both milestones work with a seeded map, a learned map, or no map.
+
+To add the same statistics to a finished historical trial that has both metrics files, use the optional backfill. It preserves existing score fields. Use `--output PATH.html` to choose a different figure destination.
+
+```bash
+python3 visualize_trial.py "$trial" --update-summary
+```
+
+### Room identity and historical memories
+
+Map-enabled runs key rooms by Jericho object number within the selected ROM. For example, `room:185` is the Cyclops Room in the bundled Zork I story. The map learns its printed title from a restored-state `look` and can display `Room #185` until that title is observed. Different Maze objects have separate paths and reward histories.
+
+To reuse a historical experiment, migrate its shared memory directory once per experimental copy. Run these commands from `my_solution` and set `source_dir` to the directory containing the world model and Historian files.
+
+```bash
+source_dir=logs/ideal-map-unified-20261119_210406
+run_memory=memory/room-id-run
+python3 migrate_room_ids.py "$source_dir" "$run_memory" \
+  --rom z-machine-games-master/jericho-game-suite/zork1.z5
+```
+
+Use the following arguments together with your existing map-enabled `python3 main.py` command. Each training run writes to the memory paths it receives. Use a separate destination for each independent replicate.
+
+```bash
+--map-path "$run_memory/world_model.json" \
+--historian-path "$run_memory/historian.json" \
+--actor-experience-path "$run_memory/actor_experiences.jsonl" \
+--historian-critic-path "$run_memory/historian_td.json" \
+--evolution-path "$run_memory/configurations.json"
+```
+
+The migration rekeys actor and critic transitions, concrete outcome lookups, and Historian score profiles. Written reviews and observed rewards are preserved. The viewer can also read an original archive directly. Keep the individual trial directory alongside its shared world model and critic so the viewer can recover numbered rooms and their titles. Commands with missing room evidence stay on the timeline.

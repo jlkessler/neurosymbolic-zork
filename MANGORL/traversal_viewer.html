@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zork · Episode traversal</title>
+<style>
+:root{--ink:#182e30;--muted:#536968;--line:#cdd8d0;--paper:#fafbf7;--teal:#086856;--rust:#a34328;font:15px/1.45 "Segoe UI",system-ui,sans-serif;color:var(--ink);background:#f0f3ed}
+*{box-sizing:border-box}body{max-width:1560px;margin:0 auto;padding:26px clamp(14px,3.5vw,58px) 32px}
+header,.heading,.tools,.timeline,.legend,.statline{display:flex;align-items:center;gap:12px}header{justify-content:space-between;flex-wrap:wrap}
+h1,h2,h3,p{margin:0}h1,h2{font-family:Georgia,serif;font-weight:normal}h1{font-size:clamp(32px,4vw,52px);line-height:1.12;letter-spacing:-.045em}h2{font-size:23px}h3,label{font-size:13px;font-weight:650}#trial,.meta,.hint{color:var(--muted);font-size:13px}#trial{margin-top:6px;overflow-wrap:anywhere}
+button,select{font:inherit;color:var(--ink);background:var(--paper);border:1px solid #a5b7ad;border-radius:5px;padding:6px 10px;cursor:pointer}button:hover,select:hover{border-color:var(--teal);background:#edf5ed}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #17856c}button:disabled{opacity:.45;cursor:default}
+.picker{display:grid;gap:3px}.statline{margin:22px 0 18px;gap:0;background:#e3ebe3;border-block:1px solid #bfcfc2}.stat{flex:1;padding:9px 16px;border-right:1px solid #c3d2c6}.stat:last-child{border:0}.stat small{display:block;color:#496059}.stat strong{font:600 23px/1.3 "Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,29%);gap:16px;align-items:start}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:9px;overflow:hidden}.heading{padding:12px 15px;justify-content:space-between;flex-wrap:wrap;gap:5px}.tools{gap:4px}.tools button{font-size:13px;padding:4px 8px}
+.map{background-color:#f8faf5;background-image:radial-gradient(#cdd8cd 1px,transparent 1px);background-size:19px 19px;border-block:1px solid var(--line);position:relative}
+#graph{width:100%;height:clamp(350px,51vh,650px);display:block;touch-action:none;cursor:grab}#graph:active{cursor:grabbing}#graph [tabindex]{cursor:pointer}#empty{position:absolute;inset:46% 0 auto;text-align:center;color:var(--muted);pointer-events:none}
+.legend{gap:5px 15px;flex-wrap:wrap;padding:8px 15px;color:var(--muted);font-size:12px}.legend i{width:11px;height:11px;display:inline-block;border-radius:50%;margin-right:4px;vertical-align:-1px}.gain{color:var(--teal)}.loss{color:var(--rust)}.start{border:2px dashed #667a74}.current{border:2px solid #172f35;box-shadow:inset 0 0 0 2px #fff;background:#172f35}
+.timeline{border-top:1px solid var(--line);padding:12px 15px;gap:6px}.timeline input{min-width:40px;flex:1;accent-color:var(--teal)}.timeline output{font-size:12px;min-width:86px;text-align:right;font-variant-numeric:tabular-nums}
+.readout{padding:0 15px 12px;font-size:14px;overflow-wrap:anywhere}details{margin-top:5px;color:var(--muted);font-size:13px}summary{cursor:pointer}#observation{white-space:pre-wrap;margin:6px 0 0}.meta{padding:9px 2px}
+.side{display:grid;gap:12px}.scroll{max-height:242px;overflow:auto;padding:0 12px 10px}.entry{display:flex;align-items:baseline;gap:9px;width:100%;text-align:left;border:0;border-top:1px solid #dde5dc;border-radius:0;padding:7px 2px;background:transparent;font-size:13px}.entry b{min-width:35px}.entry small{display:block;color:var(--muted)}.entry .n{font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap}.hint{padding:2px 2px 6px}.roomdetail{padding:0 15px 12px;font-size:13px}.roomdetail p{margin:4px 0}#selection{overflow-wrap:anywhere}.side h2{font-size:21px}
+@media(max-width:830px){.workspace{grid-template-columns:1fr}.side{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}.stat{padding:7px 9px}.timeline{flex-wrap:wrap}body{padding-top:14px}}
+[hidden]{display:none!important}.view-nav{display:flex;gap:18px;margin-top:18px;border-bottom:1px solid var(--line)}.view-nav button{background:transparent;border:0;border-radius:0;border-bottom:3px solid transparent;padding:6px 2px;font-weight:600;color:var(--muted)}.view-nav button[aria-pressed=true]{color:var(--teal);border-color:var(--teal)}
+.milestone-ink{color:#79530e}.milestone-note{color:#714c0a;font-weight:600;margin-top:5px}.milestone-scope{padding:0 14px 8px}.milestone-scope select{font-size:13px}.milestone-missed{font-size:13px;color:var(--muted);padding:5px 2px;border-top:1px solid #dde5dc}.entry.now{background:#fff2d6}
+.trial-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(270px,1fr);gap:16px;align-items:start}.trial-scroll{max-height:58vh;overflow:auto}.trial-table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px}.trial-table th,.trial-table td{padding:8px 12px;border-bottom:1px solid #dde5dc;text-align:right;font-variant-numeric:tabular-nums}.trial-table th{font-size:12px;position:sticky;top:0;background:#eaf0e9;color:#435b53;z-index:1}.trial-table th:first-child,.trial-table td:first-child{text-align:left}.trial-table td:first-child{padding:0 8px}.trial-table button{background:transparent;border:0;width:100%;text-align:left;padding:8px 4px;font-size:14px}.trial-table tr.selected{background:#e3efe6}.trial-table tr.selected td:first-child{box-shadow:inset 3px 0 var(--teal)}.meter{background:#dbe3dc;height:4px;min-width:52px;border-radius:3px;margin:3px 0 0 auto}.meter i{display:block;height:100%;border-radius:3px;background:var(--teal)}.trial-note{margin:8px 2px;color:var(--muted);font-size:13px}.trial-detail{padding:0 15px 12px}.trial-detail .scroll{padding:0;max-height:47vh}.trial-detail h3{margin:10px 0 6px}.trial-detail .entry:disabled{opacity:1;color:var(--muted)}.coverage-note{margin-top:6px;color:var(--muted);font-size:13px}
+@media(max-width:760px){.trial-layout{grid-template-columns:1fr}.trial-scroll{max-height:42vh}.trial-table td,.trial-table th{padding:7px 6px}.trial-table button{font-size:13px}.trial-detail .scroll{max-height:34vh}}
+</style>
+<style id="figureStyle">
+.route{fill:none;stroke:#576f77;stroke-linecap:round}.route-hit{fill:none;stroke:transparent;stroke-width:16}.count,.room-label,.room-points{font:600 12px Arial,sans-serif;text-anchor:middle;fill:#314b53;paint-order:stroke;stroke:#f8faf5;stroke-width:4px;stroke-linejoin:round}.room-label{font-size:14px;font-weight:600;fill:#162e31}.room-points{font-size:12px}.room-dot{fill:#f6faf4;stroke:#58736a;stroke-width:2}.has-gain{fill:#d8ede2;stroke:#09705c}.has-loss{stroke:#aa4629}.start-ring{fill:none;stroke:#667a74;stroke-width:1.5;stroke-dasharray:3 3}.current-ring{fill:none;stroke:#182e30;stroke-width:2.5}.chosen-ring{fill:none;stroke:#687eae;stroke-width:2}.gain-text{fill:#00624e}.loss-text{fill:#9b3b21}.room:focus .room-dot{stroke:#283daa;stroke-width:4}
+</style>
+<header><div><h1>Episode traversal</h1><p id="trial"></p></div>
+<div class="picker"><label for="episode">Episode</label><select id="episode"></select></div></header>
+<nav class="view-nav" aria-label="Viewer sections"><button id="replayNav" aria-controls="replayView" aria-pressed="true">Episode replay</button><button id="trialNav" aria-controls="trialView" aria-pressed="false">Trial milestones</button></nav>
+<div id="replayView"><section class="statline" aria-label="At the selected step">
+<div class="stat"><small>Score</small><strong id="score">—</strong></div><div class="stat"><small>Rooms visited</small><strong id="rooms"></strong></div><div class="stat"><small>Traversals</small><strong id="crossings"></strong></div><div class="stat"><small>Objectives met</small><strong id="hits"></strong></div></section>
+<main class="workspace"><section><div class="panel"><div class="heading"><h2>Observed route</h2><div class="tools">
+<button id="minus" aria-label="Zoom out">−</button><button id="plus" aria-label="Zoom in">+</button><button id="fit">Fit</button><button id="export">Export SVG</button></div></div>
+<div class="map"><svg id="graph" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Directed graph of observed room changes"></svg><p id="empty" hidden>No recorded room at this step.</p></div>
+<div class="legend"><span><i class="start"></i>Start</span><span><i class="current"></i>Current</span><span class="milestone-ink">◆ Milestone</span><span class="gain">+ Points gained</span><span class="loss">− Points lost</span><span>→ Count per direction</span></div>
+<div class="timeline"><button id="back" aria-label="Previous command">‹</button><button id="play">Play</button><button id="next" aria-label="Next command">›</button><input id="step" type="range" min="0" value="0" aria-label="Replay position"><output id="position" for="step"></output></div>
+<div class="readout"><p id="command" tabindex="-1"></p><p id="currentMilestones" class="milestone-note"></p><details id="feedback"><summary>Game response</summary><p id="observation"></p></details></div></div><p id="meta" class="meta"></p></section>
+<aside class="side"><section class="panel"><div class="heading"><h2>Score events</h2><div class="tools"><button id="nextScore">Next event</button></div></div><div id="events" class="scroll"></div><p id="peak" class="roomdetail"></p></section>
+<section class="panel"><div class="heading"><h2>Episode milestones</h2><div class="tools"><button id="nextMilestone">Next milestone</button></div></div>
+<div class="milestone-scope"><select id="milestoneScope" aria-label="Episode milestone list"><option value="now">Achieved by this step</option><option value="all">Full episode checklist</option></select></div><div id="milestones" class="scroll"></div></section>
+<section class="panel"><div class="heading"><h2>Room detail</h2></div><div id="selection" class="roomdetail"></div></section></aside></main>
+</div>
+<section id="trialView" hidden aria-label="Trial milestones">
+<div class="statline"><div class="stat"><small>Evaluated episodes with evidence</small><strong id="coverage"></strong></div><div class="stat"><small>Milestones attained</small><strong id="attained"></strong></div><div class="stat"><small>Mean milestones per covered episode</small><strong id="meanDistinct"></strong></div></div>
+<div class="trial-layout"><section class="panel"><div class="heading"><h2>Milestone attainment</h2></div>
+<div class="trial-scroll"><table class="trial-table" aria-label="Attainment across evaluated episodes"><thead><tr><th scope="col">Milestone</th><th scope="col">Episodes</th><th scope="col">Rate</th><th scope="col" title="Median first step among episodes that attained the milestone">Median first step</th></tr></thead><tbody id="attainmentRows"></tbody></table></div></section>
+<section class="panel" id="evidencePanel"><div class="heading"><h2 id="milestoneTitle" aria-live="polite"></h2></div><div class="trial-detail">
+<p id="milestoneStat" class="hint"></p><h3>First achievement by episode</h3><div id="episodeHits" class="scroll"></div></div></section></div>
+<p id="statSource" class="trial-note"></p><p id="missingEvidence" class="coverage-note"></p>
+</section>
+<script type="application/json" id="data"><!--TRIAL_DATA--></script>
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id),
+  data = JSON.parse($("data").textContent),
+  graph = $("graph");
+const ns = "http://www.w3.org/2000/svg",
+  name = id => data.rooms[id]?.label || "Unknown room";
+const signed = n => n > 0 ? "+" + n : String(n),
+  num = n => n === null || n === undefined ? "—" : String(n);
+let episode,
+  episodeMilestones = [],
+  pos = 0,
+  selected,
+  timer,
+  fitted,
+  camera,
+  drag,
+  figureUnit = 1;
+let replayWidth, replayHeight;
+function el(tag, attrs = {}, content = null) {
+  const node = document.createElementNS(ns, tag);
+  for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+  if (content !== null) node.textContent = content;
+  return node;
+}
+function html(tag, cls, txt) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  n.textContent = txt;
+  return n;
+}
+function point(id) {
+  return data.rooms[id].pos.map(coord => coord / figureUnit);
+}
+function bounds(ids) {
+  if (!ids.size) return [-160, -120, 320, 240];
+  const xs = [],
+    ys = [];
+  for (const id of ids) {
+    const [x, y] = point(id);
+    xs.push(x);
+    ys.push(y);
+  }
+  const x = Math.min(...xs),
+    y = Math.min(...ys),
+    dx = Math.max(...xs) - x,
+    dy = Math.max(...ys) - y;
+  const w = Math.max(420, dx + 160),
+    h = Math.max(240, dy + 100);
+  return [x - (w - dx) / 2, y - (h - dy) / 2, w, h];
+}
+function view(v) {
+  camera = v;
+  graph.setAttribute("viewBox", v.join(" "));
+}
+function zoom(scale) {
+  const [x, y, w, h] = camera;
+  if (w * scale < fitted[2] / 25 || w * scale > fitted[2] * 4) return;
+  view([x + w * (1 - scale) / 2, y + h * (1 - scale) / 2, w * scale, h * scale]);
+}
+function stop() {
+  clearInterval(timer);
+  timer = null;
+  $("play").textContent = "Play";
+}
+function fitEpisode() {
+  replayWidth = graph.clientWidth;
+  replayHeight = graph.clientHeight;
+  const ids = new Set([episode.start, ...episode.steps.flatMap(r => [r.before, r.after])].filter(Boolean));
+  figureUnit = 1;
+  const [,, w, h] = bounds(ids);
+  figureUnit = Math.max(.8, Math.min(3.4, Math.max((w - 160) / Math.max(150, graph.clientWidth - 160), (h - 100) / Math.max(130, graph.clientHeight - 100))));
+  fitted = bounds(ids);
+  view(fitted);
+}
+function load() {
+  stop();
+  episode = data.episodes[+$("episode").value];
+  const indices = new Map(episode.steps.map((row, i) => [row.step, i]));
+  episodeMilestones = Object.entries(episode.objectives).map(([key, step]) => {
+    const index = indices.get(step), row = episode.steps[index];
+    return {key, step, index, room: row && (row.relocation ? row.before : row.after || row.before)};
+  }).sort((a, b) => a.step - b.step);
+  selected = null;
+  fitEpisode();
+  $("step").max = episode.steps.length;
+  $("meta").textContent = [episode.status, episode.reason, episode.identity].filter(Boolean).join(" · ");
+  $("feedback").open = false;
+  show(episode.steps.length);
+}
+function edgeKey(a, b) {
+  return JSON.stringify([a, b]);
+}
+function tally(rows) {
+  const nodes = new Map(),
+    edges = new Map(),
+    events = [];
+  function room(id) {
+    if (!nodes.has(id)) nodes.set(id, {
+      arrivals: 0,
+      commands: 0,
+      gain: 0,
+      loss: 0
+    });
+    return nodes.get(id);
+  }
+  if (episode.start) room(episode.start);
+  let crossings = 0;
+  for (const [i, r] of rows.entries()) {
+    if (r.before) room(r.before).commands++;
+    if (r.after) room(r.after);
+    if (r.before && r.after && r.before !== r.after && !r.relocation) {
+      crossings++;
+      room(r.after).arrivals++;
+      const key = edgeKey(r.before, r.after);
+      if (!edges.has(key)) edges.set(key, {
+        a: r.before,
+        b: r.after,
+        count: 0,
+        commands: new Map()
+      });
+      const e = edges.get(key),
+        command = r.action + " (" + r.source + ")";
+      e.count++;
+      e.commands.set(command, (e.commands.get(command) || 0) + 1);
+    }
+    if (r.delta !== null && r.delta !== 0) {
+      const id = r.relocation ? r.before : r.after || r.before;
+      if (id) {
+        const v = room(id);
+        if (r.delta > 0) v.gain += r.delta;else v.loss += r.delta;
+      }
+      events.push({
+        i,
+        id,
+        r
+      });
+    }
+  }
+  return {
+    nodes,
+    edges,
+    events,
+    crossings
+  };
+}
+function drawEdge(e, both, counts, occupied) {
+  const [x, y] = point(e.a),
+    [u, v] = point(e.b),
+    d = Math.hypot(u - x, v - y) || 1;
+  const dx = (u - x) / d,
+    dy = (v - y) / d,
+    bend = both ? Math.min(46, d * .23) : 0;
+  const cx = (x + u) / 2 - dy * bend,
+    cy = (y + v) / 2 + dx * bend;
+  const l1 = Math.hypot(cx - x, cy - y) || 1,
+    l2 = Math.hypot(cx - u, cy - v) || 1;
+  const ax = x + 16 * (cx - x) / l1,
+    ay = y + 16 * (cy - y) / l1,
+    bx = u + 17 * (cx - u) / l2,
+    by = v + 17 * (cy - v) / l2;
+  const path = "M " + ax + " " + ay + " Q " + cx + " " + cy + " " + bx + " " + by;
+  const g = el("g", {
+      class: "edge"
+    }),
+    offset = both ? 7 : 9;
+  g.append(el("title", {}, name(e.a) + " → " + name(e.b) + " · " + e.count + "\n" + [...e.commands].map(([k, n]) => k + " ×" + n).join("\n")), el("path", {
+    class: "route",
+    d: path,
+    "stroke-width": Math.min(5, 1.2 + Math.log2(1 + e.count) * .6),
+    "marker-end": "url(#arrow)"
+  }), el("path", {
+    class: "route-hit",
+    d: path
+  }));
+  graph.append(g);
+  // Try several positions along the same arc before allowing an overlap.
+  const label = "×" + e.count, halfWidth = label.length * 4 + 2;
+  let best;
+  for (const t of [.5, .38, .62, .28, .72]) {
+    const s = 1 - t;
+    const x = s*s*ax + 2*s*t*cx + t*t*bx - dy*offset;
+    const y = s*s*ay + 2*s*t*cy + t*t*by + dx*offset;
+    const box = [x-halfWidth, y-8, x+halfWidth, y+8];
+    const overlap = occupied.reduce((sum, [l, top, r, b]) => sum +
+      Math.max(0, Math.min(r,box[2])-Math.max(l,box[0])) *
+      Math.max(0, Math.min(b,box[3])-Math.max(top,box[1])), 0);
+    if (!best || overlap < best.overlap) best = {x,y,box,overlap};
+    if (overlap === 0) break;
+  }
+  occupied.push(best.box);
+  const count = el("text", {class:"count", x:best.x, y:best.y+4}, label);
+  count.append(el("title", {}, g.firstChild.textContent));
+  counts.append(count);
+}
+function drawRoom(id, s, current, milestones) {
+  const [x, y] = point(id),
+    g = el("g", {
+      class: "room",
+      transform: "translate(" + x + " " + y + ")",
+      tabindex: 0,
+      role: "button",
+      "aria-label": name(id)
+    });
+  const milestoneNames = milestones.map(m => data.objectives[m.key] + " · step " + m.step);
+  g.append(el("title", {}, [name(id) + " · " + id, s.commands + " commands issued · " + s.arrivals + " arrivals via traversal", ...milestoneNames].join("\n")));
+  if (id === episode.start) g.append(el("circle", {
+    r: 17,
+    class: "start-ring"
+  }));
+  if (id === current) g.append(el("circle", {
+    r: 13,
+    class: "current-ring"
+  }));
+  if (id === selected) g.append(el("circle", {
+    r: 20,
+    class: "chosen-ring"
+  }));
+  g.append(el("circle", {
+    r: 8,
+    class: "room-dot" + (s.gain ? " has-gain" : "") + (s.loss ? " has-loss" : "")
+  }));
+  if (milestones.length) {
+    g.append(el("path", {class:"milestone-marker", d:"M12,-15 l5,5 -5,5 -5,-5 Z",
+                        fill:"#936510", stroke:"#fff8e7", "stroke-width":1.2}));
+  }
+  g.append(el("text", {
+    y: 31,
+    class: "room-label"
+  }, name(id)));
+  if (s.gain || s.loss) {
+    const t = el("text", {
+      y: -20,
+      class: "room-points"
+    });
+    if (s.gain) t.append(el("tspan", {
+      class: "gain-text"
+    }, signed(s.gain)));
+    if (s.loss) t.append(el("tspan", {
+      class: "loss-text"
+    }, (s.gain ? "  " : "") + signed(s.loss)));
+    g.append(t);
+  }
+  function pick() {
+    selected = id;
+    show(pos);
+    Array.from(graph.querySelectorAll(".room")).find(g => g.dataset.id === id)?.focus({
+      preventScroll: true
+    });
+  }
+  g.dataset.id = id;
+  g.onclick = pick;
+  g.onkeydown = e => {
+    if (["Enter", " "].includes(e.key)) {
+      e.preventDefault();
+      pick();
+    }
+  };
+  graph.append(g);
+}
+function entry(parent, i, badge, cls, title, detail) {
+  const b = html("button", "entry", "");
+  b.type = "button";
+  if (badge) b.append(html("b", cls, badge));
+  const text = html("span", "", title);
+  text.append(html("small", "", detail));
+  b.append(text, html("span", "n", "Step " + episode.steps[i].step));
+  b.onclick = () => {
+    stop();
+    show(i + 1);
+    $("feedback").open = true;
+  };
+  parent.append(b);
+  return b;
+}
+
+function addMilestoneEntry(parent, milestone, currentStep) {
+  const {key, step, index, room} = milestone;
+  if (index === undefined) {
+    parent.append(html("p", "milestone-missed", data.objectives[key] + " · Step " + step + " · Replay unavailable"));
+    return;
+  }
+  const row = episode.steps[index];
+  const b = entry(parent, index, "", "", data.objectives[key], name(room) + " · " + row.action);
+  if (step === currentStep) b.classList.add("now");
+}
+
+function show(index) {
+  pos = Math.max(0, Math.min(episode.steps.length, index));
+  $("step").value = pos;
+  const rows = episode.steps.slice(0, pos),
+    last = rows.at(-1),
+    current = last ? last.after : episode.start;
+  const state = tally(rows), currentStep = last?.step ?? 0;
+  const firsts = episodeMilestones.filter(m => m.step <= currentStep);
+  const atRoom = new Map();
+  for (const m of firsts) {
+    if (!atRoom.has(m.room)) atRoom.set(m.room, []);
+    atRoom.get(m.room).push(m);
+  }
+  graph.replaceChildren();
+  const defs = el("defs"),
+    m = el("marker", {
+      id: "arrow",
+      viewBox: "0 0 8 8",
+      refX: 7,
+      refY: 4,
+      markerWidth: 12,
+      markerHeight: 12,
+      markerUnits: "userSpaceOnUse",
+      orient: "auto"
+    });
+  m.append(el("path", {
+    d: "M0,0 L8,4 L0,8 Z",
+    fill: "#576f77"
+  }));
+  defs.append(m);
+  graph.append(defs);
+  const counts = el("g"), occupied = [];
+  for (const [id, s] of state.nodes) {
+    const [x, y] = point(id), halfWidth = name(id).length * 3.8;
+    occupied.push([x-15,y-16,x+15,y+16], [x-halfWidth,y+18,x+halfWidth,y+34]);
+    if (s.gain || s.loss) occupied.push([x-24,y-34,x+24,y-17]);
+  }
+  for (const e of state.edges.values()) drawEdge(e, state.edges.has(edgeKey(e.b, e.a)), counts, occupied);
+  graph.append(counts);
+  for (const [id, s] of state.nodes) drawRoom(id, s, current, atRoom.get(id) || []);
+  $("empty").hidden = state.nodes.size > 0;
+  $("rooms").textContent = state.nodes.size;
+  $("crossings").textContent = state.crossings;
+  $("hits").textContent = firsts.length;
+  $("score").textContent = num(last ? last.score : episode.start_score);
+  $("position").textContent = "Step " + (last?.step || 0) + " / " + (episode.steps.at(-1)?.step || 0);
+  $("back").disabled = pos === 0;
+  $("next").disabled = pos === episode.steps.length;
+  $("play").disabled = !episode.steps.length;
+  $("command").textContent = last ? last.source + " · " + last.action + " · " + name(last.before) + (last.before !== last.after ? " → " + name(last.after) : "") + (last.relocation ? " · death" : "") : "Start · " + name(episode.start);
+  $("feedback").hidden = !last;
+  const justMet = firsts.filter(m => m.step === currentStep).map(m => data.objectives[m.key]);
+  $("currentMilestones").textContent = justMet.length ? "◆ " + justMet.join(" · ") : "";
+  $("observation").textContent = last?.result || "No response recorded.";
+  const events = $("events");
+  events.replaceChildren();
+  for (const {
+    i,
+    id,
+    r
+  } of state.events) entry(events, i, signed(r.delta), r.delta > 0 ? "gain" : "loss", r.action, name(id) + " · " + r.source);
+  if (!events.childElementCount) events.append(html("p", "hint", "No score changes by this step."));
+  let peak = episode.start_score ?? null,
+    peakStep = 0;
+  for (const r of rows) {
+    if (r.score !== null && (peak === null || r.score > peak)) {
+      peak = r.score;
+      peakStep = r.step;
+    }
+  }
+  $("peak").textContent = peak === null ? "" : "Peak " + peak + " first reached at step " + peakStep + " · " + ((last?.step || 0) - peakStep) + " steps since.";
+  $("nextScore").disabled = !episode.steps.slice(pos).some(r => r.delta != null && r.delta !== 0);
+  const ms = $("milestones");
+  ms.replaceChildren();
+  const all = $("milestoneScope").value === "all";
+  for (const m of all ? episodeMilestones : firsts) addMilestoneEntry(ms, m, currentStep);
+  if (all) {
+    for (const [key, label] of Object.entries(data.objectives)) {
+      if (!(key in episode.objectives)) ms.append(html("p", "milestone-missed", label + " · No recorded achievement"));
+    }
+  }
+  $("nextMilestone").disabled = !episodeMilestones.some(m => m.index !== undefined && m.index >= pos);
+  if (!ms.childElementCount) ms.append(html("p", "hint", "No confirmed milestones by this step."));
+  const detail = $("selection");
+  detail.replaceChildren();
+  const s = state.nodes.get(selected);
+  if (s) {
+    detail.append(html("strong", "", name(selected)), html("p", "", s.arrivals + " arrivals via traversal · " + s.commands + " commands issued"), html("p", "", signed(s.gain) + " gained · " + s.loss + " lost"));
+    for (const e of state.events.filter(e => e.id === selected)) entry(detail, e.i, signed(e.r.delta), e.r.delta > 0 ? "gain" : "loss", e.r.action, e.r.source);
+    for (const m of atRoom.get(selected) || []) addMilestoneEntry(detail, m, currentStep);
+  } else detail.textContent = "Select a room to inspect its traffic and scoring commands.";
+}
+const trialSummary = data.milestone_summary;
+const episodeIndex = new Map(data.episodes.map((ep, i) => [ep.episode, i]));
+const percent = rate => rate == null ? "—" : rate.toLocaleString("en-US", {style: "percent", maximumFractionDigits: 1});
+
+function switchView(trial) {
+  stop();
+  $("trialView").hidden = !trial;
+  $("replayView").hidden = trial;
+  $("episode").parentElement.hidden = trial;
+  $("trialNav").setAttribute("aria-pressed", String(trial));
+  $("replayNav").setAttribute("aria-pressed", String(!trial));
+  if (!trial && (graph.clientWidth !== replayWidth || graph.clientHeight !== replayHeight)) {
+    fitEpisode();
+    show(pos);
+  }
+}
+
+function jumpToAchievement(number, index) {
+  switchView(false);
+  if (episode.episode !== number) {
+    $("episode").value = episodeIndex.get(number);
+    load();
+  }
+  const row = episode.steps[index];
+  selected = row.relocation ? row.before : row.after || row.before;
+  show(index + 1);
+  $("feedback").open = true;
+  $("command").focus();
+}
+
+function selectMilestone(key) {
+  const stat = trialSummary.milestones[key];
+  for (const button of $("attainmentRows").querySelectorAll("button")) {
+    const active = button.dataset.key === key;
+    button.setAttribute("aria-pressed", String(active));
+    button.closest("tr").classList.toggle("selected", active);
+  }
+  $("milestoneTitle").textContent = stat.label;
+  const covered = trialSummary.episodes_with_evidence;
+  $("milestoneStat").textContent = covered
+    ? stat.episodes_met + " of " + covered + " episodes with evidence (" + percent(stat.rate) + ")."
+    : "Attainment rate unavailable.";
+  const list = $("episodeHits");
+  list.replaceChildren();
+  const hits = Object.entries(stat.first_step_by_episode).sort(([a], [b]) => Number(a) - Number(b));
+  for (const [id, step] of hits) {
+    const number = Number(id), ep = data.episodes[episodeIndex.get(number)];
+    const i = ep?.steps.findIndex(row => row.step === step) ?? -1;
+    const row = ep?.steps[i];
+    const b = html("button", "entry", "");
+    const caption = html("span", "", "Episode " + number);
+    caption.append(html("small", "", row ? name(row.relocation ? row.before : row.after || row.before) + " · " + row.action : "Replay unavailable"));
+    b.append(caption, html("span", "n", "Step " + step));
+    b.disabled = !row;
+    if (row) b.onclick = () => jumpToAchievement(number, i);
+    list.append(b);
+  }
+  if (!hits.length) list.append(html("p", "hint", covered ? "No covered episode attained this milestone." : "No evaluated episodes with milestone evidence."));
+}
+
+function renderTrial() {
+  const stats = Object.entries(trialSummary.milestones).sort(([, a], [, b]) =>
+    b.episodes_met - a.episodes_met || a.label.localeCompare(b.label));
+  const covered = trialSummary.episodes_with_evidence;
+  $("coverage").textContent = covered + " / " + trialSummary.evaluated_episodes;
+  $("attained").textContent = covered ? stats.filter(([, s]) => s.episodes_met > 0).length + " / " + stats.length : "—";
+  $("meanDistinct").textContent = trialSummary.mean_distinct_objectives?.toLocaleString("en-US", {maximumFractionDigits: 2}) ?? "—";
+  $("statSource").textContent = "Source: " + data.milestone_source + ". Rates use evaluated episodes with milestone evidence. Median first step uses episodes that attained the milestone.";
+  if (trialSummary.episodes_without_evidence.length) {
+    $("missingEvidence").textContent = "Evaluated episodes missing evidence: " + trialSummary.episodes_without_evidence.join(", ") + ".";
+  }
+  for (const [key, stat] of stats) {
+    const tr = document.createElement("tr"), label = document.createElement("td");
+    const button = html("button", "", stat.label);
+    button.dataset.key = key;
+    button.setAttribute("aria-controls", "evidencePanel");
+    tr.onclick = () => {
+      selectMilestone(key);
+      if (window.matchMedia("(max-width:760px)").matches) $("evidencePanel").scrollIntoView({block: "nearest"});
+    };
+    label.append(button);
+    const rate = html("td", "", percent(stat.rate));
+    if (stat.rate != null) {
+      const meter = html("div", "meter", ""), fill = document.createElement("i");
+      meter.setAttribute("aria-hidden", "true");
+      fill.style.width = (100 * stat.rate) + "%";
+      meter.append(fill);
+      rate.append(meter);
+    }
+    tr.append(label, html("td", "", stat.episodes_met), rate, html("td", "", num(stat.median_first_step)));
+    $("attainmentRows").append(tr);
+  }
+  if (stats.length) selectMilestone(stats[0][0]);
+}
+
+$("trialNav").onclick = () => switchView(true);
+$("replayNav").onclick = () => switchView(false);
+$("milestoneScope").onchange = () => show(pos);
+$("nextMilestone").onclick = () => {
+  const next = episodeMilestones.find(m => m.index !== undefined && m.index >= pos);
+  if (next) jumpToAchievement(episode.episode, next.index);
+};
+$("trial").textContent = data.trial;
+document.title = data.trial + " · Episode traversal";
+data.episodes.forEach((e, i) => {
+  const o = html("option", "", "Episode " + String(e.episode).padStart(2, "0") + " · " + e.status);
+  o.value = i;
+  $("episode").append(o);
+});
+$("episode").onchange = load;
+$("step").oninput = e => {
+  stop();
+  show(+e.target.value);
+};
+$("back").onclick = () => {
+  stop();
+  show(pos - 1);
+};
+$("next").onclick = () => {
+  stop();
+  show(pos + 1);
+};
+$("nextScore").onclick = () => {
+  const i = episode.steps.findIndex((r, i) => i >= pos && r.delta != null && r.delta !== 0);
+  if (i >= 0) {
+    stop();
+    show(i + 1);
+    $("feedback").open = true;
+  }
+};
+$("play").onclick = () => {
+  if (timer) {
+    stop();
+    return;
+  }
+  if (pos >= episode.steps.length) show(0);
+  $("play").textContent = "Pause";
+  timer = setInterval(() => {
+    show(pos + 1);
+    if (pos === episode.steps.length) stop();
+  }, 340);
+};
+$("plus").onclick = () => zoom(.8);
+$("minus").onclick = () => zoom(1.25);
+$("fit").onclick = () => view(fitted);
+graph.onwheel = e => {
+  e.preventDefault();
+  zoom(e.deltaY > 0 ? 1.15 : 1 / 1.15);
+};
+graph.onpointerdown = e => {
+  if (e.target.closest(".room")) return;
+  drag = [e.clientX, e.clientY, ...camera];
+  graph.setPointerCapture(e.pointerId);
+};
+graph.onpointermove = e => {
+  if (!drag) return;
+  const [x, y, a, b, w, h] = drag,
+    scale = graph.getScreenCTM().a;
+  view([a - (e.clientX - x) / scale, b - (e.clientY - y) / scale, w, h]);
+};
+graph.onpointerup = graph.onpointercancel = () => {
+  drag = null;
+};
+$("export").onclick = () => {
+  const clone = graph.cloneNode(true),
+    [x, y, w, h] = bounds(new Set([...graph.querySelectorAll(".room")].map(g => g.dataset.id)));
+  const title = data.trial + " · Episode " + episode.episode + " · Step " + (episode.steps[pos - 1]?.step || 0);
+  const groups = new Map();
+  for (const {
+    id,
+    r
+  } of tally(episode.steps.slice(0, pos)).events) {
+    const key = JSON.stringify([id, r.action, r.delta, r.source]);
+    if (!groups.has(key)) groups.set(key, {
+      first: r.step,
+      count: 0,
+      caption: signed(r.delta) + "   " + name(id) + "   ·   " + r.action + " (" + r.source + ")"
+    });
+    groups.get(key).count++;
+  }
+  const lines = [...groups.values()].map(g => g.caption + "   ×" + g.count + "   ·   first at step " + g.first);
+  for (const m of episodeMilestones.filter(m => m.step <= (episode.steps[pos - 1]?.step ?? 0))) {
+    lines.push("◆ " + data.objectives[m.key] + "   ·   step " + m.step + (m.room ? "   ·   " + name(m.room) : ""));
+  }
+  const width = Math.max(600, w, title.length * 8, ...lines.map(s => s.length * 7 + 28)),
+    left = x - (width - w) / 2;
+  const height = h + 118 + lines.length * 18;
+  clone.removeAttribute("id");
+  clone.setAttribute("viewBox", [left, y - 58, width, height].join(" "));
+  clone.setAttribute("width", width);
+  clone.setAttribute("height", height);
+  clone.prepend(el("style", {}, $("figureStyle").textContent), el("rect", {
+    x: left,
+    y: y - 58,
+    width,
+    height,
+    fill: "#f8faf5"
+  }));
+  clone.prepend(el("title", {}, title));
+  clone.append(el("text", {
+    x: left + 12,
+    y: y - 32,
+    "font-family": "Arial",
+    "font-size": "15"
+  }, title), el("text", {
+    x: left + 12,
+    y: y - 12,
+    "font-family": "Arial",
+    "font-size": "12"
+  }, "Score " + $("score").textContent + "   |   " + $("rooms").textContent + " rooms   |   " + $("crossings").textContent + " traversals"), el("text", {
+    x: left + 12,
+    y: y + h + 8,
+    "font-family": "Arial",
+    "font-size": "12"
+  }, "Dashed ring: start    Solid ring: current    → ×N: directional count    + / −: points    ◆ milestone"), el("text", {
+    x: left + 12,
+    y: y + h + 27,
+    "font-family": "Arial",
+    "font-size": "11"
+  }, episode.status + " · " + episode.identity));
+  lines.forEach((line, i) => clone.append(el("text", {
+    x: left + 12,
+    y: y + h + 48 + i * 18,
+    "font-family": "Arial",
+    "font-size": "12"
+  }, line)));
+  const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], {
+    type: "image/svg+xml"
+  }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = data.trial + "-ep" + episode.episode + "-step" + (episode.steps[pos - 1]?.step || 0) + ".svg";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+};
+renderTrial();
+load();
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (!$("replayView").hidden) {
+      fitEpisode();
+      show(pos);
+    }
+  }, 120);
+});
+</script>
+</html>

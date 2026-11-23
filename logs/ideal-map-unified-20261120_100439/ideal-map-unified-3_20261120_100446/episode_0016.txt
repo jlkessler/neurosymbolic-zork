@@ -1,0 +1,737 @@
+Episode 16 log: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0016.txt
+Episode 16 chat log: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0016_chat.txt
+Episode 16 decision-rationale log: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0016_reasoning.txt
+Episode: 16/50
+Initial observation: Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.
+ZORK is a registered trademark of Infocom, Inc.
+Revision 88 / Serial number 840726
+
+West of House
+You are standing in an open field west of a white house, with a boarded front door.
+There is a small mailbox here.
+
+
+Starting location: West House
+Target score: 100
+Model: openai/gpt-4o-mini | Agent type: smart
+Maximum steps: 500
+
+LESSONS LEARNED FROM PREVIOUS EPISODES:
+Repeat these positive behaviors:
+1. Open the Behind House window, then go west; Kitchen +10 was recorded on that move.
+2. Take and light the lantern before descending; Cellar +25 was recorded and the lantern kept the Cellar lit.
+3. Verified edges: Behind House west to Kitchen, Kitchen west to Living Room, Living Room down to Cellar (trap door then shuts).
+4. Once a treasure is held, return home and deposit it; 'put painting in case' recorded +6 after the trip.
+5. Check score and observation after every action and credit only recorded score events; 'take art' recorded +4.
+6. Test one transition at a time and verify the room name afterward; symbolic homeward routing completed cleanly this run.
+7. Carry a light source before leaving the Living Room, and check inventory before descending since the trap door shuts behind you.
+8. When an observation shows a hostile character, treat it as new evidence and choose retreat or avoidance over the planner's goal.
+Avoid these negative behaviors:
+1. Do not open with the west/east/go-around-forest loop; it cost 4 steps and scored 0.
+2. Do not shuttle Cellar/Troll or Cellar/East Chasm repeatedly; three Troll round trips scored 0.
+3. Do not chase stale planner goals ('take egg', 'take bar', Living Room 'down') without a verified route and matching observation.
+4. Do not trust planner gain figures (+325, +15, +20); the observed Cellar event was +25.
+5. Do not start melee with a thief or troll; the Actor died to the thief at East Chasm (-10, step 41).
+6. Do not pick up a dropped weapon while an enemy is still attacking; this 'take sword' ended the run.
+7. Do not type aimless actions like 'take walls' in a dangerous room; leave or act on a concrete threat assessment.
+8. Do not rely on old notes about Maintenance buttons or the dam area; they were not re-observed this run.
+Apply these lessons when relevant; current game feedback takes precedence.
+
+========== STEP 1/500 ==========
+Location: West House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: open mailbox
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Opening the small mailbox reveals a leaflet.
+
+
+New location: West House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 2/500 ==========
+Location: West House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: take leaflet
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: West House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 3/500 ==========
+Location: West House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North of House
+You are facing the north side of a white house. There is no door here, and all the windows are boarded up. To the north a narrow path winds through the trees.
+
+
+New location: North House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 4/500 ==========
+Location: North House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: West of House
+There is a small mailbox here.
+
+
+New location: West House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 5/500 ==========
+Location: West House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest
+This is a forest, with trees in all directions. To the east, there appears to be sunlight.
+
+
+New location: Forest (room #78)
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 6/500 ==========
+Location: Forest (room #78)
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest Path
+This is a path winding through a dimly lit forest. The path heads north-south here. One particularly large tree with some low branches stands at the edge of the path.
+
+
+New location: Forest Path
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 7/500 ==========
+Location: Forest Path
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: go around forest
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Clearing
+You are in a small clearing in a well marked forest path that extends to the east and west.
+
+
+New location: Clearing (room #74)
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 8/500 ==========
+Location: Clearing (room #74)
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Behind House
+You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar.
+
+
+New location: Behind House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 9/500 ==========
+Location: Behind House
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: open window
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: With great effort, you open the window far enough to allow entry.
+
+
+New location: Behind House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 10/500 ==========
+Location: Behind House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Kitchen
+You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open.
+On the table is an elongated brown sack, smelling of hot peppers.
+A bottle is sitting on the table.
+The glass bottle contains:
+  A quantity of water
+
+
+New location: Kitchen
+Score: 10 (delta: 10) | reward: 10
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 11/500 ==========
+Location: Kitchen
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Living Room
+You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room.
+Above the trophy case hangs an elvish sword of great antiquity.
+A battery-powered brass lantern is on the trophy case.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 12/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: take lantern
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 13/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: turn on lantern
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The brass lantern is now on.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 14/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Kitchen
+On the table is an elongated brown sack, smelling of hot peppers.
+A bottle is sitting on the table.
+The glass bottle contains:
+  A quantity of water
+
+
+New location: Kitchen
+Score: 10 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 15/500 ==========
+Location: Kitchen
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Living Room
+Above the trophy case hangs an elvish sword of great antiquity.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 16/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: open case
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Opened.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 17/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: take sword
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 18/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: push rug
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 19/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: open trap
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The door reluctantly opens to reveal a rickety staircase descending into darkness.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 20/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +350 (14.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: You are already at the room where the interaction previously produced score.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The trap door crashes shut, and you hear someone barring it.
+
+Cellar
+You are in a dark and damp cellar with a narrow passageway leading north, and a crawlway to the south. On the west is the bottom of a steep metal ramp which is unclimbable.
+Your sword is glowing with a faint blue glow.
+
+
+New location: Cellar
+Score: 35 (delta: 25) | reward: 25
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 21/500 ==========
+Location: Cellar
+Goal: Exploit a previously score-positive opportunity at Loud Room: the interaction 'take bar' produced an observed total gain of +20 (10.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take bar': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The Troll Room
+This is a small room with passages to the east and south and a forbidding hole leading west. Bloodstains and deep scratches (perhaps made by an axe) mar the walls.
+A nasty-looking troll, brandishing a bloody axe, blocks all passages out of the room.
+Your sword has begun to glow very brightly.
+
+
+New location: Troll
+Score: 35 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 22/500 ==========
+Location: Troll
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: hit troll with sword
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The troll takes a fatal blow and slumps to the floor dead.
+Almost as soon as the troll breathes his last breath, a cloud of sinister black fog envelops him, and when the fog lifts, the carcass has disappeared.
+Your sword is no longer glowing.
+
+
+New location: Troll
+Score: 35 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 23/500 ==========
+Location: Troll
+Goal: Exploit a previously score-positive opportunity at Loud Room: the interaction 'take bar' produced an observed total gain of +20 (10.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take bar': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: take axe
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Troll
+Score: 35 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 24/500 ==========
+Location: Troll
+Goal: Exploit a previously score-positive opportunity at Loud Room: the interaction 'take bar' produced an observed total gain of +20 (10.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take bar': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: East-West Passage
+This is a narrow east-west passageway. There is a narrow stairway leading down at the north end of the room.
+
+
+New location: East-West Passage
+Score: 40 (delta: 5) | reward: 5
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 25/500 ==========
+Location: East-West Passage
+Goal: Exploit a previously score-positive opportunity at Loud Room: the interaction 'take bar' produced an observed total gain of +20 (10.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take bar': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Chasm
+A chasm runs southwest to northeast and the path follows it. You are on the south side of the chasm, where a crack opens into a passage.
+
+
+New location: Chasm
+Score: 40 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 26/500 ==========
+Location: Chasm
+Goal: Exploit a previously score-positive opportunity at Loud Room: the interaction 'take bar' produced an observed total gain of +20 (10.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take bar': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+This is a high north-south passage, which forks to the northeast.
+
+
+New location: North-South Passage
+Score: 40 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 27/500 ==========
+Location: North-South Passage
+Goal: Exploit a previously score-positive opportunity at Loud Room: the interaction 'take bar' produced an observed total gain of +20 (10.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take bar': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: northeast
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Deep Canyon
+You are on the south edge of a deep canyon. Passages lead off to the east, northwest and southwest. A stairway leads down. You can hear the sound of flowing water from below.
+
+
+New location: Deep Canyon
+Score: 40 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 28/500 ==========
+Location: Deep Canyon
+Goal: Exploit a previously score-positive opportunity at Loud Room: the interaction 'take bar' produced an observed total gain of +20 (10.00 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take bar': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Loud Room
+This is a large room with a ceiling which cannot be detected from the ground. There is a narrow passage from east to west and a stone stairway leading upward. The room is deafeningly loud with an undetermined rushing sound. The sound seems to reverberate from all of the walls, making it difficult even to think.
+On the ground is a large platinum bar.
+
+
+New location: Loud Room
+Score: 40 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 29/500 ==========
+Location: Loud Room
+Goal: Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables.
+  1. Explore an unmapped exit: Choose a valid frontier action and inspect the destination.
+  2. Investigate the new room: Examine notable objects and available interactions; compare score before and after each action.
+  3. Preserve recoverability: If the room is underground, establish a route to the Living Room before pursuing a lengthy treasure sequence.
+  4. Pursue productive discoveries: Record newly successful actions and routes so they can be exploited in later episodes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: echo
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The acoustics of the room change subtly.
+
+Loud Room
+On the ground is a large platinum bar.
+
+
+New location: Loud Room
+Score: 40 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 30/500 ==========
+Actor request or policy scoring failed: IncompleteLabelScores: Missing exact single-token labels: ['C'] after 3 attempts. The endpoint did not return a complete distribution even with equal label bias; inspect actor_logprob_attempt events for raw tokens.
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+===== WORLD MAP =====
+
+West House --north: ['north']--> North House
+West House --west: ['west']--> Forest (room #78)
+North House --north: ['north']--> Forest Path
+North House --west: ['west']--> West House
+Forest Path --up: ['up']--> Up a Tree
+Forest Path --north: ['north']--> Clearing (room #143)
+Forest Path --['go around forest']--> Clearing (room #74)
+Forest Path --south: ['south']--> North House
+Up a Tree --down: ['down']--> Forest Path
+Clearing (room #143) --south: ['south']--> Forest Path
+Clearing (room #143) --west: ['west']--> Forest (room #78)
+Clearing (room #74) --east: ['east']--> CanyView
+Clearing (room #74) --['go around forest']--> Forest (room #78)
+Clearing (room #74) --west: ['west']--> Behind House
+Clearing (room #74) --north: ['north']--> Forest (room #77)
+Clearing (room #74) --south: ['south']--> Forest (room #76)
+CanyView --northwest: ['northwest']--> Clearing (room #74)
+CanyView --west: ['west']--> Forest (room #76)
+Forest (room #76) --north: ['north']--> Clearing (room #74)
+Forest (room #76) --west: ['west']--> Forest (room #78)
+Forest (room #78) --east: ['east']--> Forest Path
+Forest (room #78) --['go around trees']--> Forest (room #77)
+Forest (room #78) --north: ['north']--> Clearing (room #143)
+Forest (room #78) --south: ['south']--> Forest (room #76)
+Forest (room #77) --south: ['south']--> Clearing (room #74)
+Behind House --east: ['east']--> Clearing (room #74)
+Behind House --west: ['west']--> Kitchen
+Behind House --south: ['south']--> South House
+Kitchen --up: ['up']--> Attic
+Kitchen --west: ['west']--> Living Room
+Kitchen --east: ['east']--> Behind House
+Attic --down: ['down']--> Kitchen
+Living Room --east: ['east']--> Kitchen
+Living Room --down: ['down']--> Cellar
+Cellar --north: ['north']--> Troll
+Cellar --south: ['south']--> East Chasm
+Troll --south: ['south']--> Cellar
+Troll --east: ['east']--> East-West Passage
+East Chasm --north: ['north']--> Cellar
+East Chasm --east: ['east']--> Gallery
+Gallery --west: ['west']--> East Chasm
+Gallery --north: ['north']--> Studio
+South House --west: ['west']--> West House
+Studio --south: ['south']--> Gallery
+Studio --up: ['up']--> Kitchen
+East-West Passage --north: ['north']--> Chasm
+East-West Passage --west: ['west']--> Troll
+Chasm --south: ['south']--> North-South Passage
+North-South Passage --northeast: ['northeast']--> Deep Canyon
+North-South Passage --north: ['north']--> Chasm
+North-South Passage --south: ['south']--> Round Room
+Deep Canyon --down: ['down']--> Loud Room
+Deep Canyon --east: ['east']--> Dam
+Loud Room --up: ['up']--> Deep Canyon
+Loud Room --west: ['west']--> Round Room
+Round Room --north: ['north']--> North-South Passage
+Dam --south: ['south']--> Deep Canyon
+Dam --north: ['north']--> Dam Lobby
+Dam --east: ['east']--> Dam Base
+Dam Lobby --north: ['north']--> Maintenance Room
+Dam Lobby --south: ['south']--> Dam
+Maintenance Room --west: ['west']--> Dam Lobby
+
+===== END OF WORLD MAP =====
+
+Episode finished: score=40, moves=28, reason=no_safe_actions
+Actor experience update: {'episode_id': 'ideal-map-unified-3_20261120_100446/episode_0016', 'steps': 29, 'actor_experiences': 29, 'score_reward_total': 40.0, 'discounted_return_first_step': 47.979458217388085, 'termination_reason': 'no_safe_actions', 'final_score': 40.0, 'memory_path': 'logs/ideal-map-unified-20261120_100439/actor_experiences.jsonl', 'bootstrap_value': 12.994113754451579, 'episode_truncated': True, 'training_eligible': True, 'return_estimator': 'bootstrapped', 'published_outcome_steps': 0, 'outcome_directory': 'logs/ideal-map-unified-20261120_100439/actor_experiences.jsonl.outcomes/2d38b1b78640859389f93654eb092bba6f9f7c894900c0b6de9771e324d202ad'}
+Historian critic update: {'enabled': True, 'updates': 29, 'mean_absolute_prediction_error': 3.6872714473108803, 'state_visits': 2065, 'episodes_trained': 16, 'termination_reason': 'no_safe_actions', 'path': 'logs/ideal-map-unified-20261120_100439/historian_td.json'}
+Actor experience samples saved: 29 (logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0016_experience.jsonl)
+
+Historian episode review — episode 16
+================================================
+
+Review source: llm
+Lessons: 8 positive + 8 negative (configured per category: 8)
+
+The supplied evidence conflicts with the death summary. It shows 40 points in 29 steps, ending in a no_safe_actions stop at the Loud Room, with no thief, Gallery, or death. I judged the Actor on the logged trajectory. Strongest decisions: opening the window and going west (+10 on that move), taking the lantern and sword, opening the trap door, and going down (+25 on that move). The sword kill of the troll was confirmed, and +5 was recorded on the later move east, so I don't credit the kill itself. Weaknesses: about nine opening steps of mailbox, North House and forest wandering scored 0, and Kitchen/Living Room shuttling wasted more. It then explored on with no treasure, never verified a route home, and used 'echo' beside the visible bar instead of a concrete action. Next time: go straight to the verified route, act on visible objects, and keep a way home.
+
+LESSONS LEARNED
+================================
+POSITIVES TO REPEAT
+1. Open the Behind House window, then go west; Kitchen +10 was recorded on that move.
+2. Take the lantern, turn it on, and carry the sword before descending; Cellar +25 was recorded on 'down'.
+3. Verified route: Behind House west, Kitchen west, push rug, open trap door, then down to the Cellar; the trap door shuts behind you.
+4. Verified underground edges: Cellar north to Troll, east to East-West Passage, north to Chasm, south to North-South Passage, then northeast to Deep Canyon.
+5. From Deep Canyon, 'down' reaches the Loud Room, where a platinum bar was observed on the ground; take visible items before experimenting.
+6. 'hit troll with sword' killed the troll in one action; +5 appeared on the next move east, so credit only recorded events.
+7. Check the score and observation after every action; credit only recorded score events, never planner estimates.
+8. Before leaving a room carrying a valuable, note and test a route back to the Living Room, and deposit treasures in the case.
+
+NEGATIVES TO AVOID
+1. Do not open with mailbox, North House, west/east forest or 'go around forest' wandering; about nine early steps scored 0.
+2. Do not shuttle Kitchen/Living Room or Cellar/Troll without a new reason; repeated back-and-forth moves scored nothing.
+3. Do not chase stale planner hints ('take egg', 'take bar', Living Room 'down') unless the observation confirms the object and a route exists.
+4. Do not trust planner gain figures (+350, +15, +20); the observed events were +10, +25 and +5.
+5. Do not spend a turn on 'echo' or other aimless commands when a visible object, such as the bar, can be examined or taken.
+6. Do not push deeper underground carrying nothing of value and with no verified path home; the home return was never confirmed.
+7. Do not start melee with a thief (an earlier report, not re-observed here, says it ended in death at East Chasm); retreat instead.
+8. Do not pick up a dropped weapon while an enemy is still attacking; reassess first, and do not assume the thief is avoidable.
+
+Historian review saved to: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0016_review.txt
+Episode lessons saved to: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0016_lessons.txt
+Current trial lessons saved to: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/lessons_learned.txt
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json

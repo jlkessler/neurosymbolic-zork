@@ -138,7 +138,8 @@ def test_historical_score_action_is_reassessed_by_actor_and_room_alias_is_learne
                      "--actor-experience-path", str(tmp_path / "actor.jsonl"),
                      "--historian-critic-path", str(tmp_path / "critic.json"), "--output-dir", str(tmp_path / "logs")])
     assert len(Agent.calls) == 2
-    assert Agent.calls[0]["goal"]["kind"] == "score_action"
+    # A historical +25 without a grounded transition cannot authorize "down".
+    assert Agent.calls[0]["goal"]["kind"] != "score_action"
     assert Agent.calls[0]["current_location"] == "Living Room"
     records = [json.loads(row) for row in (tmp_path / "actor.jsonl").read_text().splitlines()]
     assert [row["action"] for row in records] == ["take lantern", "down"]

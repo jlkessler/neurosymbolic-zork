@@ -50,8 +50,6 @@ class NavigationController:
         self.route_start_counts.clear()
 
     def _resolve_node(self, location, location_id=None):
-        if location in self.world_map.graph:
-            return location
         return self.world_map.resolve_location(location, location_id)
 
     def _route_avoiding_episode_edges(
@@ -71,7 +69,7 @@ class NavigationController:
         if start_node is None or target_node is None:
             return None
 
-        graph = self.world_map.graph.copy()
+        graph = self.world_map.routing_graph(start_node).copy()
         for source, destination, key in list(graph.edges(keys=True)):
             edge = (source, destination, key)
             if exclude_blocked and edge in self.blocked_edges:

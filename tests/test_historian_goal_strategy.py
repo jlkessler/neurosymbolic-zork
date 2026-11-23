@@ -197,7 +197,7 @@ def test_historian_reuses_reward_positive_action_and_historical_path(tmp_path):
     goal = historian.choose_goal(
         current_node="Cellar",
         current_location="Cellar",
-        valid_actions=["north", "south", "look"],
+        valid_actions=["north", "east", "south", "look"],
         known_routes=[{
             "destination": "Treasure Room",
             "destination_label": "Treasure Room",

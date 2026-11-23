@@ -1003,6 +1003,11 @@ class Historian:
             previous = self._room_snapshots.get(current_key)
             if previous is not None and previous != snapshot:
                 self._navigation_attempts.clear()
+                # A failed attempt at a guarded exit may succeed after a local puzzle changes.
+                self._attempted_score_tasks = {
+                    key for key in self._attempted_score_tasks
+                    if self.memory["score_profiles"].get(key, {}).get("node") != current_key
+                }
                 self._last_progress_step = (self.episode or {}).get("steps", 0)
             self._room_snapshots[current_key] = snapshot
         counts = {}
@@ -1034,7 +1039,7 @@ class Historian:
                 "repeated_transitions": repeated,
                 "reason": "Repeated transitions without observed progress; try an available alternative." if blocked else ""}
 
-    def build_guidance(self, current_node, current_location, current_score=None):
+    def build_guidance(self, current_node, current_location, current_score=None, *, score_goal=None):
         """Build a strategic prompt from reward, inventory, route, and lesson evidence."""
         score = self._as_number(current_score)
         remaining = (
@@ -1099,7 +1104,10 @@ class Historian:
                 )
 
         positive = sorted(
-            self.memory.get("score_profiles", {}).values(),
+            (item for item in self.memory.get("score_profiles", {}).values()
+             if str(item.get("node") or "").strip() and (score_goal is None or
+                 (item.get("node") == score_goal.get("target_node")
+                  and item.get("action") == score_goal.get("productive_action")))),
             key=lambda item: (
                 float(item.get("total_gain", 0.0)) /
                 max(1, int(item.get("attempts", item.get("samples", 1)))),
@@ -1172,7 +1180,7 @@ class Historian:
         return result
 
     def _productive_goal_candidates(
-        self, *, current_key, valid_by_normalized, route_by_destination
+        self, *, current_key, valid_by_normalized, route_by_destination, supported_score_moves=None
     ):
         candidates = []
         for profile_key, pattern in self.memory.get("score_profiles", {}).items():
@@ -1184,7 +1192,10 @@ class Historian:
             if profile_key in self._completed_score_tasks or profile_key in self._attempted_score_tasks:
                 continue
 
-            target_node = str(pattern.get("node", ""))
+            target_node = pattern.get("node")
+            if target_node is None or not str(target_node).strip():
+                continue
+            target_node = str(target_node)
             action = str(pattern.get("action", ""))
             # Historical deposit rewards do not imply present possession.
             # Infer command prerequisites conservatively; unknown tasks remain
@@ -1199,13 +1210,16 @@ class Historian:
 
             if target_node == current_key:
                 suggested_action = valid_by_normalized.get(self.normalize_action(action))
-                if suggested_action is None:
+                if (suggested_action is None or
+                        (supported_score_moves is not None and self._is_direction(action)
+                         and self.normalize_action(action) not in supported_score_moves)):
                     continue
                 kind = "score_action"
                 target_route = None
             else:
                 target_route = route_by_destination.get(target_node)
-                if target_route is None:
+                route_actions = (target_route or {}).get("actions", [])
+                if not route_actions or self.normalize_action(route_actions[0]) not in valid_by_normalized:
                     continue
                 suggested_action = None
                 kind = "navigate_score_goal"
@@ -1277,6 +1291,7 @@ class Historian:
         home_node=None,
         home_label="Living Room",
         home_route_status="unknown",
+        supported_score_moves=None,
     ):
         """Choose an ambitious, sequential strategy from accumulated evidence.
 
@@ -1454,6 +1469,7 @@ class Historian:
             current_key=current_key,
             valid_by_normalized=valid_by_normalized,
             route_by_destination=route_by_destination,
+            supported_score_moves=supported_score_moves,
         )
         if candidates:
             chosen = candidates[0]

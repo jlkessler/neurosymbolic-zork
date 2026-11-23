@@ -1,0 +1,1750 @@
+Episode 10 log: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0010.txt
+Episode 10 chat log: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0010_chat.txt
+Episode 10 decision-rationale log: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0010_reasoning.txt
+Episode: 10/50
+Initial observation: Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.
+ZORK is a registered trademark of Infocom, Inc.
+Revision 88 / Serial number 840726
+
+West of House
+You are standing in an open field west of a white house, with a boarded front door.
+There is a small mailbox here.
+
+
+Starting location: West House
+Target score: 100
+Model: openai/gpt-4o-mini | Agent type: smart
+Maximum steps: 500
+
+LESSONS LEARNED FROM PREVIOUS EPISODES:
+Repeat these positive behaviors:
+1. Open the Behind House window, then go west; Kitchen +10 was recorded on that move.
+2. Take the lantern, push the rug, open the trap door, then 'down'; Cellar +25 was recorded. Light the lantern immediately below.
+3. 'take art' at the Gallery recorded +4; carry it north to the Studio, up to the Kitchen, west to the Living Room.
+4. In the Living Room, use 'put painting in trophy case' rather than 'put down'; an earlier episode recorded +6, so verify the score.
+5. Read score and location after each action and credit only exactly recorded score events.
+6. Retire a goal after one failed attempt or when its target room is unreached, such as 'take egg'.
+7. When the score stalls, test one untried exit or object at a time instead of re-walking mapped rooms.
+8. Examine items found along the way (sack, bottle, manual, attic contents) before leaving a room, but verify they matter before carrying them.
+Avoid these negative behaviors:
+1. Do not type 'jump' at East Chasm; it killed the agent (-10) and ended the run at 29.
+2. Do not shuttle Cellar/East Chasm/Gallery without a new objective; about 25 steps scored nothing.
+3. Do not drop a treasure with 'put down' in the Living Room; the painting stayed there unbanked and scored nothing.
+4. Do not keep the 'take egg' goal while Up a Tree is unreached; it recurred in many planner goals without progress.
+5. Do not open with forest loops (west, east, around forest); about 5 early moves scored nothing.
+6. Do not treat the Troll room as safe or as proven lethal: one visit was survived, so enter only deliberately, armed or with a plan.
+7. Do not trust planner 'previously productive' gain figures over the latest observation; verify score and location.
+8. Do not re-descend empty-handed or repeat a stalled move; first bank carried valuables and choose an untested action.
+Apply these lessons when relevant; current game feedback takes precedence.
+
+========== STEP 1/500 ==========
+Location: West House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +200 (11.76 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: open mailbox
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Opening the small mailbox reveals a leaflet.
+
+
+New location: West House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 2/500 ==========
+Location: West House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +200 (11.76 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: take leaflet
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: West House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 3/500 ==========
+Location: West House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +200 (11.76 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest
+This is a forest, with trees in all directions. To the east, there appears to be sunlight.
+
+
+New location: Forest (room #78)
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 4/500 ==========
+Location: Forest (room #78)
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +200 (11.76 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Forest Path
+This is a path winding through a dimly lit forest. The path heads north-south here. One particularly large tree with some low branches stands at the edge of the path.
+
+
+New location: Forest Path
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 5/500 ==========
+Location: Forest Path
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +200 (11.76 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: go around forest
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Clearing
+You are in a small clearing in a well marked forest path that extends to the east and west.
+
+
+New location: Clearing (room #74)
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 6/500 ==========
+Location: Clearing (room #74)
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +200 (11.76 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Behind House
+You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar.
+
+
+New location: Behind House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 7/500 ==========
+Location: Behind House
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: open window
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: With great effort, you open the window far enough to allow entry.
+
+
+New location: Behind House
+Score: 0 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 8/500 ==========
+Location: Behind House
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +200 (11.76 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Kitchen
+You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open.
+On the table is an elongated brown sack, smelling of hot peppers.
+A bottle is sitting on the table.
+The glass bottle contains:
+  A quantity of water
+
+
+New location: Kitchen
+Score: 10 (delta: 10) | reward: 10
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 9/500 ==========
+Location: Kitchen
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +200 (11.76 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Living Room
+You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room.
+Above the trophy case hangs an elvish sword of great antiquity.
+A battery-powered brass lantern is on the trophy case.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 10/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: take lantern
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 11/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: open case
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Opened.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 12/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: take sword
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 13/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Kitchen
+On the table is an elongated brown sack, smelling of hot peppers.
+A bottle is sitting on the table.
+The glass bottle contains:
+  A quantity of water
+
+
+New location: Kitchen
+Score: 10 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 14/500 ==========
+Location: Kitchen
+Goal: Exploit a previously score-positive opportunity at Living Room: the interaction 'down' produced an observed total gain of +200 (11.76 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'down': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Living Room
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 15/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: push rug
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 16/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: open trap
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The door reluctantly opens to reveal a rickety staircase descending into darkness.
+
+
+New location: Living Room
+Score: 10 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 17/500 ==========
+Location: Living Room
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: confirmed
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: You have moved into a dark place.
+The trap door crashes shut, and you hear someone barring it.
+
+It is pitch black. You are likely to be eaten by a grue.
+Your sword is glowing with a faint blue glow.
+
+
+New location: Cellar
+Score: 35 (delta: 25) | reward: 25
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 18/500 ==========
+Location: Cellar
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise explore a new frontier.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: turn on lantern
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The brass lantern is now on.
+
+Cellar
+You are in a dark and damp cellar with a narrow passageway leading north, and a crawlway to the south. On the west is the bottom of a steep metal ramp which is unclimbable.
+
+
+New location: Cellar
+Score: 35 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 19/500 ==========
+Location: Cellar
+Goal: Investigate the current environment for score-producing actions, treasure candidates, puzzle clues, or a way to unlock new routes. Reuse prior successful interactions only when their preconditions match the current state. Inspect objects, reason from textual clues, and change approach when feedback shows that an action is ineffective.
+  1. Resolve the most informative local uncertainty: Inspect the environment or test a contextually plausible interaction.
+  2. Record reward and transition evidence: Use score changes and room transitions to update what is known.
+  3. Choose the next productive target: Prefer previously successful opportunities when state conditions match; otherwise explore a new frontier.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The Troll Room
+This is a small room with passages to the east and south and a forbidding hole leading west. Bloodstains and deep scratches (perhaps made by an axe) mar the walls.
+A nasty-looking troll, brandishing a bloody axe, blocks all passages out of the room.
+Your sword has begun to glow very brightly.
+
+
+New location: Troll
+Score: 35 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 20/500 ==========
+Location: Troll
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: hit troll with sword
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The troll takes a fatal blow and slumps to the floor dead.
+Almost as soon as the troll breathes his last breath, a cloud of sinister black fog envelops him, and when the fog lifts, the carcass has disappeared.
+Your sword is no longer glowing.
+
+
+New location: Troll
+Score: 35 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 21/500 ==========
+Location: Troll
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: take axe
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Troll
+Score: 35 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 22/500 ==========
+Location: Troll
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Cellar
+
+
+New location: Cellar
+Score: 35 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 23/500 ==========
+Location: Cellar
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The Troll Room
+
+
+New location: Troll
+Score: 35 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 24/500 ==========
+Location: Troll
+Goal: Exploit a previously score-positive opportunity at Up a Tree: the interaction 'take egg' produced an observed total gain of +15 (3.75 points per recorded attempt). Revisit it only if the current observation and prerequisites remain compatible; verify the new score response.
+  1. Reach the previously productive location: Use the persistent directed map route as a historical candidate. Probe it one transition at a time; if an edge is blocked, stop and let the Actor investigate instead of repeating it.
+  2. Reassess and try 'take egg': Check the current observation, inventory, and puzzle prerequisites before repeating the known productive interaction.
+  3. Verify progress and secure valuables: Compare the score before and after the action. Classify inventory items, return confirmed or likely treasures to the Living Room, and deposit them in the trophy case.
+  4. Continue to the next productive opportunity: Use other previously fruitful locations/actions and then explore unmapped frontiers.
+Home route status this episode: historical_unconfirmed
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: East-West Passage
+This is a narrow east-west passageway. There is a narrow stairway leading down at the north end of the room.
+
+
+New location: East-West Passage
+Score: 40 (delta: 5) | reward: 5
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 25/500 ==========
+Location: East-West Passage
+Goal: Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables.
+  1. Explore an unmapped exit: Choose a valid frontier action and inspect the destination.
+  2. Investigate the new room: Examine notable objects and available interactions; compare score before and after each action.
+  3. Preserve recoverability: If the room is underground, establish a route to the Living Room before pursuing a lengthy treasure sequence.
+  4. Pursue productive discoveries: Record newly successful actions and routes so they can be exploited in later episodes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Chasm
+A chasm runs southwest to northeast and the path follows it. You are on the south side of the chasm, where a crack opens into a passage.
+
+
+New location: Chasm
+Score: 40 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 26/500 ==========
+Location: Chasm
+Goal: Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables.
+  1. Explore an unmapped exit: Choose a valid frontier action and inspect the destination.
+  2. Investigate the new room: Examine notable objects and available interactions; compare score before and after each action.
+  3. Preserve recoverability: If the room is underground, establish a route to the Living Room before pursuing a lengthy treasure sequence.
+  4. Pursue productive discoveries: Record newly successful actions and routes so they can be exploited in later episodes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+This is a high north-south passage, which forks to the northeast.
+
+
+New location: North-South Passage
+Score: 40 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 27/500 ==========
+Location: North-South Passage
+Goal: Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables.
+  1. Explore an unmapped exit: Choose a valid frontier action and inspect the destination.
+  2. Investigate the new room: Examine notable objects and available interactions; compare score before and after each action.
+  3. Preserve recoverability: If the room is underground, establish a route to the Living Room before pursuing a lengthy treasure sequence.
+  4. Pursue productive discoveries: Record newly successful actions and routes so they can be exploited in later episodes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: northeast
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Deep Canyon
+You are on the south edge of a deep canyon. Passages lead off to the east, northwest and southwest. A stairway leads down. You can hear the sound of flowing water from below.
+
+
+New location: Deep Canyon
+Score: 40 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 28/500 ==========
+Location: Deep Canyon
+Goal: Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables.
+  1. Explore an unmapped exit: Choose a valid frontier action and inspect the destination.
+  2. Investigate the new room: Examine notable objects and available interactions; compare score before and after each action.
+  3. Preserve recoverability: If the room is underground, establish a route to the Living Room before pursuing a lengthy treasure sequence.
+  4. Pursue productive discoveries: Record newly successful actions and routes so they can be exploited in later episodes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Loud Room
+This is a large room with a ceiling which cannot be detected from the ground. There is a narrow passage from east to west and a stone stairway leading upward. The room is deafeningly loud with an undetermined rushing sound. The sound seems to reverberate from all of the walls, making it difficult even to think.
+On the ground is a large platinum bar.
+
+
+New location: Loud
+Score: 40 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 29/500 ==========
+Location: Loud
+Goal: Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables.
+  1. Explore an unmapped exit: Choose a valid frontier action and inspect the destination.
+  2. Investigate the new room: Examine notable objects and available interactions; compare score before and after each action.
+  3. Preserve recoverability: If the room is underground, establish a route to the Living Room before pursuing a lengthy treasure sequence.
+  4. Pursue productive discoveries: Record newly successful actions and routes so they can be exploited in later episodes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: echo
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The acoustics of the room change subtly.
+
+Loud Room
+On the ground is a large platinum bar.
+
+
+New location: Loud Room
+Score: 40 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 30/500 ==========
+Location: Loud Room
+Goal: Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables.
+  1. Explore an unmapped exit: Choose a valid frontier action and inspect the destination.
+  2. Investigate the new room: Examine notable objects and available interactions; compare score before and after each action.
+  3. Preserve recoverability: If the room is underground, establish a route to the Living Room before pursuing a lengthy treasure sequence.
+  4. Pursue productive discoveries: Record newly successful actions and routes so they can be exploited in later episodes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: take bar
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Loud Room
+Score: 50 (delta: 10) | reward: 10
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 31/500 ==========
+Location: Loud Room
+Goal: Explore an exit leading to a room unvisited this episode or an unmapped destination: inspect the current room and available objects, record the resulting transition, and look for score-producing interactions. Preserve discovered return routes for use when carrying valuables.
+  1. Explore an unmapped exit: Choose a valid frontier action and inspect the destination.
+  2. Investigate the new room: Examine notable objects and available interactions; compare score before and after each action.
+  3. Preserve recoverability: If the room is underground, establish a route to the Living Room before pursuing a lengthy treasure sequence.
+  4. Pursue productive discoveries: Record newly successful actions and routes so they can be exploited in later episodes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: up
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Deep Canyon
+
+
+New location: Deep Canyon
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 32/500 ==========
+Location: Deep Canyon
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Loud Room
+
+
+New location: Loud Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 33/500 ==========
+Location: Loud Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Round Room
+This is a circular stone room with passages in all directions. Several of them have unfortunately been blocked by cave-ins.
+
+
+New location: Round Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 34/500 ==========
+Location: Round Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+
+
+New location: North-South Passage
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 35/500 ==========
+Location: North-South Passage
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Chasm
+
+
+New location: Chasm
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 36/500 ==========
+Location: Chasm
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+
+
+New location: North-South Passage
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 37/500 ==========
+Location: North-South Passage
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: northeast
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Deep Canyon
+
+
+New location: Deep Canyon
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 38/500 ==========
+Location: Deep Canyon
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Loud Room
+
+
+New location: Loud Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 39/500 ==========
+Location: Loud Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Round Room
+
+
+New location: Round Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 40/500 ==========
+Location: Round Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+
+
+New location: North-South Passage
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 41/500 ==========
+Location: North-South Passage
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Chasm
+
+
+New location: Chasm
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 42/500 ==========
+Location: Chasm
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+
+
+New location: North-South Passage
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 43/500 ==========
+Location: North-South Passage
+Goal: The previous objective stalled. Preserve valuables and investigate a new exit or local prerequisite. Reconsider it when observed evidence changes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: northeast
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Deep Canyon
+
+
+New location: Deep Canyon
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 44/500 ==========
+Location: Deep Canyon
+Goal: The previous objective stalled. Preserve valuables and investigate a new exit or local prerequisite. Reconsider it when observed evidence changes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Dam
+You are standing on the top of the Flood Control Dam #3, which was quite a tourist attraction in times far distant. There are paths to the north, south, and west, and a scramble down.
+The sluice gates on the dam are closed. Behind the dam, there can be seen a wide reservoir. Water is pouring over the top of the now abandoned dam.
+There is a control panel here, on which a large metal bolt is mounted. Directly above the bolt is a small green plastic bubble.
+
+
+New location: Dam
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 45/500 ==========
+Location: Dam
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Deep Canyon
+
+
+New location: Deep Canyon
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 46/500 ==========
+Location: Deep Canyon
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Loud Room
+
+
+New location: Loud Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 47/500 ==========
+Location: Loud Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Round Room
+
+
+New location: Round Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 48/500 ==========
+Location: Round Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+
+
+New location: North-South Passage
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 49/500 ==========
+Location: North-South Passage
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Chasm
+
+
+New location: Chasm
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 50/500 ==========
+Location: Chasm
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+
+
+New location: North-South Passage
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 51/500 ==========
+Location: North-South Passage
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Round Room
+
+
+New location: Round Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 52/500 ==========
+Location: Round Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+
+
+New location: North-South Passage
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 53/500 ==========
+Location: North-South Passage
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Round Room
+
+
+New location: Round Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 54/500 ==========
+Location: Round Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+
+
+New location: North-South Passage
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 55/500 ==========
+Location: North-South Passage
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Chasm
+
+
+New location: Chasm
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 56/500 ==========
+Location: Chasm
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: south
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: North-South Passage
+
+
+New location: North-South Passage
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 57/500 ==========
+Location: North-South Passage
+Goal: The return-route search has made no observed progress for 12 commands. Keep carried valuables and investigate an untried exit or local puzzle prerequisite. Pursue new evidence instead of retracing the same room cycle; resume the return goal when inventory, room state, map knowledge, or score changes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: northeast
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Deep Canyon
+
+
+New location: Deep Canyon
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 58/500 ==========
+Location: Deep Canyon
+Goal: The return-route search has made no observed progress for 13 commands. Keep carried valuables and investigate an untried exit or local puzzle prerequisite. Pursue new evidence instead of retracing the same room cycle; resume the return goal when inventory, room state, map knowledge, or score changes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: down
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Loud Room
+
+
+New location: Loud Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 59/500 ==========
+Location: Loud Room
+Goal: The return-route search has made no observed progress for 14 commands. Keep carried valuables and investigate an untried exit or local puzzle prerequisite. Pursue new evidence instead of retracing the same room cycle; resume the return goal when inventory, room state, map knowledge, or score changes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: up
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Deep Canyon
+
+
+New location: Deep Canyon
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 60/500 ==========
+Location: Deep Canyon
+Goal: The return-route search has made no observed progress for 15 commands. Keep carried valuables and investigate an untried exit or local puzzle prerequisite. Pursue new evidence instead of retracing the same room cycle; resume the return goal when inventory, room state, map knowledge, or score changes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: east
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Dam
+
+
+New location: Dam
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 61/500 ==========
+Location: Dam
+Goal: The return-route search has made no observed progress for 16 commands. Keep carried valuables and investigate an untried exit or local puzzle prerequisite. Pursue new evidence instead of retracing the same room cycle; resume the return goal when inventory, room state, map knowledge, or score changes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Dam Lobby
+This room appears to have been the waiting room for groups touring the dam. There are open doorways here to the north and east marked "Private", and there is a path leading south over the top of the dam.
+Some guidebooks entitled "Flood Control Dam #3" are on the reception desk.
+There is a matchbook whose cover says "Visit Beautiful FCD#3" here.
+
+
+New location: Dam Lobby
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 62/500 ==========
+Location: Dam Lobby
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: take matchbook
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Taken.
+
+
+New location: Dam Lobby
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 63/500 ==========
+Location: Dam Lobby
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Maintenance Room
+This is what appears to have been the maintenance room for Flood Control Dam #3. Apparently, this room has been ransacked recently, for most of the valuable equipment is gone. On the wall in front of you is a group of buttons colored blue, yellow, brown, and red. There are doorways to the west and south.
+There is a group of tool chests here.
+There is a wrench here.
+There is an object which looks like a tube of toothpaste here.
+There is a screwdriver here.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 64/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Dam Lobby
+Some guidebooks entitled "Flood Control Dam #3" are on the reception desk.
+
+
+New location: Dam Lobby
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 65/500 ==========
+Location: Dam Lobby
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Maintenance Room
+There is a group of tool chests here.
+There is a wrench here.
+There is an object which looks like a tube of toothpaste here.
+There is a screwdriver here.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 66/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: push red button
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The lights within the room come on.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 67/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Dam Lobby
+Some guidebooks entitled "Flood Control Dam #3" are on the reception desk.
+
+
+New location: Dam Lobby
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 68/500 ==========
+Location: Dam Lobby
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Maintenance Room
+There is a group of tool chests here.
+There is a wrench here.
+There is an object which looks like a tube of toothpaste here.
+There is a screwdriver here.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 69/500 ==========
+Location: Maintenance Room
+Goal: The previous objective stalled. Preserve valuables and investigate a new exit or local prerequisite. Reconsider it when observed evidence changes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: push yellow button
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Click.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 70/500 ==========
+Location: Maintenance Room
+Goal: The previous objective stalled. Preserve valuables and investigate a new exit or local prerequisite. Reconsider it when observed evidence changes.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: open tube
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Opening the tube reveals a viscous material.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 71/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: squeez tube
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The viscous material oozes into your hand.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 72/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: push blue button
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: There is a rumbling sound and a stream of water appears to burst from the east wall of the room (apparently, a leak has occurred in a pipe).
+The water level here is now up to your ankles.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 73/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: turn on matchbook
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: One of the matches starts to burn.
+The water level here is now up to your shin.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 74/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: turn on match
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: One of the matches starts to burn.
+The water level here is now up to your shin.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 75/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: push brown button
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Click.
+The match has gone out.
+The water level here is now up to your knees.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 76/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Dam Lobby
+Some guidebooks entitled "Flood Control Dam #3" are on the reception desk.
+
+
+New location: Dam Lobby
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 77/500 ==========
+Location: Dam Lobby
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Maintenance Room
+There is a group of tool chests here.
+There is a wrench here.
+There is an object which looks like a tube of toothpaste here.
+There is a screwdriver here.
+The water level here is now up to your hips.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 78/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: close tube
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Closed.
+The water level here is now up to your hips.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 79/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Dam Lobby
+Some guidebooks entitled "Flood Control Dam #3" are on the reception desk.
+
+
+New location: Dam Lobby
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 80/500 ==========
+Location: Dam Lobby
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Maintenance Room
+There is a group of tool chests here.
+There is a wrench here.
+There is an object which looks like a tube of toothpaste here.
+There is a screwdriver here.
+The water level here is now up to your waist.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 81/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: push yellow button
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Click.
+The water level here is now up to your chest.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: treasure_handoff_not_authorized
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 82/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: west
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Dam Lobby
+Some guidebooks entitled "Flood Control Dam #3" are on the reception desk.
+
+
+New location: Dam Lobby
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 83/500 ==========
+Location: Dam Lobby
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: north
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: Maintenance Room
+There is a group of tool chests here.
+There is a wrench here.
+There is an object which looks like a tube of toothpaste here.
+There is a screwdriver here.
+The water level here is now up to your neck.
+
+
+New location: Maintenance Room
+Score: 50 (delta: 0) | reward: 0
+Navigation status: transition_confirmed
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+========== STEP 84/500 ==========
+Location: Maintenance Room
+Goal: Find a way back to Living Room while preserving treasure candidates platinum bar. Current route status is unknown; investigate environmental clues, puzzle prerequisites, and alternate routes/paths. Do not repeatedly retry a blocked transition. Keep ordinary items and tools separate from the valuables that need to be deposited.
+  1. Return to Living Room: Use a confirmed route if available; otherwise cautiously test the best historical path one transition at a time, or investigate its prerequisites if blocked.
+  2. Deposit the treasure candidates: Put only the identified treasure candidates in the trophy case. Keep ordinary and useful puzzle items unless there is a separate reason to dispose of them. Verify the score change and inventory afterward.
+  3. Resume the highest-value exploration: Return to productive underground areas using previously successful paths, repeat score-positive interactions when contextually valid, and continue searching for additional score opportunities.
+Home route status this episode: unknown
+Action source: smart_actor
+Action: push red button
+Actor RL selection method: model_label_logits_plus_advantage_nsi
+Observation: The lights within the room shut off.
+The water level here is now up to your neck.
+I'm afraid you have done drowned yourself.
+ 
+   ****  You have died  **** 
+
+Now, let's take a look here... Well, you probably deserve another chance. I can't quite fix you up completely, but you can't have everything.
+
+Forest
+
+
+New location: Forest (room #78)
+Score: 40 (delta: -10) | reward: -10
+Navigation status: terminal_transition
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+Environment ended.
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json
+
+===== WORLD MAP =====
+
+West House --north: ['north']--> North House
+West House --west: ['west']--> Forest (room #78)
+North House --north: ['north']--> Forest Path
+North House --west: ['west']--> West House
+Forest Path --up: ['up']--> Up a Tree
+Forest Path --north: ['north']--> Clearing (room #143)
+Forest Path --['go around forest']--> Clearing (room #74)
+Forest Path --south: ['south']--> North House
+Up a Tree --down: ['down']--> Forest Path
+Clearing (room #143) --south: ['south']--> Forest Path
+Clearing (room #143) --west: ['west']--> Forest (room #78)
+Clearing (room #74) --east: ['east']--> CanyView
+Clearing (room #74) --['go around forest']--> Forest (room #78)
+Clearing (room #74) --west: ['west']--> Behind House
+Clearing (room #74) --north: ['north']--> Forest (room #77)
+Clearing (room #74) --south: ['south']--> Forest (room #76)
+CanyView --northwest: ['northwest']--> Clearing (room #74)
+CanyView --west: ['west']--> Forest (room #76)
+Forest (room #76) --north: ['north']--> Clearing (room #74)
+Forest (room #76) --west: ['west']--> Forest (room #78)
+Forest (room #78) --east: ['east']--> Forest Path
+Forest (room #78) --['go around trees']--> Forest (room #77)
+Forest (room #78) --north: ['north']--> Clearing (room #143)
+Forest (room #78) --south: ['south']--> Forest (room #76)
+Forest (room #77) --south: ['south']--> Clearing (room #74)
+Behind House --east: ['east']--> Clearing (room #74)
+Behind House --west: ['west']--> Kitchen
+Behind House --south: ['south']--> South House
+Kitchen --up: ['up']--> Attic
+Kitchen --west: ['west']--> Living Room
+Kitchen --east: ['east']--> Behind House
+Attic --down: ['down']--> Kitchen
+Living Room --east: ['east']--> Kitchen
+Living Room --down: ['down']--> Cellar
+Cellar --north: ['north']--> Troll
+Cellar --south: ['south']--> East Chasm
+Troll --south: ['south']--> Cellar
+Troll --east: ['east']--> East-West Passage
+East Chasm --north: ['north']--> Cellar
+East Chasm --east: ['east']--> Gallery
+Gallery --west: ['west']--> East Chasm
+Gallery --north: ['north']--> Studio
+South House --west: ['west']--> West House
+Studio --south: ['south']--> Gallery
+Studio --up: ['up']--> Kitchen
+East-West Passage --north: ['north']--> Chasm
+Chasm --south: ['south']--> North-South Passage
+North-South Passage --northeast: ['northeast']--> Deep Canyon
+North-South Passage --north: ['north']--> Chasm
+North-South Passage --south: ['south']--> Round Room
+Deep Canyon --down: ['down']--> Loud Room
+Deep Canyon --east: ['east']--> Dam
+Loud Room --up: ['up']--> Deep Canyon
+Loud Room --west: ['west']--> Round Room
+Round Room --north: ['north']--> North-South Passage
+Dam --south: ['south']--> Deep Canyon
+Dam --north: ['north']--> Dam Lobby
+Dam Lobby --north: ['north']--> Maintenance Room
+Maintenance Room --west: ['west']--> Dam Lobby
+
+===== END OF WORLD MAP =====
+
+Episode finished: score=40, moves=83, reason=environment_done
+Actor experience update: {'episode_id': 'ideal-map-unified-3_20261120_100446/episode_0010', 'steps': 84, 'actor_experiences': 84, 'score_reward_total': 40.0, 'discounted_return_first_step': 39.2345747215865, 'termination_reason': 'environment_done', 'final_score': 40.0, 'memory_path': 'logs/ideal-map-unified-20261120_100439/actor_experiences.jsonl', 'bootstrap_value': 0.0, 'episode_truncated': False, 'training_eligible': True, 'return_estimator': 'monte_carlo', 'published_outcome_steps': 84, 'outcome_directory': 'logs/ideal-map-unified-20261120_100439/actor_experiences.jsonl.outcomes/2d38b1b78640859389f93654eb092bba6f9f7c894900c0b6de9771e324d202ad'}
+Historian critic update: {'enabled': True, 'updates': 84, 'mean_absolute_prediction_error': 1.678883291588537, 'state_visits': 1831, 'episodes_trained': 10, 'termination_reason': 'environment_done', 'path': 'logs/ideal-map-unified-20261120_100439/historian_td.json'}
+Actor experience samples saved: 84 (logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0010_experience.jsonl)
+
+Historian episode review — episode 10
+================================================
+
+Review source: llm
+Lessons: 8 positive + 8 negative (configured per category: 8)
+
+Actor performance: the opening was efficient. It opened the window and went west (Kitchen +10 recorded). It took the lantern and sword, pushed the rug, opened the trap door and went down (Cellar +25 recorded). It lit the lantern, killed the troll with the sword, and the next move east recorded +5. 'take bar' in the Loud Room recorded +10. The final score was 40: +50 earned, then -10 on death. The supplied notes about a 'jump' death and a painting don't match this log, so I credited neither. The death was drowning in the Maintenance Room. The Actor pushed the buttons, water rose from shin to neck, and it kept re-entering. It also spent roughly 35 steps cycling Chasm, North-South Passage, Round Room, Deep Canyon and Loud Room while carrying the bar, never verifying a route home, and the egg goal never ran. Next time: bank the bar, and leave rising-water hazards immediately.
+
+LESSONS LEARNED
+================================
+POSITIVES TO REPEAT
+1. Open the Behind House window, then go west; Kitchen +10 was recorded on that move.
+2. Take lantern and sword, push rug, open trap door, go down; Cellar +25 was recorded. Light the lantern immediately.
+3. In the Troll room, 'hit troll with sword' killed the troll; the later east move to East-West Passage recorded +5.
+4. In the Loud Room, 'take bar' recorded +10; it was reached via Deep Canyon, down.
+5. Read score and location after each action; credit only exactly recorded score events.
+6. After taking a treasure, head straight back along a confirmed route toward the Living Room trophy case and verify the score.
+7. When a route search stalls, log exits already tried per room and test one untried exit instead of repeating moves.
+8. Heed hazard messages (rising water, darkness) as stop signals: leave the room and rethink before any further interaction.
+
+NEGATIVES TO AVOID
+1. Do not push buttons in the Maintenance Room; the blue button began flooding, the water rose to the neck, and drowning ended the run (-10, final 40).
+2. Do not re-enter or linger in a room with rising water; the Actor returned repeatedly and kept pressing buttons.
+3. Do not cycle Chasm/North-South Passage/Round Room/Deep Canyon/Loud Room; about 35 steps scored nothing.
+4. Do not carry treasure deeper underground without a verified route home; home return was never confirmed this episode.
+5. Do not keep the 'take egg' planner goal; it recurred many times, and the Up a Tree room was never reached.
+6. Do not open with forest loops (west, east, go around forest); about 4 early moves scored nothing.
+7. Do not trust planner 'previously productive' gain figures (+200, +15); verify against the latest score and location.
+8. Do not light matches or squeeze tubes at random as time pressure grows; each untested action must have a stated purpose.
+
+Historian review saved to: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0010_review.txt
+Episode lessons saved to: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/episode_0010_lessons.txt
+Current trial lessons saved to: logs/ideal-map-unified-20261120_100439/ideal-map-unified-3_20261120_100446/lessons_learned.txt
+World map saved to logs/ideal-map-unified-20261120_100439/world_model.json

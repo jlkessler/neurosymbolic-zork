@@ -21,7 +21,7 @@ def test_non_movement_interaction_does_not_add_transition(world_map):
     assert recorded is False
     assert world_map.graph.number_of_nodes() == 1
     assert world_map.graph.number_of_edges() == 0
-    assert world_map.current_location == "Living Room"
+    assert world_map.current_location == "room:10"
 
 
 def test_failed_directional_action_does_not_add_transition(world_map):
@@ -51,10 +51,10 @@ def test_same_display_name_different_room_ids_creates_distinct_nodes(world_map):
 
     assert recorded is True
     assert destination is not None
-    assert destination != "Maze"
-    assert world_map.graph.nodes["Maze"]["room_id"] == 100
+    assert destination == "room:101"
+    assert world_map.graph.nodes["room:100"]["room_id"] == 100
     assert world_map.graph.nodes[destination]["room_id"] == 101
-    assert world_map.find_route("Maze", destination) == ["west"]
+    assert world_map.find_route("room:100", destination) == ["west"]
 
 
 def test_pray_is_recorded_when_room_identity_changes(world_map):
@@ -68,7 +68,7 @@ def test_pray_is_recorded_when_room_identity_changes(world_map):
 
     assert recorded is True
     assert world_map.find_route("Altar", "Forest") == ["pray"]
-    edge_data = world_map.graph.get_edge_data("Altar", "Forest")
+    edge_data = world_map.graph.get_edge_data("room:20", "room:21")
     assert next(iter(edge_data.values()))["direction"] is None
 
 
@@ -89,7 +89,7 @@ def test_direction_alias_is_normalized(world_map):
     world_map.start_episode("A", location_id=1)
     world_map.record_step("n", "B", next_location_id=2)
 
-    edge = world_map.graph.get_edge_data("A", "B")
+    edge = world_map.graph.get_edge_data("room:1", "room:2")
     data = next(iter(edge.values()))
     assert data["direction"] == "north"
     # Preserve the actual command to replay in Jericho.
@@ -116,7 +116,7 @@ def test_cheapest_parallel_edge_is_selected(world_map):
     world_map.add_transition("A", "B", ["north", "east"])
     world_map.add_transition("A", "B", ["west"])
 
-    assert world_map.graph.number_of_edges("A", "B") == 2
+    assert world_map.graph.number_of_edges("room:1", "room:2") == 2
     assert world_map.find_route("A", "B") == ["west"]
 
 
@@ -126,7 +126,7 @@ def test_exact_duplicate_transition_is_not_added(world_map):
 
     assert world_map.add_transition("A", "B", ["north"]) is True
     assert world_map.add_transition("A", "B", ["north"]) is False
-    assert world_map.graph.number_of_edges("A", "B") == 1
+    assert world_map.graph.number_of_edges("room:1", "room:2") == 1
 
 
 def test_graph_respects_direction(world_map):
@@ -179,7 +179,7 @@ def test_find_route_details_contains_labels_and_transitions(world_map):
     assert details is not None
     assert details["total_cost"] == 2
     assert details["actions"] == ["north", "east"]
-    assert details["nodes"] == ["A", "B", "C"]
+    assert details["nodes"] == ["room:1", "room:2", "room:3"]
     assert len(details["transitions"]) == 2
     assert details["destination_label"] == "C"
 
@@ -212,7 +212,8 @@ def test_duplicate_room_name_is_resolved_using_room_id(world_map):
     first = world_map.resolve_location("Maze", location_id=100)
     second = world_map.resolve_location("Maze", location_id=101)
 
-    assert first == "Maze"
+    assert first == "room:100"
+    assert world_map.resolve_location("Maze") is None
     assert second != first
     assert world_map.find_route(first, second) == ["west"]
 

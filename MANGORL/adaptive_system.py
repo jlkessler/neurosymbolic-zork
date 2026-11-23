@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 
 from .evolution import ConfigurationArchive, default_configuration, propose_configuration
+from .episode_analysis import measured_objectives, objective_summary
+from .checkpoint import atomic_json
 
 
 class AdaptiveSystem:
@@ -17,9 +19,14 @@ class AdaptiveSystem:
         self.critic, self.policy, self.navigator = critic, policy, navigator
         self.output_dir = Path(output_dir)
         self.scores = []
+        self.objectives_by_episode = {}
         metrics_path = self.output_dir / "metrics.jsonl"
         if metrics_path.exists():
-            self.scores = [json.loads(line)["score"] for line in metrics_path.read_text().splitlines() if line.strip()]
+            for line in metrics_path.read_text(encoding="utf-8").splitlines():
+                if line.strip():
+                    metric = json.loads(line)
+                    self.scores.append(metric["score"])
+                    self.objectives_by_episode[metric["episode"]] = measured_objectives(self.output_dir, metric)
         initial = default_configuration()
         initial.update(temperature=args.temperature, history_length=args.history_length,
                        retrieval_top_k=args.actor_rl_top_k,
@@ -62,6 +69,8 @@ class AdaptiveSystem:
                   "map_navigation": self.navigator is not None,
                   "nsi": self.args.nsi, "actor_rl": self.args.actor_rl,
                   "historian_critic": self.args.historian_critic, "evolve": self.args.evolve}
+        metric["objectives_met"] = measured_objectives(self.output_dir, metric)
+        self.objectives_by_episode[metric["episode"]] = metric["objectives_met"]
         with (self.output_dir / "metrics.jsonl").open("a", encoding="utf-8") as file:
             file.write(json.dumps(metric) + "\n")
         summary = {"episodes": len(self.scores), "scores": self.scores,
@@ -70,7 +79,8 @@ class AdaptiveSystem:
                    "normalized_auc": sum(self.scores) / (len(self.scores) * self.args.score_scale),
                    "score_scale": self.args.score_scale,
                    "target_success_rate": sum(s >= self.args.target_score for s in self.scores) / len(self.scores)}
-        (self.output_dir / "metrics_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+        summary["objectives_met"] = objective_summary(self.objectives_by_episode)
+        atomic_json(self.output_dir / "metrics_summary.json", summary)
         event_logger("episode_metrics", metric)
         if self.archive is None:
             return

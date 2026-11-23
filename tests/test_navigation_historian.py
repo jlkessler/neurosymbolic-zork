@@ -137,29 +137,29 @@ def test_historian_routes_to_remote_score_positive_location(world_map, tmp_path)
     world_map.record_step("east", "B", next_location_id=2)
 
     historian = Historian(tmp_path / "historian.json")
-    historian.start_episode("B", "B", initial_score=0)
+    historian.start_episode("room:2", "B", initial_score=0)
     historian.observe_step(
-        before_node="B",
+        before_node="room:2",
         before_location="B",
         action="open chest",
-        after_node="B",
+        after_node="room:2",
         after_location="B",
         score_before=0,
         score_after=10,
     )
     historian.finish_episode(final_score=10, moves=1)
 
-    historian.start_episode("A", "A", initial_score=0)
+    historian.start_episode("room:1", "A", initial_score=0)
     routes = world_map.get_reachable_routes("A", max_destinations=10)
     goal = historian.choose_goal(
-        current_node="A",
+        current_node="room:1",
         current_location="A",
         valid_actions=["east", "look"],
         known_routes=routes,
     )
 
     assert goal["kind"] == "navigate_score_goal"
-    assert goal["target_node"] == "B"
+    assert goal["target_node"] == "room:2"
     assert goal["expected_score_gain"] == 10
 
 
@@ -640,7 +640,7 @@ def test_navigation_controller_blocks_historical_home_edge_after_failed_probe(wo
     assert controller.route_status(home) == "blocked"
     assert controller.plan_to_home(home) is None
     # The historical graph edge remains intact for a future episode.
-    assert world_map.graph.has_edge("Cellar", home)
+    assert world_map.graph.has_edge("room:1", home)
 
 
 def test_navigation_controller_resets_confirmation_but_preserves_map(world_map):
@@ -654,7 +654,7 @@ def test_navigation_controller_resets_confirmation_but_preserves_map(world_map):
     controller.start_episode()
     assert controller.confirmed_edges == set()
     assert controller.route_status("B") == "historical_unconfirmed"
-    assert world_map.graph.has_edge("A", "B")
+    assert world_map.graph.has_edge("room:1", "room:2")
 
 
 def test_world_map_find_nodes_by_label_disambiguates_rooms(world_map):

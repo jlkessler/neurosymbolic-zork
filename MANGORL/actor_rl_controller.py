@@ -26,6 +26,8 @@ class ActorRLController:
         max_abs_advantage: float = 2.0,
         value_controller=None,
         seed: int = 0,
+        memory_mode: str = "legacy",
+        repeat_penalty: float = 0.5,
     ):
         self.experience_memory = experience_memory
         self.enabled = bool(enabled)
@@ -36,6 +38,8 @@ class ActorRLController:
         self.min_similarity = max(0.0, min(1.0, float(min_similarity)))
         self.max_abs_advantage = max(0.1, float(max_abs_advantage))
         self.value_controller = value_controller
+        self.memory_mode = memory_mode
+        self.repeat_penalty = repeat_penalty
         self.rng = random.Random(seed)
 
     @staticmethod
@@ -51,17 +55,19 @@ class ActorRLController:
 
     def estimate(self, state: dict[str, Any], candidate_actions: Iterable[str]) -> dict[str, Any]:
         candidate_actions = list(candidate_actions)
-        estimates = self.experience_memory.estimate_action_values(
-            state,
-            candidate_actions,
-            top_k=self.top_k,
-            min_similarity=self.min_similarity,
-        )
+        estimates = {"state_value": None, "samples": 0, "actions": {}}
+        if self.memory_mode != "off":
+            memory = (self.experience_memory.outcomes if self.memory_mode == "concrete"
+                      else self.experience_memory)
+            estimates = memory.estimate_action_values(
+                state, candidate_actions, top_k=self.top_k, min_similarity=self.min_similarity)
+        estimates["memory_actions"] = dict(estimates["actions"])
         if self.value_controller is not None and getattr(self.value_controller, "enabled", False):
             # Online TD evidence is action-conditioned. A common V(s) offset
             # alone cancels under softmax and cannot change relative preference.
             td = self.value_controller.action_advantages(
                 state, candidate_actions, top_k=self.top_k, min_similarity=self.min_similarity)
+            estimates["td_actions"] = td
             for key, item in td.items():
                 previous = estimates.setdefault("actions", {}).get(key, {})
                 if item["sample_count"]:
@@ -80,12 +86,14 @@ class ActorRLController:
         valid_actions: Iterable[str],
         *,
         max_lines: int = 6,
+        estimates=None,
     ) -> str:
         """Create a concise, evidence-qualified hint for the Actor prompt."""
         if not self.enabled:
             return "Actor reinforcement learning is disabled."
         actions = self._deduplicate(valid_actions)
-        estimates = self.estimate(state, actions)
+        if estimates is None:
+            estimates = self.estimate(state, actions)
         known = [
             data for data in estimates.get("actions", {}).values()
             if data.get("sample_count", 0) > 0
@@ -105,23 +113,43 @@ class ActorRLController:
         )
         lines = [
             "EXPERIENCE-BASED ACTION EVIDENCE (soft guidance, not a rule):",
-            "These estimates come from similar past states and discounted returns; "
-            "sample counts are small-data evidence, not certainty.",
+            ("Use observed returns and TD estimates in light of their support."
+             if self.memory_mode != "legacy" else
+             "These estimates come from similar past states and discounted returns; "
+             "sample counts are small-data evidence, not certainty."),
         ]
         for item in known[:max_lines]:
             q = item.get("q_value")
             q_text = "unknown" if q is None else f"{q:.3f}"
+            detail = (f"similarity={item.get('best_similarity', 0.0):.2f}"
+                      if self.memory_mode == "legacy" else f"source={item.get('source', 'legacy_returns')}")
             lines.append(
                 f"- {item['action']}: estimated return={q_text}, "
                 f"advantage={item.get('advantage', 0.0):+.3f}, "
                 f"samples={item.get('sample_count', 0)}, "
-                f"similarity={item.get('best_similarity', 0.0):.2f}."
+                f"{detail}."
             )
+            example = item.get("example")
+            if example:
+                lines.append(f"  Observed {example['episode_id']} step {example['step']}: "
+                             f"score change {example['score_delta']:+g}, "
+                             f"discounted remaining score change {example['return']:+.2f}.")
         lines.append(
             "Do not repeat an action solely because it scored well elsewhere; "
             "check whether the current inventory, puzzle state, and observation match."
         )
         return "\n".join(lines)
+
+    def recall_candidates(self, estimates):
+        """Offer one legal, empirically supported alternative to the proposal."""
+        if not self.enabled or self.memory_mode != "concrete":
+            return []
+        # A sole known success has Q == V. It still deserves a menu slot
+        # when absent, although it receives no positive advantage correction.
+        supported = [item for item in estimates["memory_actions"].values()
+                     if item["advantage"] >= 0 and item["q_value"] > 0]
+        supported.sort(key=lambda item: item["advantage"], reverse=True)
+        return [item["action"] for item in supported]
 
     def _normalized_advantages(self, estimates: dict[str, Any]) -> dict[str, float]:
         entries = estimates.get("actions", {})
@@ -262,21 +290,46 @@ class ActorRLController:
             item = estimates.get("actions", {}).get(action.casefold(), {})
             bonus = self.exploration_coefficient / math.sqrt(item.get("sample_count", 0) + 1) if self.enabled else 0.0
             corrections.append(self.beta * advantages.get(action.casefold(), 0.0) + bonus)
-        adjusted = [z + correction for z, correction in zip(logits, corrections)]
+        repetitions = [0] * len(actions)
+        if self.enabled and self.memory_mode == "concrete":
+            repetitions = self.experience_memory.outcomes.repetitions(state, actions)
+        # Re-entering the same observable state after executing a command is
+        # evidence of a possible loop. Leave its first retry unpenalized.
+        repeat_costs = [self.repeat_penalty * min(3, max(0, count - 1)) for count in repetitions]
+        adjusted = [z + correction - cost for z, correction, cost in zip(logits, corrections, repeat_costs)]
         posterior = NeuroSymbolicInference().condition_actions(
             adjusted, feasibility if feasibility is not None else [1.0] * len(actions)
         )
         probs = posterior["probabilities"]
         index = self.rng.choices(range(len(actions)), weights=probs, k=1)[0] if sample else max(range(len(actions)), key=probs.__getitem__)
         prior = softmax(logits)
+        def preferred(values):
+            return actions[max(range(len(actions)), key=values.__getitem__)]
+
+        # Fixed-menu counterfactual: retain TD, exploration and repeat costs,
+        # then remove only the historical return estimates and their counts.
+        td = estimates.get("td_actions", {})
+        td_advantages = self._normalized_advantages({"actions": td})
+        without_memory = []
+        for action, logit, cost in zip(actions, logits, repeat_costs):
+            key = action.casefold()
+            bonus = self.exploration_coefficient / math.sqrt(td.get(key, {}).get("sample_count", 0) + 1)
+            correction = self.beta * td_advantages.get(key, 0.0) + bonus if self.enabled else 0.0
+            without_memory.append(logit + correction - cost)
+        pre_nsi, post_nsi = preferred(adjusted), preferred(probs)
         return {
             "action": actions[index], "candidates": actions,
-            "scorer_preferred_action": actions[max(range(len(actions)), key=logits.__getitem__)],
-            "corrected_preferred_action": actions[max(range(len(actions)), key=probs.__getitem__)],
+            "scorer_preferred_action": preferred(logits),
+            "without_memory_preferred_action": preferred(without_memory),
+            "adjusted_preferred_action": pre_nsi,
+            "corrected_preferred_action": post_nsi,
+            "memory_changed_argmax": preferred(without_memory) != pre_nsi,
+            "nsi_changed_argmax": pre_nsi != post_nsi,
             "base_logits": logits, "adjusted_logits": adjusted,
             "conditioned_logits": [z if math.isfinite(z) else None for z in posterior["logits"]],
             "probabilities": probs, "base_probabilities": prior,
-            "advantages": advantages, "corrections": corrections,
+            "advantages": advantages, "corrections": [c - cost for c, cost in zip(corrections, repeat_costs)],
+            "state_action_visits": repetitions, "repeat_costs": repeat_costs,
             "feasibility": list(feasibility) if feasibility is not None else [1.0] * len(actions),
             "satisfaction_mass": posterior["satisfaction_mass"],
             "log_satisfaction_mass": posterior["log_satisfaction_mass"],

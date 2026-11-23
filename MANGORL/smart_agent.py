@@ -1,8 +1,4 @@
-"""Smart LLM Actor for Zork I.
-
-The Actor is not given a walkthrough, treasure-point table, or puzzle solutions.
-It reasons from observations, score feedback, Historian goals, and known routes.
-"""
+"""Smart LLM Actor for Zork I using runtime and optional seeded map evidence."""
 from __future__ import annotations
 
 # Load project-local .env before reading configuration defaults.
@@ -219,6 +215,7 @@ class SmartAgent:
         navigation_context="No active symbolic navigation plan.",
         rl_guidance="",
         steps_remaining=None,
+        recalled_actions=None,
     ):
         """Return action plus Actor's compact inventory/clue report."""
         if not valid_actions:
@@ -230,6 +227,7 @@ class SmartAgent:
 
         if self.map_navigation:
             navigation_role = "A symbolic navigation controller may\nexecute known routes. "
+            knowledge_role = "The world model may provide outcomes of commands previously executed in comparable observed states. "
             return_strategy = "  retain discovered return routes while exploring; pursue known"
             route_strategy = """- Treat persistent map routes as historical hypotheses, not proof that a
   passage is currently open. The symbolic navigator may cautiously probe a
@@ -240,6 +238,7 @@ class SmartAgent:
   Check that your chosen direction actually corresponds to your stated goal."""
         else:
             navigation_role = ""
+            knowledge_role = ""
             return_strategy = "  keep the return to the Living Room in mind while exploring. Pursue known"
             route_strategy = ""
             movement_strategy = "- Choose movement commands using current observations and recent action history."
@@ -247,8 +246,10 @@ class SmartAgent:
         system_prompt = f"""You are the reasoning Actor in a neuro-symbolic agent playing Zork I.
 
 The objective is to reach the configured score target of {target_score}.
-You do not have a walkthrough, official treasure list, or point-value table.
-Discover how the game works from its observations and score feedback.
+You do not have an official treasure list or point-value table. {knowledge_role}
+Apply supplied world-model experiences only when their observable prerequisites
+fit the current state, and verify every result using current observations and
+score feedback in the current playthrough.
 
 You choose one game command at a time. {navigation_role}The Historian maintains strategic goals and lessons.
 The Historian may also provide a configurable set of positive behaviors learned
@@ -403,6 +404,14 @@ markdown fences or prose outside the JSON.
                 item for item in candidate_actions if item != action
             ]
             candidate_actions = candidate_actions[:5]
+            recalled_candidate = None
+            for recalled in recalled_actions or ():
+                matched = self._match_available(recalled, valid_actions)
+                if matched and matched not in candidate_actions:
+                    # Preserve the proposal and the scorer's five-label limit.
+                    candidate_actions = candidate_actions[:4] + [matched]
+                    recalled_candidate = matched
+                    break
             policy = None
             if self.policy_mode == "logprobs":
                 policy = LabelLogprobScorer().score(
@@ -462,6 +471,7 @@ markdown fences or prose outside the JSON.
                 "base_action": action,
                 "candidate_actions": candidate_actions,
                 "raw_response": answer,
+                "recalled_candidate": recalled_candidate,
                 "base_logits": policy["base_logits"] if policy else None,
                 "logit_source": policy["source"] if policy else "rank_prior",
                 "rationale_source": "model_emitted_json_field" if decision_rationale else "not_provided",
@@ -469,6 +479,7 @@ markdown fences or prose outside the JSON.
             return {
                 "action": action,
                 "candidate_actions": candidate_actions,
+                "recalled_candidate": recalled_candidate,
                 "report": report,
                 "decision_rationale": decision_rationale,
                 "raw_response": answer,
